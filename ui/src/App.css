@@ -1,0 +1,88 @@
+/* App.css */
+
+body {
+  background-color: #03609C;
+  color: #03609C;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.container {
+  display: flex;
+  background-color: #fff;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 5px;
+  height: 600px;
+  width: 900px;
+}
+
+.image-column {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #707070;
+  /* Add any styles for the image column */
+}
+
+.image-column img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.form-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 20px;
+  margin: 0 20px;
+  /* Add any styles for the form column */
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.register-input {
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.register-button {
+  padding: 10px 20px;
+  background-color: #03609C;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.register-button:hover {
+  background-color: #02436d;
+  color: #fff;
+}
+
+.login-link {
+  margin-top: 10px;
+  text-align: center;
+  color: #03609C;
+}
+
+.login-link a {
+  color: #02436d;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+
+
