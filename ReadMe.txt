@@ -14,5 +14,9 @@ node server.js
 To run the server using nodemon
 npm start
 
+install cors
+npm install cors
+
 -- React JS Setup.
 
+npm i

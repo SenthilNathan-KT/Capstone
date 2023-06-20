@@ -1,4 +1,5 @@
 //import logo from './logo.svg';
+import axios from 'axios';
 import React, { useState } from 'react';
 import '../App.css';
 
@@ -8,9 +9,10 @@ const Register = ({ onRegister }) => {
   const [password, setPassword] = useState('');
   const [reEnterPassword, setReEnterPassword] = useState('');
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-
+    
+    console.log('Handle Register function called.');
     // Prepare the registration data
     const registrationData = {
       userName,
@@ -19,14 +21,20 @@ const Register = ({ onRegister }) => {
       reEnterPassword
     };
 
-    // Pass the registration data to the parent component for further processing
-    onRegister(registrationData);
-
-    // Reset the form fields
-    setUserName('');
-    setEmail('');
-    setPassword('');
-    setReEnterPassword('');
+    try {
+      // Send the registration data to the server
+      const response = await axios.post('http://localhost:3001/register', registrationData);
+      console.log('Registration successful:', response.data);
+        
+      // Reset the form fields
+      setUserName('');
+      setEmail('');
+      setPassword('');
+      setReEnterPassword('');
+    } catch (error) {
+      console.error('Error during registration:', error);
+      // Handle the registration error
+    }
   };
 
   return (
@@ -59,7 +67,7 @@ const Register = ({ onRegister }) => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <input
-            type="text"
+            type="password"
             placeholder="Re-Enter Password"
             className="register-input"
             value={reEnterPassword}

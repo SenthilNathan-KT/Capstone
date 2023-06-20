@@ -1,3 +1,4 @@
+const cors = require('cors');
 const http = require('http');
 const express = require('express');
 const path = require('path');
@@ -10,7 +11,9 @@ const loginGetController = require('./controllers/loginGet.js');
 const registerGetController = require('./controllers/registerGet.js');
 const loginPostController = require('./controllers/loginPost.js');
 const registerPostController = require('./controllers/registerPost.js');
-
+app.use(express.json());
+app.use(express.urlencoded({ extended:true}));
+app.use(cors());
 app.get("/", homeController);
 
 app.get("/login", loginGetController);
