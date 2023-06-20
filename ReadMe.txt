@@ -7,6 +7,10 @@ npm i express
 npm install nodemon --save-dev    
 npm install ejs --save 
 
+npm install mongoose
+npm i bcrypt 
+npm i mongoose-unique-validator
+
 
 To run the server using node 
 node server.js
@@ -18,5 +22,6 @@ install cors
 npm install cors
 
 -- React JS Setup.
+// in UI Folder enter the following command (npx create-react-app - use this command for the first time alone when no folders are there)
 
 npm i
