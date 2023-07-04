@@ -25,3 +25,6 @@ npm install cors
 // in UI Folder enter the following command (npx create-react-app - use this command for the first time alone when no folders are there)
 
 npm i
+
+to navigate between pages, we need to use router
+npm install react-router-dom
