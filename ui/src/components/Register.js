@@ -1,5 +1,6 @@
 //import logo from './logo.svg';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 import '../App.css';
 
@@ -38,46 +39,55 @@ const Register = ({ onRegister }) => {
   };
 
   return (
-    <div className="container">
-      <div className="image-column">
-        <img src='/assets/images/signup.png' alt="Folks Online Presentation" />
-      </div>
-      <div className="form-column">
-        <h1>Sign Up</h1>
-        <form className="register-form" onSubmit={handleRegister}>
-          <input
-            type="text"
-            placeholder="Username"
-            className="register-input"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            className="register-input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="register-input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Re-Enter Password"
-            className="register-input"
-            value={reEnterPassword}
-            onChange={(e) => setReEnterPassword(e.target.value)}
-          />
-          <button type="submit" className="register-button">Sign Up</button>
-          <div className="login-link">
-            Already have an account? <a href='./Login.js'>Login</a>
-          </div>
-        </form>
+    <div className="home-page">
+      <nav className="navbar-register">
+        <div className="navbar-logo">
+          <Link to="/">
+            <img src="/assets/images/light theme logo.png" alt="Logo" />
+          </Link>
+        </div>
+      </nav>
+      <div className="container">
+        <div className="image-column">
+          <img src='/assets/images/folks-online-presentation.png' alt="Folks Online Presentation" />
+        </div>
+        <div className="form-column">
+          <h1>Sign Up</h1>
+          <form className="register-form" onSubmit={handleRegister}>
+            <input
+              type="text"
+              placeholder="Username"
+              className="register-input"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              className="register-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              className="register-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Re-Enter Password"
+              className="register-input"
+              value={reEnterPassword}
+              onChange={(e) => setReEnterPassword(e.target.value)}
+            />
+            <button type="submit" className="register-button">Sign Up</button>
+            <div className="login-link">
+              Already have an account? <Link to='/login'>Login</Link>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
