@@ -20,7 +20,7 @@ const Login = ({ onLogin }) => {
 
     try {
       // Send the registration data to the server
-      const response = await axios.post('http://localhost:3001/login', loginData);
+      const response = await axios.post('http://localhost:3001/auth/login', loginData);
       console.log('Login successful:', response.data);
         
       // Reset the form fields

@@ -4,12 +4,7 @@ const bcrypt = require("bcrypt");
 const uniqueValidator = require("mongoose-unique-validator");
 
 const UsersSchema = new Schema({
-    userId: {
-        type: String,
-        required: true,
-        unique: true
-      },
-    username: {
+    userName: {
         type: String,
         required: true
       },
@@ -24,6 +19,16 @@ const UsersSchema = new Schema({
       },
 }, { timestamps: true});
 
-UsersSchema.plugin(uniqueValidator, {message: "Email already exists"});
+
+UsersSchema.pre("save", function(next){
+  const user = this;
+  bcrypt.hash(user.password, 10, (error, hash) => {
+      user.password = hash;
+      next();
+  })
+})
+
+
+UsersSchema.plugin(uniqueValidator, {message: "Chosen email already exists"});
 const Users = mongoose.model("Users", UsersSchema);
 module.exports = Users;
