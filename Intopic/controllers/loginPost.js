@@ -4,14 +4,16 @@ const jwt = require("jsonwebtoken");
 
 module.exports = async (req, res) => {
     console.log("Printing from loginPost.js page. body -> " , req.body);
-    let userObj = {};
     let statusCode = 400;
     let message = "Logged in Successfully";
-
+    
     const { email, password } = req.body;
+    let userObj = {};
+    userObj.email= email;
+    userObj.password = password;
     const user = await Users.findOne({email:email});
 
-    console.log("User object retrieved -> ", user);
+    // console.log("User object retrieved -> ", user);
     if (user) {
         const same = await bcrypt.compare(password, user.password);
         if (same) {
@@ -23,12 +25,13 @@ module.exports = async (req, res) => {
             userObj.token = jwt.sign(userObj, process.env.JSON_WEB_TOKEN_KEY, { expiresIn: "1h" });
             // console.log("User obj after token " + user);
         } else {
-            console.log("Password Doesn't match");
+
+            console.log("Password Doesn't match. Obj -> ", userObj);
             message = "Kindly enter a valid password";
         }
         
     } else {
-        console.log("Email Address not found");
+        console.log("Email Address not found. Obj -> ", userObj);
         message = "Kindly enter a valid email address";
     }
 
