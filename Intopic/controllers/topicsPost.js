@@ -10,29 +10,10 @@ module.exports = async (req, res) => {
     // obj.noOfQuizzesAvailable = 3;
     // Topics.create(obj);
 
-    let topics;
-
-    const allTopics = Topics.find({}).then((data, err) => {
-        // console.error('documents -> ', data, " , error -> ", err);
-        // if (err) {
-        //     console.error('Error retrieving documents: Docu -> ', do);
-        //     return;
-        //   }
-      
-          // Map the raw documents to instances of your model class
-            topics = data;
-
-            console.error('result 1 -> ', topics);
-          
-          // Send the documents in the response
-        //   res.json(result);
-    })
-    
+    const allTopics = await Topics.find({})
     console.log("Printing from topicsPost.js page. obj -> ", allTopics);
-
-    console.error('result 2 -> ', topics);
     res.status(200).send({
         "message": "Retrieved", 
-        topics: topics
+        allTopics: allTopics
     });
 }
