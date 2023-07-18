@@ -1,35 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import '../App.css';
+import NavHeader from './NavHeader';  
 
 const HomePage = () => {
+  
   return (
     <div className="home-page">
-      <nav className="navbar">
-        <div className="navbar-logo">
-          <Link to="/">
-            <img src="/assets/images/dark theme logo.png" alt="Logo" />
-          </Link>
-        </div>
-        <ul className="navbar-links">
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/register">Sign Up</Link>
-          </li>
-        </ul>
-        {/* <div className="navbar-language">
-          <select>
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
-            <option value="fr">French</option>
-          </select>
-        </div> */}
-      </nav>
+      <NavHeader />
       <div className="content">
         <div className="block1">
           <div className="block1_1">
@@ -40,12 +18,12 @@ const HomePage = () => {
             </button>
           </div>
           <div className="block1_2">
-            <img src="/assets/images/casual-life-3d-boy-studying-remotely-with-tutor.png" alt="block1" />
+            <img src="/assets/images/3d-casual-life-time-management (1).png" alt="block1" />
           </div>
         </div>
         <div className="block2">
           <div className="block2_1">
-            <img src="/assets/images/casual-life-3d-young-woman-studying-magical-pink-gemstone.png" alt="Logo" />
+            <img src="/assets/images/casual-life-3d-girl-sitting-on-floor-with-laptop-and-studying.png" alt="Logo" />
           </div>
           <div className="block2_2">
             <h2>Choose a topic, ignite your curiosity, and start quizzing!</h2>
@@ -56,20 +34,20 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-inner-container">
-          <div class="footer-logo">
+      <footer className="footer">
+      <div className="footer-container">
+        <div className="footer-inner-container">
+          <div className="footer-logo">
             <img src="/assets/images/light theme logo.png" alt="Logo" />
           </div>
-          <div class="footer-social">
-            <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-            <a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+          <div className="footer-social">
+            <a href="#" target="_blank"><i className="fab fa-facebook-f"></i></a>
+            <a href="#" target="_blank"><i className="fab fa-twitter"></i></a>
+            <a href="#" target="_blank"><i className="fab fa-linkedin-in"></i></a>
           </div>
         </div>
-        <div class="footer-links-bottom">
-          <div class="footer-links">
+        <div className="footer-links-bottom">
+          <div className="footer-links">
             <ul>
               <li><a href="#">Home</a></li>
               <li><a href="#">About</a></li>
@@ -79,7 +57,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <div class="footer-bottom">
+      <div className="footer-bottom">
         <p>&copy; 2023 intopic. All rights reserved.</p>
       </div>
       </footer>

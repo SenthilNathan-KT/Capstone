@@ -41,3 +41,6 @@ npm i axios
 
 to navigate between pages, we need to use router
 npm install react-router-dom
+
+--to display toast message
+npm install react-toastify
