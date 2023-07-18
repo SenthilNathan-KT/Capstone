@@ -31,7 +31,7 @@ const Login = ({ onLogin }) => {
       // Reset the form fields
       setEmail('');
       setPassword('');
-      navigate('/');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Error during login:', error);
       // Handle the registration error
