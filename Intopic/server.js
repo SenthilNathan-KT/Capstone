@@ -29,7 +29,8 @@ const loginGetController = require('./controllers/loginGet.js');
 const registerGetController = require('./controllers/registerGet.js');
 const loginPostController = require('./controllers/loginPost.js');
 const registerPostController = require('./controllers/registerPost.js');
-//const topicsPostController = require('./controllers/topicsPost.js');
+const topicPostController = require('./controllers/topicPost.js');
+const topicsGetController = require('./controllers/topicsGet.js');
 
 const authCheckMiddleware = require("./middleware/authCheck.js");
 app.use(express.json());
@@ -43,7 +44,8 @@ app.post("/auth/login", loginPostController);
 app.get("/auth/register", registerGetController);
 app.post("/auth/register", registerPostController);
 
-//app.get("/topics", topicsPostController);
+app.get("/topics", topicsGetController);
+app.post("/topic", topicPostController);
 
 // app.get('/',(req,res)=>{
 //     res.json({name: 'Welcome to Express' })

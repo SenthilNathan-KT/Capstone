@@ -1,4 +1,4 @@
-const Topics = require("./../models/Topics.js")
+const Topics = require("../models/Topics.js")
 
 module.exports = async (req, res) => {
     
@@ -10,10 +10,7 @@ module.exports = async (req, res) => {
     // obj.noOfQuizzesAvailable = 3;
     // Topics.create(obj);
 
-    const allTopics = await Topics.find({})
-    console.log("Printing from topicsPost.js page. obj -> ", allTopics);
-    res.status(200).send({
-        "message": "Retrieved", 
-        allTopics: allTopics
-    });
+
+    console.log("Topic Post -> ", req. body);
+
 }
