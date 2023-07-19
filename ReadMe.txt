@@ -44,3 +44,12 @@ npm install react-router-dom
 
 --to display toast message
 npm install react-toastify
+
+-- to install icons from mui
+npm install @mui/icons-material @mui/material @emotion/styled @emotion/react
+
+npm install react-pro-sidebar
+
+npm install formik
+
+npm install yup

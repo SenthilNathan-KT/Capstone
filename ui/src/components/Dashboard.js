@@ -1,26 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../App.css';
-import NavHeader from './NavHeader'; 
+// import NavHeader from './NavHeader'; 
 import Footer from './Footer'; 
+import TopBar from './TopBar';
+import { Box, IconButton, useTheme } from '@mui/material';
+import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
+import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
+//import SideBar from './SideBar';
+import SharedFolder from './SharedFolder';
+// import CreateTopic from './CreateTopic';
+import NavHeader from './NavHeader';
 
-const HomePage = () => {
-  
+const Dashboard = () => {
+  const navigate = useNavigate();
+  const handleClickTopic = () => {
+    // Handle the click event here
+    console.log('Icon clicked!');
+    navigate('/createtopic');
+  };
+  const handleClickQuiz = () => {
+    // Handle the click event here
+    console.log('Icon clicked!');
+    navigate('/createquiz');
+  };
   return (
     <div className="home-page">
       <NavHeader />
       <div className="content">
+      <TopBar />
         <div className="block1">
-          <div className="block1_1">
-            <h2>Explore and Create Personalized Quizzes!</h2>
-            <p>Challenge your mind, broaden your horizons, and dive into a world of interactive quizzes. From history buffs to pop culture enthusiasts, our quiz generator empowers you to test your knowledge, discover new insights, and share the excitement with friends.</p>
-            <button type="submit" className="link-button">
-              <Link to='/register' className="link-button">Get Started</Link>
-            </button>
-          </div>
-          <div className="block1_2">
-            <img src="/assets/images/3d-casual-life-time-management (1).png" alt="block1" />
-          </div>
+        <IconButton type='button' sx={{ p:1 }} onClick={handleClickTopic}>
+            <BorderColorOutlinedIcon  />
+        </IconButton>
+
+        <IconButton type='button' sx={{ p:1 }} onClick={handleClickQuiz}>
+            <EditNoteOutlinedIcon  />
+        </IconButton>
         </div>
         <div className="block2">
           <div className="block2_1">
@@ -41,4 +57,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Dashboard;

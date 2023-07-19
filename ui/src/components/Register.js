@@ -12,11 +12,20 @@ const Register = ({ onRegister }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [reEnterPassword, setReEnterPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  // const [errorMessage, setErrorMessage] = useState('');
+  const [userNameErrorMessage, setUserNameErrorMessage] = useState('');
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+  const [passwordMatchErrorMessage, setPasswordMatchErrorMessage] = useState('');
+
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setErrorMessage('');
+    //setErrorMessage('');
+    setUserNameErrorMessage('');
+    setEmailErrorMessage('');
+    setPasswordErrorMessage('');
+    setPasswordMatchErrorMessage('');
     console.log('Handle Register function called.');
     // Prepare the registration data
     const registrationData = {
@@ -51,9 +60,16 @@ const Register = ({ onRegister }) => {
     } catch (error) {
       console.error('Error during registration:', error);
       // Handle the registration error
-      
-      if (error.response.data.message === "Password doesn't match") {
-        setErrorMessage("Password doesn't match");
+      const errorMessage = error.response.data.message;
+      console.log(errorMessage, 'errorMessage')
+      if (errorMessage === 'Path `userName` is required.') {
+        setUserNameErrorMessage(errorMessage);
+      } else if (errorMessage === 'Path `email` is required.') {
+        setEmailErrorMessage(errorMessage);
+      } else if (errorMessage === 'Path `password` is required.') {
+        setPasswordErrorMessage(errorMessage);
+      } else if (errorMessage === "Password doesn't match") {
+        setPasswordMatchErrorMessage("Password doesn't match");
       }
     }
   };
@@ -80,6 +96,7 @@ const Register = ({ onRegister }) => {
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
               />
+              {userNameErrorMessage && <div className='error-message'>{userNameErrorMessage}</div>}
               <input
                 type="text"
                 placeholder="Email"
@@ -87,6 +104,7 @@ const Register = ({ onRegister }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+              {emailErrorMessage && <div className='error-message'>{emailErrorMessage}</div>}
               <input
                 type="password"
                 placeholder="Password"
@@ -94,6 +112,7 @@ const Register = ({ onRegister }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {passwordErrorMessage && <div className='error-message'>{passwordErrorMessage}</div>}
               <input
                 type="password"
                 placeholder="Re-Enter Password"
@@ -101,7 +120,7 @@ const Register = ({ onRegister }) => {
                 value={reEnterPassword}
                 onChange={(e) => setReEnterPassword(e.target.value)}
               />
-              {errorMessage && <div className="error-message">{errorMessage}</div>}
+              {passwordMatchErrorMessage && <div className='error-message'>{passwordMatchErrorMessage}</div>}
               <div className='buttons'>
                 <button type="submit" className="register-button">Sign Up</button>
                 <button type="submit" className="cancel-button">Cancel</button>
@@ -116,6 +135,5 @@ const Register = ({ onRegister }) => {
       </div>
   );
 };
-
 
 export default Register;
