@@ -24,6 +24,7 @@ module.exports = async (req, res) => {
             userObj.email= user.email;
             userObj.token = jwt.sign(userObj, process.env.JSON_WEB_TOKEN_KEY, { expiresIn: "1h" });
             // console.log("User obj after token " + user);
+            console.log("token " + userObj.token);
         } else {
 
             console.log("Password Doesn't match. Obj -> ", userObj);

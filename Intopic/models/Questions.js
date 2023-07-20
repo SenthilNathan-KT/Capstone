@@ -1,12 +1,8 @@
 const mongoose = require("mongoose");
+const Topics = require("../models/Topics.js")
 const Schema = mongoose.Schema;
 
 const QuestionsSchema = new Schema({
-    questionId: {
-        type: String,
-        required: true,
-        unique: true
-      },
       quizId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Quiz',
@@ -27,7 +23,6 @@ const QuestionsSchema = new Schema({
       },
       options: {
         type: [String],
-        required: true
       },
       correctAnswer: {
         type: String,
@@ -35,5 +30,5 @@ const QuestionsSchema = new Schema({
       },
 }, { timestamps: true});
 
-const Questions = mongoose.model("Topics", QuestionsSchema);
+const Questions = mongoose.model("Questions", QuestionsSchema);
 module.exports = Questions;
