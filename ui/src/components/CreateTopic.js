@@ -30,13 +30,13 @@ const Form = () => {
   };
 
   const initialValues = {
-    topicname: "",
-    topicdescription: "",
+    topicName: "",
+    topicDescription: "",
   };
 
   const checkoutSchema = yup.object().shape({
-    topicname: yup.string().required("Topic name is required"),
-    topicdescription: yup.string().required("Topic description is required"),
+    topicName: yup.string().required("Topic name is required"),
+    topicDescription: yup.string().required("Topic description is required"),
   });
 
   return (
@@ -93,10 +93,10 @@ const Form = () => {
                 label="Topic Name"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.topicname}
-                name="topicname"
-                error={!!touched.topicname && !!errors.topicname}
-                helperText={touched.topicname && errors.topicname}
+                value={values.topicName}
+                name="topicName"
+                error={!!touched.topicName && !!errors.topicName}
+                helperText={touched.topicName && errors.topicName}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
@@ -106,10 +106,10 @@ const Form = () => {
                 label="Topic Description"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.topicdescription}
-                name="topicdescription"
-                error={!!touched.topicdescription && !!errors.topicdescription}
-                helperText={touched.topicdescription && errors.topicdescription}
+                value={values.topicDescription}
+                name="topicDescription"
+                error={!!touched.topicDescription && !!errors.topicDescription}
+                helperText={touched.topicDescription && errors.topicDescription}
                 sx={{ gridColumn: "span 4" }}
               />
               
@@ -125,20 +125,5 @@ const Form = () => {
     </Box>
   );
 };
-
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
-const checkoutSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup
-    .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("required"),
-  address1: yup.string().required("required"),
-  address2: yup.string().required("required"),
-});
 
 export default Form;
