@@ -24,7 +24,7 @@ const QuestionsSchema = new Schema({
       options: {
         type: [String],
       },
-      correctAnswer: {
+      answer: {
         type: String,
         required: true
       },
