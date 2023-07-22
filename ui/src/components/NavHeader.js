@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import '../App.css';
+//import '../App.css';
 import axios from 'axios';
 
 const NavHeader =() =>{ 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
     const handleLogout = () => {
-        delete axios.defaults.headers.common['Authorization'];
+        localStorage.removeItem('accessToken');
         navigate('/login');
       }
 
       useEffect(() => {
-        if (axios.defaults.headers.common.Authorization) {
+        if (localStorage.getItem('accessToken')) {
           setIsLoggedIn(true);
         }
       }, []);

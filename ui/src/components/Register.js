@@ -1,138 +1,215 @@
-//import logo from './logo.svg';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
-import React, { useState } from 'react';
+import { Box, Button, TextField, Container, Paper } from "@mui/material";
+import { Formik } from "formik";
+import * as yup from "yup";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import axios from "axios";
+import { Link } from 'react-router-dom';
+import React from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../App.css';
 
-const Register = ({ onRegister }) => {
-  const navigate = useNavigate();
-  const [userName, setUserName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [reEnterPassword, setReEnterPassword] = useState('');
-  // const [errorMessage, setErrorMessage] = useState('');
-  const [userNameErrorMessage, setUserNameErrorMessage] = useState('');
-  const [emailErrorMessage, setEmailErrorMessage] = useState('');
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-  const [passwordMatchErrorMessage, setPasswordMatchErrorMessage] = useState('');
+const Register = () => {
 
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    //setErrorMessage('');
-    setUserNameErrorMessage('');
-    setEmailErrorMessage('');
-    setPasswordErrorMessage('');
-    setPasswordMatchErrorMessage('');
+  const handleRegister = async (values) => {
     console.log('Handle Register function called.');
-    // Prepare the registration data
-    const registrationData = {
-      userName,
-      email,
-      password,
-      reEnterPassword
-    };
 
     try {
-      // Send the registration data to the server
-      const response = await axios.post('http://localhost:3001/auth/register', registrationData);
+      // Sending the registration data to the server
+      const response = await axios.post('http://localhost:3001/auth/register', values);
       console.log('Registration successful:', response.data);
-        
-      // Reset the form fields
-      setUserName('');
-      setEmail('');
-      setPassword('');
-      setReEnterPassword('');
+      
+      values.userName="";
+      values.email="";
+      values.password="";
+      values.reEnterPassword="";
 
       //success toast with message from backend
       toast.success(response.data.message, {
         position: toast.POSITION.TOP_CENTER
       });
-
-      //navigate to login page after successful registration
-      // setTimeout(() => {
-      //   navigate('/login');
-      // }, 2000);
-      
       
     } catch (error) {
       console.error('Error during registration:', error);
       // Handle the registration error
-      const errorMessage = error.response.data.message;
-      console.log(errorMessage, 'errorMessage')
-      if (errorMessage === 'Path `userName` is required.') {
-        setUserNameErrorMessage(errorMessage);
-      } else if (errorMessage === 'Path `email` is required.') {
-        setEmailErrorMessage(errorMessage);
-      } else if (errorMessage === 'Path `password` is required.') {
-        setPasswordErrorMessage(errorMessage);
-      } else if (errorMessage === "Password doesn't match") {
-        setPasswordMatchErrorMessage("Password doesn't match");
-      }
     }
   };
 
+  const initialValues = {
+    userName: "",
+    email: "",
+    password: "",
+    reEnterPassword: "",
+  };
+
+  const checkoutSchema = yup.object().shape({
+    userName: yup.string().required("User name is required"),
+    email: yup
+      .string()
+      .email("Invalid Email Format")
+      .required("Email is required"),
+    password: yup.string().required("Password is required"),
+    reEnterPassword: yup
+      .string()
+      .oneOf([yup.ref('password'), null], "Passwords doesn't match")
+      .required("Please Re-enter the Password"),
+  });
+
   return (
-    
-      <div className="container">
-        <div className="logo">
-          <Link to="/">
-            <img src="/assets/images/dark theme logo.png" alt="Logo" />
-          </Link>
-        </div>
-        <div className='image-column-level'>
-          <div className="image-column">
-            <img src='/assets/images/folks-online-presentation.png' alt="Folks Online Presentation" />
-          </div>
-          <div className="form-column">
-            <h1>Sign Up</h1>
-            <form className="register-form" onSubmit={handleRegister}>
-              <input
-                type="text"
-                placeholder="Username"
-                className="register-input"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-              />
-              {userNameErrorMessage && <div className='error-message'>{userNameErrorMessage}</div>}
-              <input
-                type="text"
-                placeholder="Email"
-                className="register-input"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              {emailErrorMessage && <div className='error-message'>{emailErrorMessage}</div>}
-              <input
-                type="password"
-                placeholder="Password"
-                className="register-input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              {passwordErrorMessage && <div className='error-message'>{passwordErrorMessage}</div>}
-              <input
-                type="password"
-                placeholder="Re-Enter Password"
-                className="register-input"
-                value={reEnterPassword}
-                onChange={(e) => setReEnterPassword(e.target.value)}
-              />
-              {passwordMatchErrorMessage && <div className='error-message'>{passwordMatchErrorMessage}</div>}
-              <div className='buttons'>
-                <button type="submit" className="register-button">Sign Up</button>
-                <button type="submit" className="cancel-button">Cancel</button>
-              </div>
-              <div className="login-link">
-                Already have an account? <Link to='/login'>Login</Link>
-              </div>
-            </form>
-          </div>
-        </div>
-        <ToastContainer />
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      minHeight="100vh"
+      backgroundColor="#03609C"
+    >
+      <div>
+      <Link to="/" style={{ position: 'absolute', top: 0, left: 0, margin: '30px' }}>
+        <img src="/assets/images/light theme logo.png" 
+          alt="Logo" 
+          style={{ width: '200px', height: '40px' }}
+        />
+      </Link>
+      <Container maxWidth="md">
+        <Paper elevation={3} sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: "50%",
+              height: "100%",
+              borderRadius: '0 12px 12px 0',
+              overflow: 'hidden',
+            }}
+          >
+            <img
+              src={`${process.env.PUBLIC_URL}/assets/images/casual-life-3d-girl-sitting-on-floor-with-laptop-and-studying.png`}
+              alt="Presentation"
+              style={{ width: '100%', height: '100%', margin: '90px 0px' }}
+            />
+          </Box>
+          <Box
+            sx={{
+              backgroundColor: "white",
+              padding: "20px",
+              maxWidth: "500px",
+              width: "50%",
+              mt: "20px",
+            }}
+          >
+            <h2
+            style={{
+              color: "#03609C",
+              marginBottom: "20px",
+            }}
+            >Signup</h2>
+            <Formik
+              onSubmit={handleRegister}
+              initialValues={initialValues}
+              validationSchema={checkoutSchema}
+            >
+              {({
+                values,
+                errors,
+                touched,
+                handleBlur,
+                handleChange,
+                handleSubmit,
+              }) => (
+                <form onSubmit={handleSubmit}>
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="text"
+                    label="UserName"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.userName}
+                    name="userName"
+                    error={!!touched.userName && !!errors.userName}
+                    helperText={touched.userName && errors.userName}
+                    sx={{ marginBottom: "20px", borderRadius: '8px' }}
+                  />
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="text"
+                    label="Email"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.email}
+                    name="email"
+                    error={!!touched.email && !!errors.email}
+                    helperText={touched.email && errors.email}
+                    sx={{ marginBottom: "20px", borderRadius: '8px' }}
+                  />
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="password"
+                    label="Password"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.password}
+                    name="password"
+                    error={!!touched.password && !!errors.password}
+                    helperText={touched.password && errors.password}
+                    sx={{ marginBottom: "20px", borderRadius: '8px' }}
+                  />
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="password"
+                    label="Re-Enter Password"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.reEnterPassword}
+                    name="reEnterPassword"
+                    error={!!touched.reEnterPassword && !!errors.reEnterPassword}
+                    helperText={touched.reEnterPassword && errors.reEnterPassword}
+                    sx={{ marginBottom: "20px", borderRadius: '8px' }}
+                  />
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    mt={2}
+                  >
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      variant="contained"
+                      sx={{
+                        width: "100%",
+                        backgroundColor: "#03609C",
+                        "&:hover": {
+                          backgroundColor: "#024E7B",
+                        },
+                      }}
+                    >
+                      Register
+                    </Button>
+                    <Box mt={2} color="#03609C">
+                      Already have an account? {' '}
+                      <Link 
+                        to="/login" 
+                        style={{ 
+                          color: '#03609C', 
+                          textDecoration: 'underline', 
+                          fontWeight: 'bold'}}>
+                        Login
+                      </Link>
+                    </Box>
+                  </Box>
+                </form>
+              )}
+            </Formik>
+          </Box>
+        </Paper>
+      </Container>
+      <ToastContainer />
       </div>
+    </Box>
   );
 };
 

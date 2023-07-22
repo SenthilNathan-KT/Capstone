@@ -4,39 +4,52 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Avatar from "@mui/material/Avatar";
+import { useNavigate } from 'react-router-dom';
 import TopBar from "./TopBar";
 import NavHeader from "./NavHeader";
 import axios from "axios";
 
 const Form = () => {
+  const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleFormSubmit = async (values) => {
     try {
-        const response = await axios.post("http://localhost:3001/topic", values);
-        console.log("Topic created:", response.data);
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("description", values.description);
 
-        // Clear form values
-        setSelectedImage(null);
-      } catch (error) {
-        console.error("Error creating topic:", error);
+      if (selectedImage) {
+        formData.append("image", selectedImage);
       }
+      const response = await axios.post("http://localhost:3001/topic", formData);
+
+      console.log("Topic created:", response.data);
+
+      // Clear form values
+      setSelectedImage(null);
+      values.title = "";
+      values.description = "";
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Error creating topic:", error);
+    }
   };
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    setSelectedImage(URL.createObjectURL(file));
+    setSelectedImage(file);
   };
 
   const initialValues = {
-    topicname: "",
-    topicdescription: "",
+    title: "",
+    description: "",
   };
 
   const checkoutSchema = yup.object().shape({
-    topicname: yup.string().required("Topic name is required"),
-    topicdescription: yup.string().required("Topic description is required"),
+    title: yup.string().required("Topic name is required"),
+    description: yup.string().required("Topic description is required"),
   });
 
   return (
@@ -50,7 +63,7 @@ const Form = () => {
             <h2>CREATE TOPIC</h2>
         <label htmlFor="image-upload">
           <Avatar
-            src={selectedImage || "/path/to/default-profile-image.png"}
+            src={selectedImage ? URL.createObjectURL(selectedImage) : "/path/to/default-profile-image.png"}
             alt="User Profile"
             sx={{ width: 100, height: 100, marginTop: 10, cursor: "pointer" }}
           />
@@ -93,10 +106,10 @@ const Form = () => {
                 label="Topic Name"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.topicname}
-                name="topicname"
-                error={!!touched.topicname && !!errors.topicname}
-                helperText={touched.topicname && errors.topicname}
+                value={values.title}
+                name="title"
+                error={!!touched.title && !!errors.title}
+                helperText={touched.title && errors.title}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
@@ -106,10 +119,10 @@ const Form = () => {
                 label="Topic Description"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.topicdescription}
-                name="topicdescription"
-                error={!!touched.topicdescription && !!errors.topicdescription}
-                helperText={touched.topicdescription && errors.topicdescription}
+                value={values.description}
+                name="description"
+                error={!!touched.description && !!errors.description}
+                helperText={touched.description && errors.description}
                 sx={{ gridColumn: "span 4" }}
               />
               
@@ -125,20 +138,5 @@ const Form = () => {
     </Box>
   );
 };
-
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
-const checkoutSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup
-    .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("required"),
-  address1: yup.string().required("required"),
-  address2: yup.string().required("required"),
-});
 
 export default Form;

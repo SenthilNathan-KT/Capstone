@@ -12,7 +12,6 @@ module.exports=(req,res, next) => {
             // console.log("Decoding complete. AuthHeader UserID - " + decoded.userId + ", url -> " + req.url);
             req.session.userId = decoded.userId;
             // console.log("AuthCheeck Page. Session UserId -> ", req.session.userId);
-
             if(req.url == "/auth/login" || req.url == "/auth/signup") {
                 return res.status(400).send({"message" : "User Already logged in"});
             }
