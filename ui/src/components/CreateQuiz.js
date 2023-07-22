@@ -22,16 +22,16 @@ const Form = () => {
   };
 
   const initialValues = {
-    quizname: "",
-    quiztext: "",
+    title: "",
+    description: "",
     quizfile: null,
     numQuestions: "",
     questionType: "",
   };
 
   const checkoutSchema = yup.object().shape({
-    quizname: yup.string().required("Quiz name is required"),
-    quiztext: yup.string().required("Quiz text is required"),
+    title: yup.string().required("Quiz name is required"),
+    description: yup.string().required("Quiz text is required"),
     numQuestions: yup
       .string()
       .required("Invalid number of questions"),
@@ -79,10 +79,10 @@ const Form = () => {
                 label="Quiz Name"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.quizname}
-                name="quizname"
-                error={!!touched.quizname && !!errors.quizname}
-                helperText={touched.quizname && errors.quizname}
+                value={values.title}
+                name="title"
+                error={!!touched.title && !!errors.title}
+                helperText={touched.title && errors.title}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
@@ -93,10 +93,10 @@ const Form = () => {
                 label="Quiz Text"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.quiztext}
-                name="quiztext"
-                error={!!touched.quiztext && !!errors.quiztext}
-                helperText={touched.quiztext && errors.quiztext}
+                value={values.description}
+                name="description"
+                error={!!touched.description && !!errors.description}
+                helperText={touched.description && errors.description}
                 sx={{ gridColumn: "span 4" }}
               />
               <Box display="flex" gap="20px" sx={{ gridColumn: "span 4" }}>
