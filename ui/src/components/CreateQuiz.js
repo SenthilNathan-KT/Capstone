@@ -1,7 +1,7 @@
 //import { useState } from "react";
 import { Box, Button, TextField, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import { Formik } from "formik";
-import * as yup from "yup";
+import {object, string} from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 //import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined';
 import TopBar from "./TopBar";
@@ -14,9 +14,18 @@ const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   
   const handleFormSubmit = async (values) => {
-    console.log("Form submitted:", values);
+    console.log("Form submitted:", localStorage.getItem("accessToken"));
     try {
-        const response = await axios.post("http://localhost:3001/quiz", values);
+      const authToken = localStorage.getItem("accessToken");
+      const config = {
+        headers: {
+          authorization: `Bearer ${authToken}`,
+          //"Content-Type": "multipart/form-data", // Add the necessary headers for FormData
+        },
+      };
+      const response = await axios.post("http://localhost:3001/quiz", values, config);
+      
+        // const response = await axios.post("http://localhost:3001/quiz", values);
         console.log("Quiz created:", response.data);
         navigate('/dashboard');
       } catch (error) {
@@ -27,23 +36,20 @@ const Form = () => {
   const initialValues = {
     title: "",
     description: "",
-    quizfile: null,
     numQuestions: "",
-    questionType: "",
   };
 
-  const checkoutSchema = yup.object().shape({
-    title: yup.string().required("Quiz name is required"),
-    description: yup.string().required("Quiz text is required"),
-    numQuestions: yup
-      .string()
-      .required("Invalid number of questions"),
-    questionType: yup.string().required("Question type is required"),
+  const checkoutSchema = object().shape({
+    title: string().required("Quiz name is required"),
+    description: string().required("Quiz text is required"),
+    numQuestions: 
+      string()
+      .required("Invalid number of questions")
   });
 
   return (
     <Box m="20px" backgroundColor='white'>
-        <NavHeader />
+        {/* <NavHeader /> */}
         <TopBar />
         <Box
             style={{ padding: '20px', textAlign: 'center' }}
