@@ -22,7 +22,7 @@ module.exports=(req,res, next) => {
         }
 
       } else {
-        console.log("Token not valid");
+        console.log("Token not valid. authHeader -> ", authHeader);
         return res.status(400).send({"message" : "Invaid token"});
       }
       next();
