@@ -24,6 +24,7 @@ const Form = () => {
       if (selectedImage) {
         formData.append("image", selectedImage);
       }
+      console.log(selectedImage);
       const authToken = 'accessToken';
       const config = {
         headers: {
@@ -32,7 +33,7 @@ const Form = () => {
         },
       };
       const response = await axios.post("http://localhost:3001/topic", formData, config);
-
+      
       console.log("Topic created:", response.data);
 
       // Clear form values
