@@ -34,6 +34,7 @@ const topicPostController = require('./controllers/topicPost.js');
 const topicsGetController = require('./controllers/topicsGet.js');
 const topicsUpdateController = require('./controllers/topicUpdate.js');
 const topicsDeleteController = require('./controllers/topicDelete.js');
+const topicGetWithIdController = require('./controllers/topicGetWithId.js');
 
 const quizPostController = require('./controllers/quizPost.js');
 const quizGetController = require('./controllers/quizGet.js');
@@ -55,11 +56,12 @@ app.get("/topics", authCheckMiddleware, topicsGetController);
 app.post("/topic", authCheckMiddleware, topicPostController);
 app.put("/topic/:id", authCheckMiddleware, topicsUpdateController);
 app.delete("/topic/:id", authCheckMiddleware, topicsDeleteController);
+app.get("/topics/:topicId", authCheckMiddleware, topicGetWithIdController);
 
 
 app.post("/quiz", authCheckMiddleware, quizPostController);
 app.get("/quiz/:id", authCheckMiddleware, quizGetController);
-app.delete("/quiz/:id", authCheckMiddleware, quizDeleteController);
+app.delete("/quiz/:quizId", authCheckMiddleware, quizDeleteController);
 
 // app.get('/',(req,res)=>{
 //     res.json({name: 'Welcome to Express' })

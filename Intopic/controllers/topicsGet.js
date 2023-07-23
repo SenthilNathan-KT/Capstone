@@ -1,4 +1,4 @@
-const Topics = require("../models/Topics.js")
+const Topics = require("../models/Topics.js");
 
 module.exports = async (req, res) => {
     console.log("TopicGetPage. Session UserId -> ", req.session.userId);
