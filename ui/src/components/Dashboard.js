@@ -15,23 +15,24 @@ import NavHeader from './NavHeader';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(null);
+  // const [userData, setUserData] = useState(null);
 
   const handleClickTopic = () => {
     // Handle the click event here
-    console.log('Icon clicked!');
+    
     navigate('/createtopic');
   };
 
   const handleClickQuiz = () => {
     // Handle the click event here
-    console.log('Icon clicked!');
+    
     navigate('/createquiz');
   };
 
   return (
     <div className="home-page">
       <NavHeader />
+      
       <div className="content">
       <TopBar />
         <div className="block1">

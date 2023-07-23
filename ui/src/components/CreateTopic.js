@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
-import * as yup from "yup";
+import {object, string} from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Avatar from "@mui/material/Avatar";
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,7 @@ const Form = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleFormSubmit = async (values) => {
+    console.log("Form values:", values);
     try {
       const formData = new FormData();
       formData.append("title", values.title);
@@ -23,7 +24,14 @@ const Form = () => {
       if (selectedImage) {
         formData.append("image", selectedImage);
       }
-      const response = await axios.post("http://localhost:3001/topic", formData);
+      const authToken = 'accessToken';
+      const config = {
+        headers: {
+          authorization: `Bearer ${authToken}`,
+          "Content-Type": "multipart/form-data", // Add the necessary headers for FormData
+        },
+      };
+      const response = await axios.post("http://localhost:3001/topic", formData, config);
 
       console.log("Topic created:", response.data);
 
@@ -47,9 +55,9 @@ const Form = () => {
     description: "",
   };
 
-  const checkoutSchema = yup.object().shape({
-    title: yup.string().required("Topic name is required"),
-    description: yup.string().required("Topic description is required"),
+  const checkoutSchema = object().shape({
+    title: string().required("Topic name is required"),
+    description: string().required("Topic description is required"),
   });
 
   return (
