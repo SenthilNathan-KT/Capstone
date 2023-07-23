@@ -5,18 +5,43 @@ import axios from 'axios';
 
 const NavHeader =() =>{ 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    //const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
+        delete axios.defaults.headers.common['Authorization'];
+        console.log(axios.defaults.headers.common.Authorization);
         navigate('/login');
       }
 
       useEffect(() => {
-        if (localStorage.getItem('accessToken')) {
-          setIsLoggedIn(true);
+        const storedToken = localStorage.getItem('accessToken');
+        
+        if (storedToken) {
+        axios.defaults.headers.common['Authorization'] = storedToken;
+        console.log(axios.defaults.headers.common.Authorization);
+        setIsLoggedIn(true);
+        } else {
+        setIsLoggedIn(false);
         }
+        // const accessToken = axios.defaults.headers.common.Authorization;
+        // console.log(axios.defaults.headers.common.Authorization);
+        // //if (axios.defaults.headers.common.Authorization) {
+        // //if (localStorage.getItem('accessToken')) {
+        // if(accessToken === undefined || accessToken === null ) {
+        //     const storedToken = localStorage.getItem('accessToken');
+        //     if(storedToken) {
+        //         axios.defaults.headers.common['Authorization'] = storedToken;
+        //         setIsLoggedIn(true);
+        //     } else {
+        //         setIsLoggedIn(false);
+        //     }
+        // } else {
+        //     setIsLoggedIn(true);
+        // }
+        //setLoading(false); 
       }, []);
-
+    
     return (
         <div className="home-page">
             <nav className="navbar">

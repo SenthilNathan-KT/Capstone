@@ -5,15 +5,6 @@ import './index.css';
 import Routes from './routes';
 import reportWebVitals from './reportWebVitals';
 
-const handleRegister = (registrationData) => {
-  // Handle the registration logic here or pass the data to the appropriate function
-  console.log(registrationData);
-};
-const handleLogin = (loginData) => {
-  // Handle the registration logic here or pass the data to the appropriate function
-  console.log(loginData);
-};
-
 // const root = ReactDOM.createRoot(document.getElementById('root'));
 ReactDOM.render(
   <BrowserRouter>

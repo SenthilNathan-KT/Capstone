@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import {object, string} from "yup";
 import axios from "axios";
 import { Link, useNavigate } from 'react-router-dom';
-import React from 'react';
+import React, {useEffect} from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -11,13 +11,24 @@ const Login = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = React.useState(""); // State for error message
 
+  useEffect(() => {
+    const storedToken = localStorage.getItem('accessToken');
+    if (storedToken) {
+      navigate('/dashboard'); // Redirect to dashboard if already logged in
+    }
+  }, [navigate]);
+
   const handleLogin = async (values, { setFieldError }) => {
     try {
       const response = await axios.post("http://localhost:3001/auth/login", values);
       //const { success, message } = response.data;
       console.log('Login successful:', response.data);
-      //axios.defaults.headers.common.Authorization = `Bearer ${response.data.userObj.token}`;
-      localStorage.setItem('accessToken', response.data.userObj.token);
+      const token = response.data.userObj.token;
+
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+      localStorage.setItem('accessToken', token);
+      
       values.email = "";
       values.password = "";
       navigate('/dashboard');

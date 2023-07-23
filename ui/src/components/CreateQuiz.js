@@ -1,21 +1,24 @@
-import { useState } from "react";
+//import { useState } from "react";
 import { Box, Button, TextField, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined';
+//import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined';
 import TopBar from "./TopBar";
 import NavHeader from "./NavHeader";
 import axios from "axios";
+import React, { useNavigate } from 'react-router-dom';
 
 const Form = () => {
+  const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
+  
   const handleFormSubmit = async (values) => {
+    console.log("Form submitted:", values);
     try {
         const response = await axios.post("http://localhost:3001/quiz", values);
         console.log("Quiz created:", response.data);
-        
+        navigate('/dashboard');
       } catch (error) {
         console.error("Error creating quiz:", error);
       }
@@ -113,12 +116,11 @@ const Form = () => {
                 >
                   <MenuItem value="">Select Number</MenuItem>
                   <MenuItem value="10">10</MenuItem>
+                  <MenuItem value="15">15</MenuItem>
                   <MenuItem value="20">20</MenuItem>
-                  <MenuItem value="30">30</MenuItem>
-                  <MenuItem value="40">40</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl fullWidth variant="filled">
+              {/* <FormControl fullWidth variant="filled">
                 <InputLabel id="question-type-label">Question Type</InputLabel>
                 <Select
                   labelId="question-type-label"
@@ -134,9 +136,9 @@ const Form = () => {
                   <MenuItem value="trueFalse">True/False</MenuItem>
                   <MenuItem value="fillInTheBlank">Fill in the Blank</MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl> */}
               </Box>
-              <label htmlFor="quizfile">
+              {/* <label htmlFor="quizfile">
                 <Button
                   variant="outlined"
                   component="span"
@@ -153,7 +155,7 @@ const Form = () => {
                   }
                   style={{ display: "none" }}
                 />
-              </label>
+              </label> */}
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
