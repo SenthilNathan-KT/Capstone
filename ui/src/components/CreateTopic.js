@@ -16,35 +16,50 @@ const Form = () => {
 
   const handleFormSubmit = async (values) => {
     console.log("Form values:", values);
-    try {
-      const formData = new FormData();
-      formData.append("title", values.title);
-      formData.append("description", values.description);
-
-      if (selectedImage) {
-        formData.append("image", selectedImage);
-      }
-      console.log(selectedImage);
-      const authToken = 'accessToken';
-      const config = {
-        headers: {
-          authorization: `Bearer ${authToken}`,
-          "Content-Type": "multipart/form-data", // Add the necessary headers for FormData
-        },
-      };
-      const response = await axios.post("http://localhost:3001/topic", formData, config);
+    //try {
       
-      console.log("Topic created:", response.data);
+      const authToken = localStorage.getItem("accessToken");
+      console.log("Auth Token:", authToken);
 
-      // Clear form values
-      setSelectedImage(null);
-      values.title = "";
-      values.description = "";
-      navigate('/dashboard');
-    } catch (error) {
-      console.error("Error creating topic:", error);
-    }
-  };
+      // Verify if the authToken meets certain criteria to be considered valid
+      if (authToken) {
+        // Add other checks if needed, e.g., checking the token format or expiration date
+        // const formData = new FormData();
+        // formData.append("title", values.title);
+        // formData.append("description", values.description);
+
+        // if (selectedImage) {
+        //   formData.append("image", selectedImage);
+        // }
+        // console.log(selectedImage);
+        try {
+          const config = {
+            headers: {
+              authorization: `Bearer ${authToken}`,
+              "Content-Type": "multipart/form-data", // Add the necessary headers for FormData
+            },
+          };
+          const response = await axios.post(
+            "http://localhost:3001/topic",
+            values,
+            config
+          );
+    
+          console.log("Topic created:", response.data);
+    
+          // Clear form values
+          setSelectedImage(null);
+          values.title = "";
+          values.description = "";
+          navigate('/dashboard');
+        } catch (error) {
+          console.error("Error creating topic:", error);
+        }
+      } else {
+        // Handle the case when the authToken is not valid or doesn't exist
+        console.error("Invalid or missing authToken. Please log in again.");
+      }
+    };
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -116,7 +131,7 @@ const Form = () => {
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.title}
-                name="title"
+                name="title" // Make sure the name is set as "title"
                 error={!!touched.title && !!errors.title}
                 helperText={touched.title && errors.title}
                 sx={{ gridColumn: "span 4" }}
@@ -129,7 +144,7 @@ const Form = () => {
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.description}
-                name="description"
+                name="description" // Make sure the name is set as "description"
                 error={!!touched.description && !!errors.description}
                 helperText={touched.description && errors.description}
                 sx={{ gridColumn: "span 4" }}
