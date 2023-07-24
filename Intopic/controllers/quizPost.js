@@ -140,7 +140,7 @@ module.exports = async (req, res) => {
     let createdQuizObj = await Quiz.create(quizObj);
     console.log("createdQuizObj -> " , createdQuizObj);
 
-    await Topic.findOneAndUpdate({"_id":"64a75c5456e48f937b404903"})
+    await Topic.findOneAndUpdate({"_id":"64a75c5456e48f937b404903"}, {$inc: {noOfQuizzesAvailable: 1}})
 
     let count = 0;
     for (const questionKey in quizObject.Questions) {
@@ -176,8 +176,7 @@ module.exports = async (req, res) => {
     }
       
     res.status(200).send({
-        "message": "Quiz Post page.",
-        "Q": quizObject.Questions.Question1.Question,
-        "A": quizObject.Questions.Question1.Answer
+        "message": "Quiz created successfully",
+        quiz: quizObj
     });
 }

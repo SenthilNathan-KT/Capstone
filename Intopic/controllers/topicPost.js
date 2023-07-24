@@ -4,6 +4,7 @@ module.exports = async (req, res) => {
     
     // console.log("Topic Post -> ", req.body);
     console.log("TopicPostPage. Session UserId -> ", req.session.userId);
+    console.log("TopicPostPage. Req.Body -> ", req.body);
     
     let obj = {};
     obj.userId = req.session.userId;
