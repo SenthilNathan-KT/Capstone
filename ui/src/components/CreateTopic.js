@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
-import {object, string} from "yup";
+import { object, string } from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Avatar from "@mui/material/Avatar";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import TopBar from "./TopBar";
 import NavHeader from "./NavHeader";
 import axios from "axios";
@@ -12,58 +12,61 @@ import axios from "axios";
 const Form = () => {
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [selectedImage, setSelectedImage] = useState(null);
 
   const handleFormSubmit = async (values) => {
     console.log("Form values:", values);
     //try {
-      
-      const authToken = localStorage.getItem("accessToken");
-      console.log("Auth Token:", authToken);
 
-      // Verify if the authToken meets certain criteria to be considered valid
-      if (authToken) {
-        // Add other checks if needed, e.g., checking the token format or expiration date
-        // const formData = new FormData();
-        // formData.append("title", values.title);
-        // formData.append("description", values.description);
+    const authToken = localStorage.getItem("accessToken");
+    console.log("Auth Token:", authToken);
 
-        // if (selectedImage) {
-        //   formData.append("image", selectedImage);
-        // }
-        // console.log(selectedImage);
-        try {
-          const config = {
-            headers: {
-              authorization: `Bearer ${authToken}`,
-              "Content-Type": "multipart/form-data", // Add the necessary headers for FormData
-            },
-          };
-          const response = await axios.post(
-            "http://localhost:3001/topic",
-            values,
-            config
-          );
-    
-          console.log("Topic created:", response.data);
-    
-          // Clear form values
-          setSelectedImage(null);
-          values.title = "";
-          values.description = "";
-          navigate('/dashboard');
-        } catch (error) {
-          console.error("Error creating topic:", error);
-        }
-      } else {
-        // Handle the case when the authToken is not valid or doesn't exist
-        console.error("Invalid or missing authToken. Please log in again.");
+    // Verify if the authToken meets certain criteria to be considered valid
+    if (authToken) {
+      values.image = base64Image;
+      try {
+        const config = {
+          headers: {
+            authorization: `Bearer ${authToken}`,
+            // "Content-Type": "multipart/form-data", // Add the necessary headers for FormData
+          },
+        };
+        const response = await axios.post(
+          "http://localhost:3001/topic",
+          values,
+          config
+        );
+
+        console.log("Topic created:", response.data);
+
+        // Clear form values
+        // setSelectedImage(null);
+        // values.title = "";
+        // values.description = "";
+        // navigate('/dashboard');
+      } catch (error) {
+        console.error("Error creating topic:", error);
       }
-    };
-
+    } else {
+      // Handle the case when the authToken is not valid or doesn't exist
+      console.error("Invalid or missing authToken. Please log in again.");
+    }
+  };
+  const [base64Image, setBase64Image] = useState("");
   const handleImageChange = (event) => {
+    //setSelectedImage(event.target.files[0]);
     const file = event.target.files[0];
-    setSelectedImage(file);
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        // The 'result' property contains the base64-encoded image
+        const base64String = reader.result;
+        setBase64Image(base64String);
+      };
+
+      // Read the file as a data URL, which will trigger the 'onloadend' event
+      reader.readAsDataURL(file);
+    }
   };
 
   const initialValues = {
@@ -77,20 +80,26 @@ const Form = () => {
   });
 
   return (
-    <Box m="20px" backgroundColor='white'>
-        <NavHeader />
-        <TopBar />
-        <Box
-            style={{ padding: '20px', textAlign: 'center' }}
-            marginBottom="20px"
-        >
-            <h2>CREATE TOPIC</h2>
+    <Box m="20px" backgroundColor="white">
+      <NavHeader />
+      <TopBar />
+      <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
+        <h2>CREATE TOPIC</h2>
         <label htmlFor="image-upload">
           <Avatar
-            src={selectedImage ? URL.createObjectURL(selectedImage) : "/path/to/default-profile-image.png"}
+            src={base64Image ? base64Image : "/path/to/default-profile-image.png"}
             alt="User Profile"
             sx={{ width: 100, height: 100, marginTop: 10, cursor: "pointer" }}
           />
+          {/* {base64Image && (
+            <div>
+              <img
+                src={base64Image}
+                alt="Selected Image"
+                style={{ width: 200, height: 200 }}
+              />
+            </div>
+          )} */}
           <input
             id="image-upload"
             type="file"
@@ -149,7 +158,6 @@ const Form = () => {
                 helperText={touched.description && errors.description}
                 sx={{ gridColumn: "span 4" }}
               />
-              
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">

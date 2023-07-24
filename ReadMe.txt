@@ -52,4 +52,6 @@ npm install react-pro-sidebar
 
 npm install formik
 
+npm install formik axios
+
 npm install yup
