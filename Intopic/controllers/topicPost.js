@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
     // obj.imageURL = "imageURL 3";
     // obj.noOfQuizzesAvailable = 3;
     console.log("Topic Post Object created -> ", obj);
-    Topics.create(obj);
+    // Topics.create(obj);
 
     res.status(200).send({
         "message": "Topic created successfully"

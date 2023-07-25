@@ -15,18 +15,15 @@ const QuestionsSchema = new Schema({
       },
       questionType: {
         type: String,
-        required: true
       },
       question: {
         type: String,
-        required: true
       },
       options: {
         type: [String],
       },
       answer: {
         type: String,
-        required: true
       },
 }, { timestamps: true});
 
