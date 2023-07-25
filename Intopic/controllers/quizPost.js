@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
 
     const chatGptMessage = `Create a quiz for me with above content.
     No Of Questions : 6
-    QuestionType: True/False, MCQs Multiple answer, MCQs One answer (30% mixed)
+    QuestionType: trueFalse, multipleChoice, singleChoice (30% mixed)
     Use HTML to style the question
     Return the response in below JSON format
     For Answer Field, don't send like Option1, Option2. Send me the answer itself
