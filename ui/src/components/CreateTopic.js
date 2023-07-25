@@ -7,6 +7,7 @@ import Avatar from "@mui/material/Avatar";
 import { useNavigate } from "react-router-dom";
 import TopBar from "./TopBar";
 import NavHeader from "./NavHeader";
+// import SideBar from "./SideBar";
 import axios from "axios";
 
 const Form = () => {
@@ -81,7 +82,8 @@ const Form = () => {
 
   return (
     <Box m="20px" backgroundColor="white">
-      <NavHeader />
+      {/* <NavHeader /> */}
+      {/* <SideBar /> */}
       <TopBar />
       <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
         <h2>CREATE TOPIC</h2>
