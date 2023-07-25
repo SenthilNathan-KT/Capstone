@@ -40,8 +40,7 @@ const Login = () => {
       } else if (error.response.data.message === "Kindly enter a valid email address") {
         setFieldError("email", "Invalid email address");
         setErrorMessage("Invalid email address"); // Set error message state
-      } else {
-        // Handle other error cases, e.g., display a generic error message on the form
+      }  else {
         setErrorMessage("Login failed: " + error.response.data.message); // Set error message state
       }
     }

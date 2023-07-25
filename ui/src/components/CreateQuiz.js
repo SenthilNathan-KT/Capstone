@@ -1,5 +1,5 @@
 //import { useState } from "react";
-import { Box, Button, TextField, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
+import { Box, Button, TextField,InputAdornment,Typography, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import { Formik } from "formik";
 import {object, string} from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -7,7 +7,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import TopBar from "./TopBar";
 import NavHeader from "./NavHeader";
 import axios from "axios";
-import React, { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 const Form = () => {
   const navigate = useNavigate();
@@ -30,8 +31,21 @@ const Form = () => {
         navigate('/dashboard');
       } catch (error) {
         console.error("Error creating quiz:", error);
+        // if (error.response.data.err?.message === "jwt expired") {
+        //   navigate('/login');
+        // }
       }
   };
+  const [wordCount, setWordCount] = useState(0);
+
+  const getWordCount = (text) => {
+    const words = text.trim().split(/\s+/);
+    return words.length;
+  };
+  
+  // useEffect(() => {
+  //   setWordCount(getWordCount(values.description));
+  // }, [values.description]);
 
   const initialValues = {
     title: "",
@@ -41,7 +55,10 @@ const Form = () => {
 
   const checkoutSchema = object().shape({
     title: string().required("Quiz name is required"),
-    description: string().required("Quiz text is required"),
+    description: string()
+    .required("Quiz text is required")
+    .test("minWords", "Quiz text must have at least 100 words", (value) => getWordCount(value) >= 100)
+    .test("maxWords", "Quiz text exceeds more than 500 words", (value) => getWordCount(value) <= 500),
     numQuestions: 
       string()
       .required("Invalid number of questions")
@@ -94,20 +111,43 @@ const Form = () => {
                 helperText={touched.title && errors.title}
                 sx={{ gridColumn: "span 4" }}
               />
-              <TextField
-                fullWidth
-                multiline
-                rows={6}
-                variant="filled"
-                label="Quiz Text"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.description}
-                name="description"
-                error={!!touched.description && !!errors.description}
-                helperText={touched.description && errors.description}
-                sx={{ gridColumn: "span 4" }}
-              />
+              <Box gridColumn="span 4">
+                <FormControl fullWidth variant="filled" sx={{ flexDirection: "row" }}>
+                  <InputLabel htmlFor="quiz-text" shrink>
+                    Quiz Text
+                  </InputLabel>
+                  <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+                    <TextField
+                      fullWidth
+                      multiline
+                      rows={6}
+                      variant="filled"
+                      id="quiz-text"
+                      onBlur={handleBlur}
+                      onChange={(e) => {
+                        handleChange(e);
+                        setWordCount(getWordCount(e.target.value));
+                      }}
+                      value={values.description}
+                      name="description"
+                      error={
+                        !!touched.description &&
+                        (!!errors.description || getWordCount(values.description) > 500)
+                      }
+                      // helperText={
+                      //   touched.description
+                      //     ? errors.description || 'Quiz text can have at most 500 words'
+                      //     : ""
+                      // }
+                      sx={{ mb: 1 }}
+                    />
+                    <Typography variant="caption" sx={{ textAlign: "right" }}>
+                      Min 100, Max 500 words. Current {wordCount} words
+                    </Typography>
+                  </Box>
+                </FormControl>
+              </Box>
+              
               <Box display="flex" gap="20px" sx={{ gridColumn: "span 4" }}>
               <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 4" }}>
                 <InputLabel id="num-questions-label">Number of Questions</InputLabel>
@@ -126,42 +166,9 @@ const Form = () => {
                   <MenuItem value="20">20</MenuItem>
                 </Select>
               </FormControl>
-              {/* <FormControl fullWidth variant="filled">
-                <InputLabel id="question-type-label">Question Type</InputLabel>
-                <Select
-                  labelId="question-type-label"
-                  id="question-type"
-                  value={values.questionType}
-                  name="questionType"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={!!touched.questionType && !!errors.questionType}
-                >
-                  <MenuItem value="">Select Type</MenuItem>
-                  <MenuItem value="multipleChoice">Multiple Choice</MenuItem>
-                  <MenuItem value="trueFalse">True/False</MenuItem>
-                  <MenuItem value="fillInTheBlank">Fill in the Blank</MenuItem>
-                </Select>
-              </FormControl> */}
+              
               </Box>
-              {/* <label htmlFor="quizfile">
-                <Button
-                  variant="outlined"
-                  component="span"
-                  startIcon={<UploadOutlinedIcon />}
-                >
-                  Upload File
-                </Button>
-                <input
-                  id="quizfile"
-                  type="file"
-                  accept=".txt"
-                  onChange={(event) =>
-                    setFieldValue("quizfile", event.currentTarget.files[0])
-                  }
-                  style={{ display: "none" }}
-                />
-              </label> */}
+              
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">

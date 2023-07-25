@@ -66,9 +66,9 @@ const NavHeader =() =>{
                         <li>
                             <Link to="/login">Login</Link>
                         </li>
-                        <li>
+                        {/* <li>
                             <Link to="/register">Sign Up</Link>
-                        </li>
+                        </li> */}
                         </>
                     )}
                     </ul>
