@@ -9,13 +9,14 @@ module.exports = async (req, res) => {
     let obj = {};
     obj.userId = req.session.userId;
     obj.title = req.body.title;
-    console.log(req.body.title);
     obj.description = req.body.description;
-    console.log(req.body.description);
+    obj.image = req.body.image;
+    // console.log("Topic Obj -> ", obj);
+
     // obj.imageURL = "imageURL 3";
     // obj.noOfQuizzesAvailable = 3;
-    console.log("Topic Post Object created -> ", obj);
-    // Topics.create(obj);
+    const topicObj = await Topics.create(obj);
+    console.log("Topic Post Object created -> ", topicObj);
 
     res.status(200).send({
         "message": "Topic created successfully"
