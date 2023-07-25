@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-//import '../App.css';
+//import '../App2.css';
 import NavHeader from './NavHeader'; 
 import Footer from './Footer'; 
 
