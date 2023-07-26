@@ -12,7 +12,7 @@ const TopicsSchema = new Schema({
     required: true,
     unique: true
   },
-  imageURL: {
+  image: {
     type: String,
   },
   description: {

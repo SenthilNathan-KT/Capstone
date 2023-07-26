@@ -31,6 +31,10 @@ const QuizSchema = new Schema({
     type: Boolean,
     default: true
   },
+  totalQuestions: {
+    type: String,
+    default: 10
+  },
 }, { timestamps: true});
 
 const Quiz = mongoose.model("Quiz", QuizSchema);

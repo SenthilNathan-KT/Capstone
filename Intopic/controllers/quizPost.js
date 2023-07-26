@@ -135,6 +135,7 @@ module.exports = async (req, res) => {
     quizObj.topicId = "64a75c5456e48f937b404903"; // TODO Update this topic ID with param value
     quizObj.title = req.body.quizname;
     quizObj.description = quizObject.Description;
+    quizObj.totalQuestions = req.body.numQuestions;
 
 
     let createdQuizObj = await Quiz.create(quizObj);

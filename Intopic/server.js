@@ -60,8 +60,8 @@ app.get("/topics/:topicId", authCheckMiddleware, topicGetWithIdController);
 
 
 app.post("/quiz", authCheckMiddleware, quizPostController);
-app.get("/quiz/:id", authCheckMiddleware, quizGetController);
-app.delete("/quiz/:quizId", authCheckMiddleware, quizDeleteController);
+app.get("/topics/:topicId/quiz/:quizId", authCheckMiddleware, quizGetController);
+app.delete("/topics/:topicId/quiz/:quizId", authCheckMiddleware, quizDeleteController);
 
 // app.get('/',(req,res)=>{
 //     res.json({name: 'Welcome to Express' })
