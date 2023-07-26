@@ -1,25 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import { object, string } from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Avatar from "@mui/material/Avatar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import TopBar from "./TopBar";
-// import NavHeader from "./NavHeader";
 import SideBar from "./SideBar";
 import axios from "axios";
 
-const Form = () => {
+const UpdateTopic = () => {
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const location = useLocation();
+  const selectedTopic = location.state;
 
   const handleFormSubmit = async (values) => {
-    console.log("Form values:", values);
-    //try {
-
     const authToken = localStorage.getItem("accessToken");
-    console.log("Auth Token:", authToken);
 
     // Verify if the authToken meets certain criteria to be considered valid
     if (authToken) {
@@ -30,30 +27,27 @@ const Form = () => {
         // If an image is uploaded, use the base64 encoded image
         values.image = base64Image;
       }
+
       try {
         const config = {
           headers: {
             authorization: `Bearer ${authToken}`,
           },
         };
-        const response = await axios.post(
-          "http://localhost:3001/topic",
-          values,
-          config
-        );
 
-        console.log("Topic created:", response.data);
+        const response = await axios.put(`http://localhost:3001/topic/${selectedTopic._id}`, values, config);
+
+        console.log("Topic updated:", response.data);
 
         // Clear form values
-        // setSelectedImage(null);
         values.title = "";
         values.description = "";
         setBase64Image("");
         setIsImageUploaded(false);
         navigate('/dashboard');
       } catch (error) {
-        console.error("Error creating topic:", error);
-        if (error.response.status === 403) {
+        console.error("Error updating topic:", error);
+        if (error.response && error.response.status === 403) {
           navigate('/login');
         }
       }
@@ -62,11 +56,11 @@ const Form = () => {
       console.error("Invalid or missing authToken. Please log in again.");
     }
   };
+
   const [base64Image, setBase64Image] = useState("");
   const [isImageUploaded, setIsImageUploaded] = useState(false);
 
   const handleImageChange = (event) => {
-    //setSelectedImage(event.target.files[0]);
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -80,13 +74,34 @@ const Form = () => {
 
       // Read the file as a data URL, which will trigger the 'onloadend' event
       reader.readAsDataURL(file);
+    } else {
+      // If the user does not select a new image, keep the existing image
+      if (selectedTopic && selectedTopic.image) {
+        setBase64Image(selectedTopic.image);
+        setIsImageUploaded(true);
+      }
     }
   };
 
-  const initialValues = {
+  const [initialValues, setInitialValues] = useState({
     title: "",
     description: "",
-  };
+  });
+
+  useEffect(() => {
+    // If a selected topic is available, set the initial form values with its details
+    if (selectedTopic) {
+      setInitialValues({
+        title: selectedTopic.title,
+        description: selectedTopic.description,
+      });
+      // Set the initial image URL if a topic has an image
+      if (selectedTopic.image) {
+        setBase64Image(selectedTopic.image);
+        setIsImageUploaded(true);
+      }
+    }
+  }, [selectedTopic]);
 
   const checkoutSchema = object().shape({
     title: string().required("Topic name is required"),
@@ -95,12 +110,12 @@ const Form = () => {
 
   return (
     <Box display="flex">
-      {isNonMobile ? <SideBar /> : null} {/* Sidebar component displayed only on non-mobile devices */}
+      {isNonMobile ? <SideBar /> : null}
       <Box flex="1">
         <TopBar />
         <Box m="20px" backgroundColor="white" overflowY="auto">
           <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
-            <h2>CREATE TOPIC</h2>
+            <h2>EDIT TOPIC</h2>
             <label htmlFor="image-upload">
               <Avatar
                 src={isImageUploaded ? base64Image : "/assets/images/casual-life-3d-lamp-books-and-objects-for-studying.png"}
@@ -116,7 +131,7 @@ const Form = () => {
               />
             </label>
           </Box>
-
+          {initialValues.title && initialValues.description ? (
           <Formik
             onSubmit={handleFormSubmit}
             initialValues={initialValues}
@@ -168,16 +183,19 @@ const Form = () => {
                 </Box>
                 <Box display="flex" justifyContent="end" mt="20px">
                   <Button type="submit" color="secondary" variant="contained">
-                    Create Topic
+                  Update Topic
                   </Button>
                 </Box>
               </form>
             )}
           </Formik>
+          ) : (
+            <div>Loading...</div>
+          )}
         </Box>
       </Box>
     </Box>
   );
 };
 
-export default Form;
+export default UpdateTopic;

@@ -4,7 +4,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Box, IconButton, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
+//import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import SubjectOutlinedIcon from '@mui/icons-material/SubjectOutlined';
 //import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
@@ -63,7 +63,7 @@ const SideBar = () => {
                 color: 'white',
                 p: isCollapsed ? 2 : 6,
                 height: "100vh", // Set the height of the sidebar container to 100vh (100% viewport height)
-                overflowY: "auto", 
+                overflowy: "auto", 
                 width: "300px",
                 // margin:0,
             }}
