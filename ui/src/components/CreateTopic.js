@@ -6,8 +6,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Avatar from "@mui/material/Avatar";
 import { useNavigate } from "react-router-dom";
 import TopBar from "./TopBar";
-import NavHeader from "./NavHeader";
-// import SideBar from "./SideBar";
+// import NavHeader from "./NavHeader";
+import SideBar from "./SideBar";
 import axios from "axios";
 
 const Form = () => {
@@ -28,7 +28,6 @@ const Form = () => {
         const config = {
           headers: {
             authorization: `Bearer ${authToken}`,
-            // "Content-Type": "multipart/form-data", // Add the necessary headers for FormData
           },
         };
         const response = await axios.post(
@@ -41,11 +40,14 @@ const Form = () => {
 
         // Clear form values
         // setSelectedImage(null);
-        // values.title = "";
-        // values.description = "";
-        // navigate('/dashboard');
+        values.title = "";
+        values.description = "";
+        navigate('/dashboard');
       } catch (error) {
         console.error("Error creating topic:", error);
+        if (error.response.status === 403) {
+          navigate('/login');
+        }
       }
     } else {
       // Handle the case when the authToken is not valid or doesn't exist
@@ -81,94 +83,88 @@ const Form = () => {
   });
 
   return (
-    <Box m="20px" backgroundColor="white">
-      {/* <NavHeader /> */}
-      {/* <SideBar /> */}
-      <TopBar />
-      <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
-        <h2>CREATE TOPIC</h2>
-        <label htmlFor="image-upload">
-          <Avatar
-            src={base64Image ? base64Image : "/path/to/default-profile-image.png"}
-            alt="User Profile"
-            sx={{ width: 100, height: 100, marginTop: 10, cursor: "pointer" }}
-          />
-          {/* {base64Image && (
-            <div>
-              <img
-                src={base64Image}
-                alt="Selected Image"
-                style={{ width: 200, height: 200 }}
+    <Box display="flex">
+      {isNonMobile ? <SideBar /> : null} {/* Sidebar component displayed only on non-mobile devices */}
+      <Box flex="1">
+        <TopBar />
+        <Box m="20px" backgroundColor="white" overflowY="auto">
+          <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
+            <h2>CREATE TOPIC</h2>
+            <label htmlFor="image-upload">
+              <Avatar
+                src={base64Image ? base64Image : "/path/to/default-profile-image.png"}
+                alt="User Profile"
+                sx={{ width: 100, height: 100, marginTop: 10, cursor: "pointer" }}
               />
-            </div>
-          )} */}
-          <input
-            id="image-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            style={{ display: "none" }}
-          />
-        </label>
-      </Box>
+              <input
+                id="image-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+              />
+            </label>
+          </Box>
 
-      <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={initialValues}
-        validationSchema={checkoutSchema}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <Box
-              display="grid"
-              gap="30px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-              }}
-            >
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Topic Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.title}
-                name="title" // Make sure the name is set as "title"
-                error={!!touched.title && !!errors.title}
-                helperText={touched.title && errors.title}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Topic Description"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.description}
-                name="description" // Make sure the name is set as "description"
-                error={!!touched.description && !!errors.description}
-                helperText={touched.description && errors.description}
-                sx={{ gridColumn: "span 4" }}
-              />
-            </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create Topic
-              </Button>
-            </Box>
-          </form>
-        )}
-      </Formik>
+          <Formik
+            onSubmit={handleFormSubmit}
+            initialValues={initialValues}
+            validationSchema={checkoutSchema}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              handleSubmit,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <Box
+                  display="grid"
+                  gap="30px"
+                  gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                  sx={{
+                    "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+                  }}
+                >
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="text"
+                    label="Topic Name"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.title}
+                    name="title" // Make sure the name is set as "title"
+                    error={!!touched.title && !!errors.title}
+                    helperText={touched.title && errors.title}
+                    sx={{ gridColumn: "span 4" }}
+                  />
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="text"
+                    label="Topic Description"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.description}
+                    name="description" // Make sure the name is set as "description"
+                    error={!!touched.description && !!errors.description}
+                    helperText={touched.description && errors.description}
+                    sx={{ gridColumn: "span 4" }}
+                  />
+                </Box>
+                <Box display="flex" justifyContent="end" mt="20px">
+                  <Button type="submit" color="secondary" variant="contained">
+                    Create Topic
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </Formik>
+        </Box>
+      </Box>
     </Box>
   );
 };

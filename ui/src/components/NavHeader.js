@@ -24,22 +24,7 @@ const NavHeader =() =>{
         } else {
         setIsLoggedIn(false);
         }
-        // const accessToken = axios.defaults.headers.common.Authorization;
-        // console.log(axios.defaults.headers.common.Authorization);
-        // //if (axios.defaults.headers.common.Authorization) {
-        // //if (localStorage.getItem('accessToken')) {
-        // if(accessToken === undefined || accessToken === null ) {
-        //     const storedToken = localStorage.getItem('accessToken');
-        //     if(storedToken) {
-        //         axios.defaults.headers.common['Authorization'] = storedToken;
-        //         setIsLoggedIn(true);
-        //     } else {
-        //         setIsLoggedIn(false);
-        //     }
-        // } else {
-        //     setIsLoggedIn(true);
-        // }
-        //setLoading(false); 
+        
       }, []);
     
     return (
@@ -72,13 +57,7 @@ const NavHeader =() =>{
                         </>
                     )}
                     </ul>
-                    {/* <div className="navbar-language">
-                    <select>
-                        <option value="en">English</option>
-                        <option value="es">Spanish</option>
-                        <option value="fr">French</option>
-                    </select>
-                    </div> */}
+                    
             </nav>
         </div>
             

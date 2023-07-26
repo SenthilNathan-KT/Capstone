@@ -1,134 +1,141 @@
 import React from "react";
-import { Menu, MenuItem } from "react-pro-sidebar";
-import { ProSidebar } from "react-pro-sidebar";
 import { useState } from "react";
-// import 'react-pro-sidebar/dist/css/styles.css';
-import { Box, IconButton, Typography, useTheme } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Box, IconButton, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import SubjectOutlinedIcon from '@mui/icons-material/SubjectOutlined';
-import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
+//import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { grey } from "@mui/material/colors";
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
-    const theme = useTheme();
+const Item = ({ title, to, icon, selected, setSelected, isCollapsed }) => {
+    const isActive = selected === title; // Check if the item is active
+    const textColor = isActive ? "#fe8825" : "#f2f5f7";
     return (
-      <MenuItem
-        active={selected === title}
-        style={{
-          color: 'grey',
-        }}
-        onClick={() => setSelected(title)}
-        icon={icon}
-      >
-        <Typography>{title}</Typography>
-        <Link to={to} />
-      </MenuItem>
+        <Link to={to} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div
+                onClick={() => setSelected(title)}
+                style={{
+                color: textColor,
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+                padding: '5px 35px 5px 20px',
+                backgroundColor: isActive ? '#03609C' : 'transparent',
+                '&:hover': {
+                    color: '#868dfb',
+                },
+                '&:active': {
+                    color: '#6870fa',
+                },
+                }}
+            >
+                {isCollapsed ? (
+                    // Display only the icon when the sidebar is collapsed
+                    icon
+                ) : (
+                    // Display the icon and title when the sidebar is not collapsed
+                    <>
+                    {React.cloneElement(icon, { style: { color: textColor, marginRight: '10px' } })}
+                    <Typography>{title}</Typography>
+                    </>
+                )}
+                <Link to={to} />
+            </div>
+        </Link>
     );
   };
 
 const SideBar = () => {
-    const theme=useTheme();
+    //const theme=useTheme();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState('Dashboard');
+
+    const toggleSidebar = () => {
+        setIsCollapsed(!isCollapsed);
+      };
     return (
         <Box 
             sx={{
-                "& .pro-sidebar-inner": {
-                    background: "#03609C !important"
-                },
-                "& .pro-icon-wrapper": {
-                    backgroundColor: "transparent !important"
-                },
-                "& .pro-inner-item": {
-                    padding: "5px 35px 5px 20px !important"
-                },
-                "& .pro-inner-item:hover": {
-                    color: '#868dfb !important' 
-                },
-                "& .pro-menu-item:active": {
-                    color: '#6870fa !important' 
-                }
-            }}>
-            <ProSidebar collapsed={isCollapsed}>
-                <Menu iconShape="square">
-                    <MenuItem
-                    onClick={()=> setIsCollapsed(!isCollapsed)}
-                    icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-                    style={{
-                        margin:"10px 0 20px 0",
-                        color: grey,
-                    }}
-                    >
-                        {!isCollapsed && (
-                            <Box
-                            display="flex"
-                            justifyContent="space-between"
-                            alignItems="center"
-                            ml="15px"
-                            >
-                                <Typography variant="h3" color='grey'>intopic</Typography>
-                                <IconButton onClick={()=>setIsCollapsed(!isCollapsed)}>
-                                    <MenuOutlinedIcon />
-                                </IconButton>
-                            </Box>
-                        )}
-                    </MenuItem>
+                gridArea: 'sidebar',
+                backgroundColor: '#03609C',
+                color: 'white',
+                p: isCollapsed ? 2 : 6,
+                height: "100vh", // Set the height of the sidebar container to 100vh (100% viewport height)
+                overflowY: "auto", 
+                width: "300px",
+                // margin:0,
+            }}
+        >
+            
+        <div
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            style={{
+                margin: '10px 0 20px 0',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                cursor: 'pointer',
+            }}
+        >
+        {isCollapsed ? (
+          <>
+            <IconButton onClick={toggleSidebar}>
+              <MenuOutlinedIcon style={{ color: 'white' }} />
+            </IconButton>
+          </>
+        ) : (
+          <>
+            <img
+              alt="Logo"
+              src="/assets/images/light theme logo.png"
+              style={{ width: '130px', height: '40px', cursor: 'pointer', marginRight: '10px' }}
+            />
+            <IconButton onClick={toggleSidebar}>
+              <MenuOutlinedIcon style={{ color: 'white',marginLeft: '20px' }} />
+            </IconButton>
+          </>
+        )}
+      </div>
 
-                    {!isCollapsed && (
-                    <Box mb="25px">
-                        <Box display="flex" justifyContent="center" alignItems="center">
-                            <img
-                            alt="profile-user"
-                            width="100px"
-                            height="100px"
-                            src={`../../assets/user.png`}
-                            style={{ cursor: "pointer", borderRadius: "50%" }}
-                            />
-                        </Box>
-                        <Box textAlign="center">
-                            <Typography
-                            variant="h2"
-                            color='grey'
-                            fontWeight="bold"
-                            sx={{ m: "10px 0 0 0" }}
-                            >
-                            Ed Roh
-                            </Typography>
-                            
-                        </Box>
-                    </Box>
-                )}
-
-                <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-                    <Item
-                        title="Dashboard"
-                        to="/dashboard"
-                        icon={<HomeOutlinedIcon />}
-                        selected={selected}
-                        setSelected={setSelected}
-                    />
-                    <Item
-                        title="SharedFolder"
-                        to="/sharedfolder"
-                        icon={<HomeOutlinedIcon />}
-                        selected={selected}
-                        setSelected={setSelected}
-                    />
-                    <Item
-                        title="Dashboard"
-                        to="/createtopic"
-                        icon={<HomeOutlinedIcon />}
-                        selected={selected}
-                        setSelected={setSelected}
-                    />
-                </Box>
-                </Menu>
-            </ProSidebar>
+      {!isCollapsed && (
+        <Box mt="50px">
+          <Box display="flex" justifyContent="center" alignItems="center">
+            {/* Replace the img tag with AccountCircleIcon */}
+            <AccountCircleIcon
+              fontSize="large"
+              style={{ color: 'white', cursor: 'pointer', borderRadius: '50%', width: '100px', height: '100px' }}
+            />
+          </Box>
+          <Box textAlign="center">
+            <Typography variant="h4" color="white" fontWeight="bold" sx={{ m: '10px 0 0 0' }}>
+              Deepika Koti
+            </Typography>
+          </Box>
         </Box>
-    );
+      )}
+        <Box display="flex" flexDirection="column" justifyContent="center" marginTop="70px" alignItems="center">
+            <Item
+                title="Dashboard"
+                to="/dashboard"
+                icon={<HomeOutlinedIcon style={{ color: 'white', marginRight:'10px' }} />}
+                selected={selected}
+                setSelected={setSelected}
+                isCollapsed={isCollapsed}
+            />
+            
+            <Item
+                title="Create Topic"
+                to="/createtopic"
+                icon={<SubjectOutlinedIcon style={{ color: 'white', marginRight:'10px' }} />}
+                selected={selected}
+                setSelected={setSelected}
+                isCollapsed={isCollapsed}
+            />
+        </Box>
+    </Box>
+  );
 };
 
 export default SideBar;
