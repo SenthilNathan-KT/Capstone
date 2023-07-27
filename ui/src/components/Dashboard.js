@@ -18,9 +18,9 @@ const Dashboard = () => {
   const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editedTitle, setEditedTitle] = useState('');
-  const [editedDescription, setEditedDescription] = useState('');
+  // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // const [editedTitle, setEditedTitle] = useState('');
+  // const [editedDescription, setEditedDescription] = useState('');
 
   const handleJwtExpirationError = (error, navigate) => {
     if (error.response && error.response.status === 403) {
@@ -84,13 +84,17 @@ const Dashboard = () => {
     setIsDeleteModalOpen(false);
   };
   
-  const handleClickTopic = () => {
+  const handleCreateTopic = () => {
     navigate('/createtopic');
   };
 
-  const handleClickQuiz = () => {
-    navigate('/createquiz');
+  const handleClickTopic = (topicId) => {
+    navigate(`/topics/${topicId}`);
   };
+
+  // const handleClickQuiz = () => {
+  //   navigate('/createquiz');
+  // };
 
   return (
     <Box display="flex">
@@ -99,27 +103,29 @@ const Dashboard = () => {
         <TopBar />
         <Box m="20px" backgroundColor="white" overflowY="auto" flex="1">
           <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
-            <IconButton type="button" sx={{ p: 1 }} onClick={handleClickTopic}>
+            <IconButton type="button" sx={{ p: 1 }} onClick={handleCreateTopic}>
               <BorderColorOutlinedIcon />
             </IconButton>
 
-            <IconButton type="button" sx={{ p: 1 }} onClick={handleClickQuiz}>
+            {/* <IconButton type="button" sx={{ p: 1 }} onClick={handleClickQuiz}>
               <EditNoteOutlinedIcon />
-            </IconButton>
+            </IconButton> */}
             {topics.map(topic => (
-              <Paper key={topic._id} style={{ display: 'flex', alignItems: 'center', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '20px' }}>
-                <img src={topic.image} alt={topic.title} style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }} />
-                <Box style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start' }}>
-                  <Typography variant="h6" style={{ marginLeft: '40px' }}>{topic.title}</Typography>
-                  <Typography variant="body2" style={{ marginLeft: '40px' }}>No. of Quizzes: {topic.noOfQuizzesAvailable}</Typography>
-                </Box>
-                <IconButton type="button" sx={{ p: 1, marginLeft: 'auto' }} onClick={() => handleEditTopic(topic)}>
-                  <BorderColorOutlinedIcon />
-                </IconButton>
-                <IconButton type="button" sx={{ p: 1 }} onClick={() => handleDeleteTopic(topic)}>
-                  <DeleteOutlineOutlinedIcon />
-                </IconButton>
-              </Paper>
+              <div key={topic._id} style={{ cursor: 'pointer' }} onClick={() => handleClickTopic(topic._id)}>
+                <Paper key={topic._id} style={{ display: 'flex', alignItems: 'center', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '20px' }}>
+                  <img src={topic.image} alt={topic.title} style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }} />
+                  <Box style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start' }}>
+                    <Typography variant="h6" style={{ marginLeft: '40px' }}>{topic.title}</Typography>
+                    <Typography variant="body2" style={{ marginLeft: '40px' }}>No. of Quizzes: {topic.noOfQuizzesAvailable}</Typography>
+                  </Box>
+                  <IconButton type="button" sx={{ p: 1, marginLeft: 'auto' }} onClick={() => handleEditTopic(topic)}>
+                    <BorderColorOutlinedIcon />
+                  </IconButton>
+                  <IconButton type="button" sx={{ p: 1 }} onClick={() => handleDeleteTopic(topic)}>
+                    <DeleteOutlineOutlinedIcon />
+                  </IconButton>
+                </Paper>
+              </div>
             ))}
           </Box>
         </Box>

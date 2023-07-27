@@ -61,26 +61,27 @@ const UpdateTopic = () => {
   const [isImageUploaded, setIsImageUploaded] = useState(false);
 
   const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
+    event.preventDefault();
+    // const file = event.target.files[0];
+    // if (file) {
+    //   const reader = new FileReader();
 
-      reader.onloadend = () => {
-        // The 'result' property contains the base64-encoded image
-        const base64String = reader.result;
-        setBase64Image(base64String);
-        setIsImageUploaded(true);
-      };
+    //   reader.onloadend = () => {
+    //     // The 'result' property contains the base64-encoded image
+    //     const base64String = reader.result;
+    //     setBase64Image(base64String);
+    //     setIsImageUploaded(true);
+    //   };
 
-      // Read the file as a data URL, which will trigger the 'onloadend' event
-      reader.readAsDataURL(file);
-    } else {
-      // If the user does not select a new image, keep the existing image
-      if (selectedTopic && selectedTopic.image) {
-        setBase64Image(selectedTopic.image);
-        setIsImageUploaded(true);
-      }
-    }
+    //   // Read the file as a data URL, which will trigger the 'onloadend' event
+    //   reader.readAsDataURL(file);
+    // } else {
+    //   // If the user does not select a new image, keep the existing image
+    //   if (selectedTopic && selectedTopic.image) {
+    //     setBase64Image(selectedTopic.image);
+    //     setIsImageUploaded(true);
+    //   }
+    // }
   };
 
   const [initialValues, setInitialValues] = useState({
@@ -128,6 +129,7 @@ const UpdateTopic = () => {
                 accept="image/*"
                 onChange={handleImageChange}
                 style={{ display: "none" }}
+                disabled
               />
             </label>
           </Box>
