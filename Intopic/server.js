@@ -55,13 +55,13 @@ app.post("/auth/register", registerPostController);
 app.get("/topics", authCheckMiddleware, topicsGetController);
 app.post("/topic", authCheckMiddleware, topicPostController);
 app.put("/topic/:id", authCheckMiddleware, topicsUpdateController);
-app.delete("/topic/:id", authCheckMiddleware, topicsDeleteController);
+app.delete("/topics/:id", authCheckMiddleware, topicsDeleteController);
 app.get("/topics/:topicId", authCheckMiddleware, topicGetWithIdController);
 
 
 app.post("/quiz", authCheckMiddleware, quizPostController);
-app.get("/topics/:topicId/quiz/:quizId", authCheckMiddleware, quizGetController);
-app.delete("/topics/:topicId/quiz/:quizId", authCheckMiddleware, quizDeleteController);
+app.get("/topics/:topicId/quizzes/:quizId", authCheckMiddleware, quizGetController);
+app.delete("/topics/:topicId/quizzes/:quizId", authCheckMiddleware, quizDeleteController);
 
 // app.get('/',(req,res)=>{
 //     res.json({name: 'Welcome to Express' })
