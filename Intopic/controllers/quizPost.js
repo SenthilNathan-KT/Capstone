@@ -46,17 +46,7 @@ module.exports = async (req, res) => {
 	// });
 
     // console.log("Response Data ", response.data);
-    // // console.log("");
-    // // console.log("");
-    // // console.log("");
-    // // console.log("Response Choices text ", response.data.choices[0].text);
-    
-    
     // const parsableJSONresponse = response.data.choices[0].text;
-    
-    // console.log("GPT parsableJSONresponse object -> ", parsableJSONresponse);
-    // console.log("");
-    // console.log("");
 
     // $$$$
     
@@ -123,12 +113,6 @@ module.exports = async (req, res) => {
     console.log("quizObject -> " , quizObject);
     // console.log("");
     // console.log("");
-    // console.log("quizObject [0] Question-> " , quizObject.Questions.Question1.Question);
-    // console.log("");
-    // console.log("");
-    // console.log("quizObject [0] Answer -> " , quizObject.Questions.Question1.Answer);
-    
-    // console.log("For loop started + ", quizObject.Questions);
 
     let quizObj = {};
     quizObj.userId = req.session.userId;
