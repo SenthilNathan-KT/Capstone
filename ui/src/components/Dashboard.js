@@ -61,7 +61,7 @@ const Dashboard = () => {
   };
 
   const confirmDeleteTopic = () => {
-    axios.delete(`http://localhost:3001/topic/${selectedTopic._id}`)
+    axios.delete(`http://localhost:3001/topics/${selectedTopic._id}`)
       .then(() => {
         // Remove the deleted topic from the topics list
         setTopics((prevTopics) => prevTopics.filter((t) => t._id !== selectedTopic._id));
