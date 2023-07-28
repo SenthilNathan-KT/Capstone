@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {  useNavigate } from 'react-router-dom';
-//import Footer from './Footer';
 import TopBar from './TopBar';
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Box, IconButton,Typography, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import { Box, IconButton,Typography,Card, CardContent, Fab,Paper,Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
-import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
+import SubjectOutlinedIcon from '@mui/icons-material/SubjectOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import SideBar from './SideBar';
 import axios from 'axios';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-//import NavHeader from './NavHeader';
+
 
 const Dashboard = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -18,9 +17,7 @@ const Dashboard = () => {
   const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  // const [editedTitle, setEditedTitle] = useState('');
-  // const [editedDescription, setEditedDescription] = useState('');
+  const [totalTopics, setTotalTopics] = useState(0);
 
   const handleJwtExpirationError = (error, navigate) => {
     if (error.response && error.response.status === 403) {
@@ -32,29 +29,26 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // Set the authorization header with the token from localStorage
     const authToken = localStorage.getItem('accessToken');
     if (!authToken) {
-      // Token not available yet, handle this case (e.g., redirect to login page)
-      navigate('/login'); // Or handle it based on your application's requirements
+      navigate('/login');
       return;
     }
     axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
     console.log('Sending GET request to /topics');
-    // Fetch topics data from the server using axios
-    axios.get('http://localhost:3001/topics') // Include withCredentials to send cookies (authentication)
+    axios.get('http://localhost:3001/topics')
       .then(response => {
         console.log('Response from /topics:', response.data);
         setTopics(response.data.allTopics);
       })
       .catch(error => {
         handleJwtExpirationError(error);
-        //console.error('Error fetching topics:', error);
-        // if (error.response.status === 403) {
-        //   navigate('/login');
-        // }
       });
   }, []);
+
+  useEffect(() => {
+    setTotalTopics(topics.length);
+  }, [topics]);
 
   const handleEditTopic = (topic) => {
     setSelectedTopic(topic);
@@ -102,21 +96,53 @@ const Dashboard = () => {
       <Box flex="1" display="flex" flexDirection="column" height="100vh">
         <TopBar />
         <Box m="20px" backgroundColor="white" overflowY="auto" flex="1">
+          <Card variant="outlined" 
+            style={{  
+              color:'#03609C',
+              margin: '20px', 
+              textAlign: 'center', 
+              width:'350px',
+              height:'200px',
+              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+            }}>
+            <CardContent>
+              <Typography variant="h5" style={{ fontWeight:'bold', marginTop:'60px' }}>{totalTopics}</Typography>
+              <Typography variant="subtitle1" style={{ marginTop:'50px' }}>Total Topics</Typography>
+            </CardContent>
+          </Card>
           <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
-            <IconButton type="button" sx={{ p: 1 }} onClick={handleCreateTopic}>
-              <BorderColorOutlinedIcon />
-            </IconButton>
-
+          <Tooltip title="Create Topic" placement="top"
+            sx={{
+              backgroundColor: "none",
+              color: "#03609C",
+              fontSize: "14px",
+              fontWeight: "bold",
+            }}>
+            <Fab
+                backgroundColor='#03609C'
+                color="white"
+                aria-label="add"
+                style={{
+                  position: "fixed",
+                  bottom: "20px",
+                  right: "20px",
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                }}
+                onClick={handleCreateTopic}
+              >
+                <AddIcon />
+              </Fab>
+            </Tooltip>
             {/* <IconButton type="button" sx={{ p: 1 }} onClick={handleClickQuiz}>
               <EditNoteOutlinedIcon />
             </IconButton> */}
             {topics.map(topic => (
-              <div key={topic._id} style={{ cursor: 'pointer' }} onClick={() => handleClickTopic(topic._id)}>
+              <div key={topic._id} style={{ cursor: 'pointer' }}>
                 <Paper key={topic._id} style={{ display: 'flex', alignItems: 'center', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '20px' }}>
                   <img src={topic.image} alt={topic.title} style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }} />
-                  <Box style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start' }}>
-                    <Typography variant="h6" style={{ marginLeft: '40px' }}>{topic.title}</Typography>
-                    <Typography variant="body2" style={{ marginLeft: '40px' }}>No. of Quizzes: {topic.noOfQuizzesAvailable}</Typography>
+                  <Box style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start' }} onClick={() => handleClickTopic(topic._id)}>
+                    <Typography variant="h6" style={{ marginLeft: '40px', color:'#03609C', }}>{topic.title}</Typography>
+                    <Typography variant="body2" style={{ marginLeft: '40px', color:'grey', }}>No. of Quizzes: {topic.noOfQuizzesAvailable}</Typography>
                   </Box>
                   <IconButton type="button" sx={{ p: 1, marginLeft: 'auto' }} onClick={() => handleEditTopic(topic)}>
                     <BorderColorOutlinedIcon />

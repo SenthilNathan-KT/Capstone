@@ -83,6 +83,10 @@ const Form = () => {
     }
   };
 
+  const handleCancel = () => {
+    navigate("/dashboard");
+  };
+
   const initialValues = {
     title: "",
     description: "",
@@ -166,8 +170,20 @@ const Form = () => {
                     sx={{ gridColumn: "span 4" }}
                   />
                 </Box>
-                <Box display="flex" justifyContent="end" mt="20px">
-                  <Button type="submit" color="secondary" variant="contained">
+                <Box display="flex" justifyContent="space-between" mt="20px">
+                  <Button type="button" 
+                    sx={{ 
+                      bgcolor: "#f1f1f1", 
+                      color:'#03609C',
+                      "&:hover": {
+                        bgcolor: "#AFDBF5",
+                        color:"#03609C"
+                      }, 
+                    }} 
+                      variant="contained" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" color="primary" variant="contained">
                     Create Topic
                   </Button>
                 </Box>
