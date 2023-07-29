@@ -5,7 +5,7 @@ import {object, string} from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 //import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined';
 import TopBar from "./TopBar";
-import NavHeader from "./NavHeader";
+import SideBar from "./SideBar";
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
@@ -65,9 +65,11 @@ const Form = () => {
   });
 
   return (
-    <Box m="20px" backgroundColor='white'>
-        {/* <NavHeader /> */}
+    <Box display="flex">
+      {isNonMobile ? <SideBar /> : null} {/* Sidebar component displayed only on non-mobile devices */}
+      <Box flex="1">
         <TopBar />
+        <Box m="20px" backgroundColor="white" overflowY="auto">
         <Box
             style={{ padding: '20px', textAlign: 'center' }}
             marginBottom="20px"
@@ -178,6 +180,8 @@ const Form = () => {
           </form>
         )}
       </Formik>
+      </Box>
+      </Box>
     </Box>
   );
 };

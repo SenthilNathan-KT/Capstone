@@ -72,10 +72,13 @@ const TopBar = () => {
                             style={{ 
                                 display: "flex", 
                                 alignItems: "center", 
-                                color:isHovered ? '#024E7B' : '#03609C',
+                                color:isHovered ? '#4682B4' : '#03609C',
                                 fontWeight:'bold',
                                 textDecoration:'none'
-                                 }}>
+                                 }}
+                                 onMouseEnter={() => setIsHovered(true)}
+                                onMouseLeave={() => setIsHovered(false)}
+                                >
                             <LogoutIcon sx={{ mr: 1 }} /> Logout
                         </Link>
                     </Box>

@@ -1,88 +1,83 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-//import '../App.css';
-import axios from 'axios';
+import Box from '@mui/material/Box';
 
-const NavHeader =() =>{ 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    //const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
-    const handleLogout = () => {
-        localStorage.removeItem('accessToken');
-        delete axios.defaults.headers.common['Authorization'];
-        console.log(axios.defaults.headers.common.Authorization);
-        navigate('/login');
-      }
+const NavHeader = () => {
+  const navigate = useNavigate();
 
-      useEffect(() => {
-        const storedToken = localStorage.getItem('accessToken');
-        
-        if (storedToken) {
-        axios.defaults.headers.common['Authorization'] = storedToken;
-        console.log(axios.defaults.headers.common.Authorization);
-        setIsLoggedIn(true);
-        } else {
-        setIsLoggedIn(false);
-        }
-        // const accessToken = axios.defaults.headers.common.Authorization;
-        // console.log(axios.defaults.headers.common.Authorization);
-        // //if (axios.defaults.headers.common.Authorization) {
-        // //if (localStorage.getItem('accessToken')) {
-        // if(accessToken === undefined || accessToken === null ) {
-        //     const storedToken = localStorage.getItem('accessToken');
-        //     if(storedToken) {
-        //         axios.defaults.headers.common['Authorization'] = storedToken;
-        //         setIsLoggedIn(true);
-        //     } else {
-        //         setIsLoggedIn(false);
-        //     }
-        // } else {
-        //     setIsLoggedIn(true);
-        // }
-        //setLoading(false); 
-      }, []);
+  const handleLogin = () => {
+    navigate('/login');
+  };  
     
-    return (
-        <div className="home-page">
-            <nav className="navbar">
-                <div className="navbar-logo">
-                    <Link to="/">
-                        <img src="/assets/images/dark theme logo.png" alt="Logo" />
-                    </Link>
-                </div>
-                    <ul className="navbar-links">
-                    <li>
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link to="/about">About</Link>
-                    </li>
-                    {isLoggedIn ? (
-                        <li>
-                        <Link to="/login" onClick={handleLogout}>Logout</Link>
-                        </li>
-                    ) : (
-                        <>
-                        <li>
-                            <Link to="/login">Login</Link>
-                        </li>
-                        {/* <li>
-                            <Link to="/register">Sign Up</Link>
-                        </li> */}
-                        </>
-                    )}
-                    </ul>
-                    {/* <div className="navbar-language">
-                    <select>
-                        <option value="en">English</option>
-                        <option value="es">Spanish</option>
-                        <option value="fr">French</option>
-                    </select>
-                    </div> */}
-            </nav>
-        </div>
-            
-    );
+  return (
+    <Box sx={styles.navHeader}>
+      <Box sx={styles.navbar}>
+        <Box component={Link} to="/" sx={styles.navbarLogo}>
+          <img src="/assets/images/dark theme logo.png" alt="Logo" style={styles.logoImage} />
+        </Box>
+        <Box sx={styles.navbarLinks}>
+            <Box component="li" sx={styles.navbarItem}>
+                <Link to="/about" style={styles.navLink}>About</Link>
+            </Box>
+            <Box component="li" sx={styles.navbarItem}>
+                <button onClick={handleLogin} style={styles.loginButton}>Login</button>
+            </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
 };
 
-export default NavHeader;
+const styles = {
+    navHeader: {
+        backgroundColor: 'white',
+        padding: '20px',
+        width: '100%',
+        height: '80px',
+        fontFamily: 'Roboto, sans-serif',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    navbar: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      //maxWidth: '1200px',
+      margin: '0 40px',
+    },
+    navbarLogo: {
+        textDecoration: 'none',
+        display: 'flex',
+        alignItems: 'center',
+      },
+      logoImage: {
+        height: '40px',
+        marginRight: '10px',
+      },
+    navbarLinks: {
+      listStyle: 'none',
+      display: 'flex',
+      padding: 0,
+      alignItems: 'center', // Center items vertically
+      fontWeight: 'bold', // Make the items bold
+    },
+    navbarItem: {
+      marginLeft: '20px',
+      '&:first-of-type': { // Change to ":first-of-type"
+        marginLeft: '0',
+      },
+    },
+    navLink: {
+      color: '#03609C', // Change text color to #03609C
+      textDecoration: 'none',
+    },
+    loginButton: {
+      color: '#fff',
+      backgroundColor: '#03609C', // Change the background color of the button
+      border: 'none',
+      padding: '8px 15px',
+      borderRadius: '5px',
+      cursor: 'pointer',
+    },
+  };
+
+    export default NavHeader;
