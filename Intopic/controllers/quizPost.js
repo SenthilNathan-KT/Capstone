@@ -12,6 +12,7 @@ const openai = new OpenAIApi(config);
 module.exports = async (req, res) => {
     // console.log("Quiz Post page. Session UserId -> ", req.session.userId);
     // console.log("Quiz Post page. body ", req.body);
+    console.log("Quiz Post page. Topic ID  ", req.params.topicId);
 
     const chatGptMessage = `Create a quiz for me with above content.
     No Of Questions : 6
