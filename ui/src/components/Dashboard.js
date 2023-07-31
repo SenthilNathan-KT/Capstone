@@ -21,7 +21,7 @@ const Dashboard = () => {
 
   const handleJwtExpirationError = (error, navigate) => {
     if (error.response && error.response.status === 403) {
-      localStorage.removeItem("accessToken");
+      sessionStorage.removeItem("accessToken");
       navigate('/login');
     } else {
       console.error("API Error:", error);
@@ -29,7 +29,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    const authToken = localStorage.getItem('accessToken');
+    const authToken = sessionStorage.getItem('accessToken');
     if (!authToken) {
       navigate('/login');
       return;
@@ -52,7 +52,7 @@ const Dashboard = () => {
 
   const handleEditTopic = (topic) => {
     setSelectedTopic(topic);
-    navigate(`/createtopic/${topic._id}`, { state: topic });
+    navigate(`/updatetopic/${topic._id}`, { state: topic });
   };
 
   const handleDeleteTopic = (topic) => {

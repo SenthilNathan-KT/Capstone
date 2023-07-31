@@ -3,32 +3,37 @@ import { Box, Button, TextField,InputAdornment,Typography, MenuItem, FormControl
 import { Formik } from "formik";
 import {object, string} from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-//import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined';
 import TopBar from "./TopBar";
 import SideBar from "./SideBar";
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Form = () => {
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const { topicId } = useParams();
+  console.log("Topic ID from URL:", topicId);
+  //const [selectedTopic, setSelectedTopic] = useState(null);
   
   const handleFormSubmit = async (values) => {
-    console.log("Form submitted:", localStorage.getItem("accessToken"));
+    console.log("Form submitted:", sessionStorage.getItem("accessToken"));
     try {
-      const authToken = localStorage.getItem("accessToken");
+      const authToken = sessionStorage.getItem("accessToken");
       const config = {
         headers: {
           authorization: `Bearer ${authToken}`,
           //"Content-Type": "multipart/form-data", // Add the necessary headers for FormData
         },
       };
-      const response = await axios.post("http://localhost:3001/quiz", values, config);
-      
+      //setSelectedTopic(topicId);
+      const selectedTopic = topicId;
+      const response = await axios.post(`http://localhost:3001/topics/${topicId}/quiz`, values, config);
+      const { topicId: createdTopicId } = response.data;
         // const response = await axios.post("http://localhost:3001/quiz", values);
         console.log("Quiz created:", response.data);
         navigate('/dashboard');
+        //navigate(`/topics/${createdTopicId}`);
       } catch (error) {
         console.error("Error creating quiz:", error);
         // if (error.response.data.err?.message === "jwt expired") {
@@ -43,9 +48,9 @@ const Form = () => {
     return words.length;
   };
   
-  // useEffect(() => {
-  //   setWordCount(getWordCount(values.description));
-  // }, [values.description]);
+  const handleCancel = () => {
+    navigate("/dashboard");
+  };
 
   const initialValues = {
     title: "",
@@ -156,7 +161,7 @@ const Form = () => {
                 <Select
                   labelId="num-questions-label"
                   id="num-questions"
-                  value={values.numQuestions}
+                  value={values.numQuestions || ''}
                   name="numQuestions"
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -172,11 +177,23 @@ const Form = () => {
               </Box>
               
             </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create Quiz
-              </Button>
-            </Box>
+            <Box display="flex" justifyContent="space-between" mt="20px">
+                  <Button type="button" 
+                    sx={{ 
+                      bgcolor: "#f1f1f1", 
+                      color:'#03609C',
+                      "&:hover": {
+                        bgcolor: "#AFDBF5",
+                        color:"#03609C"
+                      }, 
+                    }} 
+                      variant="contained" onClick={handleCancel}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" color="primary" variant="contained">
+                    Create Quiz
+                  </Button>
+                </Box>
           </form>
         )}
       </Formik>

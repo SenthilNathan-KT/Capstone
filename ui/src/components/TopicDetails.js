@@ -22,7 +22,7 @@ const TopicDetails = () => {
 
   const handleJwtExpirationError = (error, navigate) => {
     if (error.response && error.response.status === 403) {
-      localStorage.removeItem("accessToken");
+      sessionStorage.removeItem("accessToken");
       navigate('/login');
     } else {
       console.error("API Error:", error);
@@ -30,7 +30,7 @@ const TopicDetails = () => {
   };
 
   useEffect(() => {
-    const authToken = localStorage.getItem('accessToken');
+    const authToken = sessionStorage.getItem('accessToken');
     if (!authToken) {
       navigate('/login');
       return;
@@ -79,7 +79,7 @@ const TopicDetails = () => {
   };
 
   const handleCreateQuiz = () => {
-    navigate('/createquiz');
+    navigate(`/topics/${topicId}/quiz`);
   };
 
   return (
