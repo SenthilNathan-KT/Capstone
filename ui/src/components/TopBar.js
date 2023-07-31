@@ -18,7 +18,7 @@ const TopBar = () => {
 
     const navigate = useNavigate();
     const handleLogout = () => {
-        localStorage.removeItem('accessToken');
+        sessionStorage.removeItem('accessToken');
         delete axios.defaults.headers.common['Authorization'];
         console.log(axios.defaults.headers.common.Authorization);
         navigate('/login');

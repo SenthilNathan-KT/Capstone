@@ -13,7 +13,8 @@ import TopicDetails from './components/TopicDetails';
 const NotFound = () => <h1>404 Page Not Found</h1>;
 
 const AppRoutes = () => {
-    const isLoggedIn = !!localStorage.getItem('accessToken');
+    const isLoggedIn = !!sessionStorage.getItem('accessToken');
+    console.log(isLoggedIn, 'isLoggedIn')
 
     return (
         <Routes>
@@ -24,9 +25,9 @@ const AppRoutes = () => {
                 <>
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/createtopic" element={<CreateTopic />} />
-                    <Route path="/createtopic/:id" element={<UpdateTopic />} />
+                    <Route path="/updatetopic/:id" element={<UpdateTopic />} />
                     <Route path="/topics/:topicId" element={<TopicDetails />} />
-                    <Route path="/createquiz" element={<CreateQuiz />} />
+                    <Route path="/topics/:topicId/quiz" element={<CreateQuiz />} />
                     <Route path="/sharedfolder" element={<SharedFolder />} />
                 </>
             ) : null}

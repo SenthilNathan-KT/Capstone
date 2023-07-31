@@ -18,7 +18,7 @@ const Form = () => {
     console.log("Form values:", values);
     //try {
 
-    const authToken = localStorage.getItem("accessToken");
+    const authToken = sessionStorage.getItem("accessToken");
     console.log("Auth Token:", authToken);
 
     // Verify if the authToken meets certain criteria to be considered valid

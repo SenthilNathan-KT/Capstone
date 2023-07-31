@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const Register = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    const isLoggedIn = !!localStorage.getItem('accessToken');
+    const isLoggedIn = !!sessionStorage.getItem('accessToken');
     if (isLoggedIn) {
       navigate('/dashboard');
     }

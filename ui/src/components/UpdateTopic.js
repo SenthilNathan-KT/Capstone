@@ -16,7 +16,7 @@ const UpdateTopic = () => {
   const selectedTopic = location.state;
 
   const handleFormSubmit = async (values) => {
-    const authToken = localStorage.getItem("accessToken");
+    const authToken = sessionStorage.getItem("accessToken");
 
     // Verify if the authToken meets certain criteria to be considered valid
     if (authToken) {
@@ -35,7 +35,7 @@ const UpdateTopic = () => {
           },
         };
 
-        const response = await axios.put(`http://localhost:3001/topic/${selectedTopic._id}`, values, config);
+        const response = await axios.put(`http://localhost:3001/topics/${selectedTopic._id}`, values, config);
 
         console.log("Topic updated:", response.data);
 
@@ -61,27 +61,27 @@ const UpdateTopic = () => {
   const [isImageUploaded, setIsImageUploaded] = useState(false);
 
   const handleImageChange = (event) => {
-    event.preventDefault();
-    // const file = event.target.files[0];
-    // if (file) {
-    //   const reader = new FileReader();
+    //event.preventDefault();
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
 
-    //   reader.onloadend = () => {
-    //     // The 'result' property contains the base64-encoded image
-    //     const base64String = reader.result;
-    //     setBase64Image(base64String);
-    //     setIsImageUploaded(true);
-    //   };
+      reader.onloadend = () => {
+        // The 'result' property contains the base64-encoded image
+        const base64String = reader.result;
+        setBase64Image(base64String);
+        setIsImageUploaded(true);
+      };
 
-    //   // Read the file as a data URL, which will trigger the 'onloadend' event
-    //   reader.readAsDataURL(file);
-    // } else {
-    //   // If the user does not select a new image, keep the existing image
-    //   if (selectedTopic && selectedTopic.image) {
-    //     setBase64Image(selectedTopic.image);
-    //     setIsImageUploaded(true);
-    //   }
-    // }
+      // Read the file as a data URL, which will trigger the 'onloadend' event
+      reader.readAsDataURL(file);
+    } else {
+      // If the user does not select a new image, keep the existing image
+      if (selectedTopic && selectedTopic.image) {
+        setBase64Image(selectedTopic.image);
+        setIsImageUploaded(true);
+      }
+    }
   };
 
   const [initialValues, setInitialValues] = useState({
@@ -123,7 +123,7 @@ const UpdateTopic = () => {
             <h2>EDIT TOPIC</h2>
             <label htmlFor="image-upload">
               <Avatar
-                src={isImageUploaded ? base64Image : "/assets/images/casual-life-3d-lamp-books-and-objects-for-studying.png"}
+                src={isImageUploaded ? base64Image : (selectedTopic && selectedTopic.image) ? selectedTopic.image : "/assets/images/casual-life-3d-lamp-books-and-objects-for-studying.png"}
                 alt="User Profile"
                 sx={{ width: 100, height: 100, marginTop: 10, cursor: "pointer" }}
               />
@@ -133,7 +133,7 @@ const UpdateTopic = () => {
                 accept="image/*"
                 onChange={handleImageChange}
                 style={{ display: "none" }}
-                disabled
+                // disabled
               />
             </label>
           </Box>
