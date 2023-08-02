@@ -15,7 +15,7 @@ const QuizSchema = new Schema({
   title: {
     type: String,
   },
-  imageURL: {
+  image: {
     type: String,
   },
   description: {

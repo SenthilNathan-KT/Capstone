@@ -118,8 +118,9 @@ module.exports = async (req, res) => {
 
     let quizObj = {};
     quizObj.userId = req.session.userId;
-    quizObj.topicId = topidIdFromParam; // TODO Update this topic ID with param value
+    quizObj.topicId = topidIdFromParam; 
     quizObj.title = req.body.title;
+    quizObj.image = req.body.image;
     quizObj.description = quizObject.Description;
     quizObj.totalQuestions = req.body.numQuestions;
 
