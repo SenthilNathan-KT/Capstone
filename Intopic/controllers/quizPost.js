@@ -12,10 +12,11 @@ const openai = new OpenAIApi(config);
 module.exports = async (req, res) => {
     // console.log("Quiz Post page. Session UserId -> ", req.session.userId);
     // console.log("Quiz Post page. body ", req.body);
-    console.log("Quiz Post page. Topic ID  ", req.params.topicId);
+    // console.log("Quiz Post page. Topic ID  ", req.params.topicId);
+    const topidIdFromParam = req.params.topicId;
 
     const chatGptMessage = `Create a quiz for me with above content.
-    No Of Questions : 6
+    No Of Questions : 20
     QuestionType: trueFalse, multipleChoice, singleChoice (30% mixed)
     Use HTML to style the question
     Return the response in below JSON format
@@ -117,8 +118,9 @@ module.exports = async (req, res) => {
 
     let quizObj = {};
     quizObj.userId = req.session.userId;
-    quizObj.topicId = "64a75c5456e48f937b404903"; // TODO Update this topic ID with param value
-    quizObj.title = req.body.quizname;
+    quizObj.topicId = topidIdFromParam; 
+    quizObj.title = req.body.title;
+    quizObj.image = req.body.image;
     quizObj.description = quizObject.Description;
     quizObj.totalQuestions = req.body.numQuestions;
 
@@ -126,7 +128,7 @@ module.exports = async (req, res) => {
     let createdQuizObj = await Quiz.create(quizObj);
     console.log("createdQuizObj -> " , createdQuizObj);
 
-    await Topic.findOneAndUpdate({"_id":"64a75c5456e48f937b404903"}, {$inc: {noOfQuizzesAvailable: 1}})
+    await Topic.findOneAndUpdate({ "_id": topidIdFromParam}, {  $inc: {noOfQuizzesAvailable: 1}})
 
     let count = 0;
     for (const questionKey in quizObject.Questions) {
@@ -134,7 +136,7 @@ module.exports = async (req, res) => {
 
             let questionObj = {};
             questionObj.userId = req.session.userId;
-            questionObj.topicId = "64a75c5456e48f937b404903";
+            questionObj.topicId = topidIdFromParam;
             questionObj.quizId = createdQuizObj._id;
 
 

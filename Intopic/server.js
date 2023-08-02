@@ -30,6 +30,10 @@ const registerGetController = require('./controllers/registerGet.js');
 const loginPostController = require('./controllers/loginPost.js');
 const registerPostController = require('./controllers/registerPost.js');
 
+const dashboardController = require('./controllers/dashboard.js');
+const settingsGetController = require('./controllers/getSettings.js');
+const settingsUpdateController = require('./controllers/updateSettings.js');
+
 const topicPostController = require('./controllers/topicPost.js');
 const topicsGetController = require('./controllers/topicsGet.js');
 const topicsUpdateController = require('./controllers/topicUpdate.js');
@@ -51,6 +55,10 @@ app.post("/auth/login", loginPostController);
 
 app.get("/auth/register", registerGetController);
 app.post("/auth/register", registerPostController);
+
+app.get("/settings", authCheckMiddleware, settingsGetController);
+app.put("/settings", authCheckMiddleware, settingsUpdateController);
+app.get("/dashboard", authCheckMiddleware, dashboardController);
 
 app.get("/topics", authCheckMiddleware, topicsGetController);
 app.post("/topic", authCheckMiddleware, topicPostController);
