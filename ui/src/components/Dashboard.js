@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import TopBar from './TopBar';
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, IconButton,Typography,Card, CardContent, Fab,Paper,Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
@@ -11,15 +11,17 @@ import SideBar from './SideBar';
 import axios from 'axios';
 
 
-const Dashboard = () => {
+const Dashboard = ({ setNotificationCount }) => {
+  const [searchQuery, setSearchQuery] = useState('');
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
   const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [totalTopics, setTotalTopics] = useState(0);
+  const [notifications, setNotifications] = useState([]);
 
-  const handleJwtExpirationError = (error, navigate) => {
+  const handleJwtExpirationError = (error) => {
     if (error.response && error.response.status === 403) {
       sessionStorage.removeItem("accessToken");
       navigate('/login');
@@ -50,14 +52,23 @@ const Dashboard = () => {
     setTotalTopics(topics.length);
   }, [topics]);
 
+  const triggerNotification = (message) => {
+    const newNotification = { message, seen: false };
+    setNotifications((prevNotifications) => [...prevNotifications, newNotification]);
+    setSearchQuery("");
+    setNotificationCount((prevCount) => prevCount + 1);
+  };
+
   const handleEditTopic = (topic) => {
     setSelectedTopic(topic);
     navigate(`/updatetopic/${topic._id}`, { state: topic });
+    triggerNotification();
   };
 
   const handleDeleteTopic = (topic) => {
     setSelectedTopic(topic);
     setIsDeleteModalOpen(true);
+    //triggerNotification();
   };
 
   const confirmDeleteTopic = () => {
@@ -66,6 +77,7 @@ const Dashboard = () => {
         // Remove the deleted topic from the topics list
         setTopics((prevTopics) => prevTopics.filter((t) => t._id !== selectedTopic._id));
         setIsDeleteModalOpen(false);
+        triggerNotification(`Topic "${selectedTopic.title}" has been deleted successfully.`);
       })
       .catch((error) => {
         console.error('Error deleting topic:', error);
@@ -80,11 +92,18 @@ const Dashboard = () => {
   
   const handleCreateTopic = () => {
     navigate('/createtopic');
+    //triggerNotification();
   };
 
   const handleClickTopic = (topicId) => {
     navigate(`/topics/${topicId}`);
   };
+
+  const filteredTopics = topics.filter((topic) => {
+    return topic.title.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
+  
 
   // const handleClickQuiz = () => {
   //   navigate('/createquiz');
@@ -94,7 +113,11 @@ const Dashboard = () => {
     <Box display="flex">
       {isNonMobile ? <SideBar /> : null} {/* Sidebar component displayed only on non-mobile devices */}
       <Box flex="1" display="flex" flexDirection="column" height="100vh">
-        <TopBar />
+      <TopBar
+          setSearchQuery={setSearchQuery}
+          notifications={notifications} // Pass the notifications state here
+          triggerNotification={() => setNotificationCount((prevCount) => prevCount + 1)}
+        />
         <Box m="20px" backgroundColor="white" overflowY="auto" flex="1">
           <Card variant="outlined" 
             style={{  
@@ -136,7 +159,7 @@ const Dashboard = () => {
             {/* <IconButton type="button" sx={{ p: 1 }} onClick={handleClickQuiz}>
               <EditNoteOutlinedIcon />
             </IconButton> */}
-            {topics.map(topic => (
+            {filteredTopics.map(topic => (
               <div key={topic._id} style={{ cursor: 'pointer' }}>
                 <Paper key={topic._id} style={{ display: 'flex', alignItems: 'center', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '20px' }}>
                   <img src={topic.image} alt={topic.title} style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }} />

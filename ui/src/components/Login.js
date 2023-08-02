@@ -31,13 +31,14 @@ const Login = () => {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 
       sessionStorage.setItem("accessToken", token);
-
+      console.log(response.data.userObj);
       values.email = "";
       values.password = "";
       window.location.reload();
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
+      console.log(response.data.userObj);
     } catch (error) {
       console.error("Error during login:", error);
       if (error.response.data.message === "Kindly enter a valid password") {
