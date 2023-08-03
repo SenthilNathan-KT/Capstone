@@ -2,12 +2,14 @@ import React from "react";
 import { useState } from "react";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Box, IconButton, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-//import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
+import { Link, useNavigate } from 'react-router-dom';
+// import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import SubjectOutlinedIcon from '@mui/icons-material/SubjectOutlined';
-//import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
+import TopicIcon from '@mui/icons-material/Topic';
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import LogoutIcon from '@mui/icons-material/Logout';
+import axios from 'axios';
 
 const Item = ({ title, to, icon, selected, setSelected, isCollapsed }) => {
     const isActive = selected === title; // Check if the item is active
@@ -38,7 +40,7 @@ const Item = ({ title, to, icon, selected, setSelected, isCollapsed }) => {
                     // Display the icon and title when the sidebar is not collapsed
                     <>
                     {React.cloneElement(icon, { style: { color: textColor, marginRight: '10px' } })}
-                    <Typography>{title}</Typography>
+                    <Typography fontWeight="bold" fontSize="20px">{title}</Typography>
                     </>
                 )}
                 <Link to={to} />
@@ -51,6 +53,14 @@ const SideBar = () => {
     //const theme=useTheme();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState('Dashboard');
+    const navigate = useNavigate();
+
+    const handleSignOut = () => {
+      sessionStorage.removeItem('accessToken');
+      delete axios.defaults.headers.common['Authorization'];
+      console.log(axios.defaults.headers.common.Authorization);
+      navigate('/login');
+    }
 
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed);
@@ -58,13 +68,17 @@ const SideBar = () => {
     return (
         <Box 
             sx={{
-                gridArea: 'sidebar',
-                backgroundColor: '#03609C',
-                color: 'white',
-                p: isCollapsed ? 2 : 6,
-                height: "100vh", // Set the height of the sidebar container to 100vh (100% viewport height)
-                overflowy: "auto", 
-                width: "300px",
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gridArea: 'sidebar',
+              backgroundColor: '#03609C',
+              color: 'white',
+              p: isCollapsed ? 2 : 6,
+              height: "100vh",
+              overflowy: "auto", 
+              width: "300px",
                 // margin:0,
             }}
         >
@@ -89,53 +103,77 @@ const SideBar = () => {
           <>
             <img
               alt="Logo"
-              src="/assets/images/light theme logo.png"
-              style={{ width: '130px', height: '40px', cursor: 'pointer', marginRight: '10px' }}
+              src="/assets/images/light theme.png"
+              style={{ width: '140px', height: '100px', cursor: 'pointer', marginRight: '10px' }}
             />
-            <IconButton onClick={toggleSidebar}>
+            {/* <IconButton onClick={toggleSidebar}>
               <MenuOutlinedIcon style={{ color: 'white',marginLeft: '20px' }} />
-            </IconButton>
+            </IconButton> */}
           </>
         )}
       </div>
 
-      {!isCollapsed && (
-        <Box mt="50px">
-          <Box display="flex" justifyContent="center" alignItems="center">
-            {/* Replace the img tag with AccountCircleIcon */}
-            <AccountCircleIcon
-              fontSize="large"
-              style={{ color: 'white', cursor: 'pointer', borderRadius: '50%', width: '100px', height: '100px' }}
-            />
-          </Box>
-          <Box textAlign="center">
-            <Typography variant="h4" color="white" fontWeight="bold" sx={{ m: '10px 0 0 0' }}>
-              Deepika Koti
-            </Typography>
-          </Box>
-        </Box>
-      )}
+      
         <Box display="flex" flexDirection="column" justifyContent="center" marginTop="70px" alignItems="center">
-            <Item
-                title="Dashboard"
-                to="/dashboard"
-                icon={<HomeOutlinedIcon style={{ color: 'white', marginRight:'10px' }} />}
+            <Box mt="50px">
+              <Item
+                  title="Dashboard"
+                  to="/dashboard"
+                  icon={<DashboardIcon style={{ color: 'white', marginRight:'10px' }} />}
+                  selected={selected}
+                  setSelected={setSelected}
+                  isCollapsed={isCollapsed}
+              />
+            </Box>
+            
+            <Box mt="20px">
+              <Item
+                title="Topics"
+                to="/topics"
+                icon={<SubjectOutlinedIcon style={{ color: 'white', marginRight:'10px' }} />}
                 selected={selected}
                 setSelected={setSelected}
                 isCollapsed={isCollapsed}
-            />
-            
-            <Item
+              />
+            </Box>
+
+            <Box mt="20px">
+              <Item
                 title="Create Topic"
                 to="/createtopic"
                 icon={<SubjectOutlinedIcon style={{ color: 'white', marginRight:'10px' }} />}
                 selected={selected}
                 setSelected={setSelected}
                 isCollapsed={isCollapsed}
-            />
+              />
+            </Box>
+
+            {!isCollapsed && (
+              <Box mt="200px">
+                
+                <Box textAlign="center">
+                  <Typography variant="h5" color="white" fontWeight="bold" sx={{ m: '10px 0 0 0' }}>
+                    Deepika Koti
+                  </Typography>
+                </Box>
+              </Box>
+            )}
+            <Box mt="20px">
+              <Item
+                title="Log Out"
+                to="/login"
+                icon={
+                    <LogoutIcon />
+                }
+                selected={selected}
+                setSelected={setSelected}
+                isCollapsed={isCollapsed}
+                onClick={handleSignOut}
+              />
+            </Box>
         </Box>
     </Box>
   );
 };
 
-export default SideBar;
+export default SideBar; 

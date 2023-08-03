@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {  useNavigate } from 'react-router-dom';
 import TopBar from './TopBar';
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Box, IconButton,Typography,Tooltip,Fab, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import { Box, IconButton,Typography,Tooltip,Fab, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
-import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
@@ -70,7 +69,8 @@ const TopicDetails = () => {
   };
 
   const handleBack = () => {
-    navigate(-1); // This will navigate back to the previous page
+    //navigate(-1); // This will navigate back to the previous page
+    navigate('/dashboard');
   };
 
   const cancelDeleteQuiz = () => {

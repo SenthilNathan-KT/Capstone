@@ -9,6 +9,7 @@ import CreateQuiz from './components/CreateQuiz';
 import SharedFolder from './components/SharedFolder';
 import UpdateTopic from './components/UpdateTopic';
 import TopicDetails from './components/TopicDetails';
+import ListTopics from './components/ListTopics';
 import TopBar from './components/TopBar';
 
 const NotFound = () => <h1>404 Page Not Found</h1>;
@@ -37,6 +38,7 @@ const AppRoutes = () => {
                     />
                     <Route path="/createtopic" element={<CreateTopic />} />
                     <Route path="/updatetopic/:id" element={<UpdateTopic />} />
+                    <Route path="/topics" element={<ListTopics />} />
                     <Route path="/topics/:topicId" element={<TopicDetails />} />
                     <Route path="/topics/:topicId/quiz" element={<CreateQuiz />} />
                     <Route path="/sharedfolder" element={<SharedFolder />} />
