@@ -204,10 +204,10 @@ const Dashboard = ({ setNotificationCount }) => {
               <EditNoteOutlinedIcon />
             </IconButton> */}
             {filteredTopics.map(topic => (
-              <div key={topic._id} style={{ cursor: 'pointer' }}>
+              <div key={topic._id}>
                 <Paper key={topic._id} style={{ display: 'flex', alignItems: 'center', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '20px' }}>
                   <img src={topic.image} alt={topic.title} style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }} />
-                  <Box style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start' }} onClick={() => handleClickTopic(topic._id)}>
+                  <Box style={{ display: 'flex',cursor: 'pointer', flexDirection: 'column', alignItems:'flex-start' }} onClick={() => handleClickTopic(topic._id)}>
                     <Typography variant="h6" style={{ marginLeft: '40px', color:'#03609C', }}>{topic.title}</Typography>
                     <Typography variant="body2" style={{ marginLeft: '40px', color:'grey', }}>No. of Quizzes: {topic.noOfQuizzesAvailable}</Typography>
                   </Box>

@@ -187,18 +187,45 @@ const TopicDetails = () => {
         </Box>
       </Box>
       )}
-      <Dialog open={isDeleteModalOpen} onClose={cancelDeleteQuiz}>
-        <DialogTitle>Confirm Deletion</DialogTitle>
-        <DialogContent>
-          {selectedQuiz && (
-            <Typography>
-              Are you sure you want to delete the Quiz "{selectedQuiz.title}"?
-            </Typography>
-          )}
+      <Dialog
+        open={isDeleteModalOpen}
+        onClose={cancelDeleteQuiz}
+        PaperProps={{
+          style: {
+            width: '400px',
+            height: '260px',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)',
+            borderRadius: '8px',
+          },
+        }}
+      >
+      <DialogContent>
+          <Box display="flex" alignItems="center" flexDirection="column">
+            <img
+              src="/assets/images/indigo-recycling-symbol.png"
+              alt="Recycling Symbol"
+              style={{ width: '80px', height: '80px', marginBottom: '20px' }}
+            />
+            {selectedQuiz && (
+              <Typography variant="body1" style={{ textAlign: 'center' }}>
+                Are you sure you want to delete the Topic and related Quizzes in{" "}
+                <Typography variant="h6" component="span" style={{ fontWeight: 'bold' }}>
+                  {selectedQuiz.title}
+                </Typography>
+                ?
+              </Typography>
+            )}
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={cancelDeleteQuiz}>Cancel</Button>
-          <Button onClick={confirmDeleteQuiz} color="error">Delete</Button>
+          <Box display="flex" justifyContent="center" width="100%" marginBottom={'10px'}>
+            <Button onClick={cancelDeleteQuiz} variant="outlined" color="primary">
+              Cancel
+            </Button>
+            <Button onClick={confirmDeleteQuiz} variant="contained" color="error" style={{ marginLeft: '10px' }}>
+              Delete
+            </Button>
+          </Box>
         </DialogActions>
       </Dialog>
     </Box>
