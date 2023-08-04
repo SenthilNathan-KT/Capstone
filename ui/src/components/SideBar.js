@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Box, IconButton, Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
@@ -12,19 +12,25 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import axios from 'axios';
 
 const Item = ({ title, to, icon, selected, setSelected, isCollapsed }) => {
-    const isActive = selected === title; // Check if the item is active
-    const textColor = isActive ? "#fe8825" : "#f2f5f7";
+  const textColor = selected === title ? "#fe8825" : "#f2f5f7";
+  const navigate = useNavigate();
+
+    const handleClick = () => {
+      setSelected(title);
+      navigate(to);
+    };
+
     return (
-        <Link to={to} style={{ textDecoration: 'none', color: 'inherit' }}>
+        // <Link to={to} style={{ textDecoration: 'none', color: 'inherit' }}>
             <div
-                onClick={() => setSelected(title)}
+                onClick={handleClick}
                 style={{
                 color: textColor,
                 display: 'flex',
                 alignItems: 'center',
                 cursor: 'pointer',
                 padding: '5px 35px 5px 20px',
-                backgroundColor: isActive ? '#03609C' : 'transparent',
+                backgroundColor: selected === title ? '#03609C' : 'transparent',
                 '&:hover': {
                     color: '#868dfb',
                 },
@@ -43,9 +49,9 @@ const Item = ({ title, to, icon, selected, setSelected, isCollapsed }) => {
                     <Typography fontWeight="bold" fontSize="20px">{title}</Typography>
                     </>
                 )}
-                <Link to={to} />
+                {/* <Link to={to} /> */}
             </div>
-        </Link>
+        
     );
   };
 
@@ -53,9 +59,24 @@ const SideBar = () => {
     //const theme=useTheme();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState('Dashboard');
+    const [userData, setUserData] = useState(null);
     const navigate = useNavigate();
 
+    useEffect(() => {
+      const storedUsername = sessionStorage.getItem("userName");
+      if (storedUsername) {
+        setUserData({ userName: storedUsername });
+      }
+    }, []);
+
+    const handleClick = (title, to) => {
+      setSelected(title);
+      navigate(to);
+    };
+  
+
     const handleSignOut = () => {
+      setUserData(null);
       sessionStorage.removeItem('accessToken');
       delete axios.defaults.headers.common['Authorization'];
       console.log(axios.defaults.headers.common.Authorization);
@@ -121,7 +142,7 @@ const SideBar = () => {
                   to="/dashboard"
                   icon={<DashboardIcon style={{ color: 'white', marginRight:'10px' }} />}
                   selected={selected}
-                  setSelected={setSelected}
+                  setSelected={handleClick}
                   isCollapsed={isCollapsed}
               />
             </Box>
@@ -132,7 +153,7 @@ const SideBar = () => {
                 to="/topics"
                 icon={<SubjectOutlinedIcon style={{ color: 'white', marginRight:'10px' }} />}
                 selected={selected}
-                setSelected={setSelected}
+                setSelected={handleClick}
                 isCollapsed={isCollapsed}
               />
             </Box>
@@ -143,18 +164,24 @@ const SideBar = () => {
                 to="/createtopic"
                 icon={<SubjectOutlinedIcon style={{ color: 'white', marginRight:'10px' }} />}
                 selected={selected}
-                setSelected={setSelected}
+                setSelected={handleClick}
                 isCollapsed={isCollapsed}
               />
             </Box>
 
             {!isCollapsed && (
-              <Box mt="200px">
+              <Box mt="250px">
                 
                 <Box textAlign="center">
+                  {userData ? (
                   <Typography variant="h5" color="white" fontWeight="bold" sx={{ m: '10px 0 0 0' }}>
-                    Deepika Koti
+                    {userData.userName}
                   </Typography>
+                ) : (
+                  <Typography variant="h5" color="white" fontWeight="bold" sx={{ m: '10px 0 0 0' }}>
+                    Loading...
+                  </Typography>
+                )}
                 </Box>
               </Box>
             )}

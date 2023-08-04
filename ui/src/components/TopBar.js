@@ -9,8 +9,53 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import LogoutIcon from '@mui/icons-material/Logout';
 import axios from 'axios';
+import { styled } from "@mui/material/styles";
 
-const TopBar = ({ setSearchQuery, notifications, triggerNotification }) => {
+
+const NotificationContainer = styled(Paper)(({ theme }) => ({
+    position: "absolute",
+    top: "100%",
+    right: 0,
+    p: 1,
+    //marginTop: "10px",
+    border: "2px solid #ccc",
+    borderRadius: "8px",
+    backgroundColor: "#fff",
+    minWidth: "400px",
+    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+    zIndex: 100,
+  }));
+  
+  const NotificationList = styled("ul")(({ theme }) => ({
+    listStyle: "none", // Remove the default list style
+    paddingLeft: "16px",
+    margin: 0,
+    maxHeight: "200px",
+    overflowY: "auto",
+    padding: "8px",
+  }));
+  
+  const NotificationItem = styled("li")(({ theme }) => ({
+    display: "flex",
+    alignItems: "center",
+    marginBottom: "4px",
+    paddingBottom: "4px",
+    marginLeft: "12px", // Add left margin to the text
+    borderBottom: "2px solid grey",
+  }));
+  
+  const NotificationDot = styled("div")(({ theme }) => ({
+    width: "8px",
+    height: "8px",
+    borderRadius: "50%",
+    backgroundColor: "grey", // Change the dot color to grey
+    marginRight: "8px",
+  }));
+  
+  
+  
+
+const TopBar = ({ setSearchQuery, notifications, triggerNotification,notificationCount, updateNotificationCount }) => {
     //const theme=useTheme();
     const [userName, setUserName] = useState('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -19,6 +64,7 @@ const TopBar = ({ setSearchQuery, notifications, triggerNotification }) => {
     const [showNotifications, setShowNotifications] = useState(false);
     const notificationsRef = useRef(null);
     const navigate = useNavigate();
+    //const classes = useStyles();
 
     const handleSearchInputChange = (event) => {
         const query = event.target.value;
@@ -36,10 +82,6 @@ const TopBar = ({ setSearchQuery, notifications, triggerNotification }) => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    const clearNotifications = () => {
-        triggerNotification([]);
-    };
-
     useEffect(() => {
         const handleDocumentClick = (event) => {
           // Close notifications when a click occurs outside the notifications area
@@ -55,19 +97,36 @@ const TopBar = ({ setSearchQuery, notifications, triggerNotification }) => {
 
     const toggleNotifications = () => {
         setShowNotifications((prev) => !prev);
-        // Mark all unseen notifications as seen when displaying the notifications
-        const unseenNotifications = notifications.filter((notification) => !notification.seen);
-        if (unseenNotifications.length > 0) {
-          const updatedNotifications = notifications.map((notification) => {
-            return {
-              ...notification,
-              seen: true,
-            };
-          });
-          // Call the triggerNotification function to update notifications state
-          triggerNotification(updatedNotifications);
+        if (!showNotifications) {
+            // Mark all unseen notifications as seen when displaying the notifications
+            const unseenNotifications = notifications.filter((notification) => !notification.seen);
+            if (unseenNotifications.length > 0) {
+            const updatedNotifications = notifications.map((notification) => {
+                return {
+                ...notification,
+                seen: true,
+                };
+            });
+            // Call the triggerNotification function to update notifications state
+            triggerNotification(updatedNotifications);
+            updateNotificationCount(notificationCount + unseenNotifications.length);
+            }
         }
       };
+
+        const [visibleNotifications, setVisibleNotifications] = useState(4);
+        const [viewAllNotifications, setViewAllNotifications] = useState(false);
+
+
+        const handleViewAllNotifications = () => {
+            // When "View All Notifications" is clicked, set visibleNotifications to null
+            setViewAllNotifications(null);
+        };
+        
+        const notificationsToShow = viewAllNotifications === null
+            ? notifications // Show all notifications if viewAllNotifications is true
+            : notifications && notifications.slice(0, visibleNotifications); // Show only the first 4 notifications
+
 
     return (
         <Box display='flex' justifyContent='space-between' p={2} position="relative">
@@ -81,13 +140,13 @@ const TopBar = ({ setSearchQuery, notifications, triggerNotification }) => {
                 </IconButton>
             </Box>
             <Box display='flex' ref={notificationsRef}>
-                <IconButton type='button' sx={{ p:1, color:'#03609C' }} onClick={toggleNotifications}>
+                {/* <IconButton type='button' sx={{ p:1, color:'#03609C' }} onClick={toggleNotifications}>
                 {notifications && (
                     <Badge badgeContent={showNotifications ? 0 : (notifications?.length || 0)} color='error'>
                         <NotificationsOutlinedIcon />
                     </Badge>
                 )}
-                </IconButton>
+                </IconButton> */}
                 <IconButton type='button' sx={{ p:1, color:'#03609C' }}>
                     <SettingsOutlinedIcon />
                 </IconButton>
@@ -132,44 +191,40 @@ const TopBar = ({ setSearchQuery, notifications, triggerNotification }) => {
                 </Box>
                 )}
                 {showNotifications && (
-                <Box
-                    //ref={notificationsRef}
-                    position="absolute"
-                    top="100%"
-                    right={0}
-                    p={1}
-                    mt={1}
-                    border="1px solid #ccc"
-                    borderRadius="4px"
-                    backgroundColor="#fff"
+        <NotificationContainer>
+          <Typography variant="h6" sx={{ fontWeight: "bold", marginTop: "8px", marginBottom: "8px", textAlign: "center" }}>
+            Notifications
+          </Typography>
+          {notificationsToShow.length > 0 ? ( // Check if there are notifications to display
+            <NotificationList>
+              {notificationsToShow.map((notification, index) => (
+                <NotificationItem key={index}>
+                  <NotificationDot /> {/* Add the dot before each notification */}
+                  {notification.message}
+                </NotificationItem>
+              ))}
+            </NotificationList>
+          ) : (
+            <Typography variant="body1" sx={{ textAlign: "center", color: "#777" }}>
+              No notifications available
+            </Typography>
+          )}
+          {!viewAllNotifications && notifications.length > visibleNotifications && (
+            <Box display="flex" justifyContent="center" mt={1} mb={1}>
+                {/* "View All Notifications" text with onClick functionality */}
+                <Typography
+                variant="body1"
+                sx={{ color: "#03609C", cursor: "pointer" }}
+                onClick={handleViewAllNotifications}
                 >
-                    <Typography
-                    variant="h6"
-                    sx={{ fontWeight: "bold", marginBottom: "8px" }}
-                    >
-                    Notifications
-                    </Typography>
-                    <Paper
-                    variant="outlined"
-                    sx={{ maxHeight: "200px", overflowY: "auto", padding: "8px" }}
-                    >
-                    {notifications.map((notification, index) => (
-                        <Typography key={index} variant="body1" sx={{ marginBottom: '4px' }}>
-                        {notification.message}
-                        </Typography>
-                    ))}
-                    </Paper>
-                    <Box display="flex" justifyContent="center" mt={2}>
-                    <Link
-                        to="#"
-                        onClick={clearNotifications}
-                        style={{ textDecoration: "none", color: "#03609C" }}
-                    >
-                        Clear All
-                    </Link>
-                    </Box>
-                </Box>
-                )}
+                View All Notifications
+                </Typography>
+            </Box>
+          
+          )}
+        </NotificationContainer>
+      )}
+
             </Box>
         </Box>
     );
