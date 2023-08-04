@@ -16,8 +16,11 @@ const TopicDetails = () => {
   const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
+  const [selectedTopic, setSelectedTopic] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { topicId } = useParams();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const handleJwtExpirationError = (error, navigate) => {
     if (error.response && error.response.status === 403) {
@@ -40,9 +43,12 @@ const TopicDetails = () => {
       .then(response => {
         console.log('Response from /topics/:topicId:', response.data);
         setQuizzes(response.data.quizzes);
+        setSelectedTopic(response.data);
+        setLoading(false);
       })
       .catch(error => {
         handleJwtExpirationError(error);
+        setLoading(false);
         console.error('Error fetching quizzes:', error);
       });
   }, [topicId, navigate]);
@@ -82,12 +88,47 @@ const TopicDetails = () => {
     navigate(`/topics/${topicId}/quiz`);
   };
 
+  // const triggerNotification = (message) => {
+  //   const newNotification = { message, seen: false };
+  //   setNotifications((prevNotifications) => [...prevNotifications, newNotification]);
+  //   setSearchQuery("");
+  //   updateNotificationCount((prevCount) => prevCount + 1);
+  // };
+
+  const filteredQuizzes = quizzes
+  ? quizzes.filter((quiz) => {
+      return quiz.title && quiz.title.toLowerCase().includes(searchQuery.toLowerCase());
+    })
+  : [];
+
   return (
     <Box display="flex">
-      {isNonMobile ? <SideBar /> : null} 
+      <Box position="fixed" top={0} left={0} bottom={0} bgcolor="#f5f5f5" zIndex={10}>
+        <SideBar />
+      </Box>
+      {loading ? (
+      // Display a loading indicator or a placeholder while loading data
+        <Typography>Loading...</Typography>
+      ) : (
       <Box flex="1" display="flex" flexDirection="column" height="100vh">
-        <TopBar />
-        <Box m="20px" backgroundColor="white" overflowY="auto" flex="1">
+      <Box
+          position="fixed"
+          top={0}
+          left={isNonMobile ? 340 : 0} // Apply left position based on isNonMobile
+          right={30}
+          zIndex={100}
+          bgcolor="#fff"
+          boxShadow="0 2px 4px rgba(0, 0, 0, 0.1)"
+        >
+          <TopBar
+            setSearchQuery={setSearchQuery}
+            //notifications={notifications} // Pass the notifications state here
+            //triggerNotification={triggerNotification}
+            //updateNotificationCount={updateNotificationCount}
+            //notificationCount={notificationCount}
+          />
+        </Box>
+        <Box m="10px" mt="80px" ml={isNonMobile ? 40 : 0} backgroundColor="white" overflowY="auto" flex="1">
           <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
           <Box display="flex" alignItems="center" justifyContent="space-between" marginBottom="10px">
             <IconButton type="button" sx={{ p: 1, color:'#03609C' }} onClick={handleBack}>
@@ -116,10 +157,17 @@ const TopicDetails = () => {
               </Fab>
             </Tooltip>
             </Box>
-            {quizzes.length === 0 ? (
+              {selectedTopic && (
+                <Box mb="20px">
+                  <img src={selectedTopic.image} alt={selectedTopic.title} style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
+                  <Typography variant="h6">{selectedTopic.title}</Typography>
+                  <Typography variant="body2">{selectedTopic.description}</Typography>
+                </Box>
+              )}
+            {filteredQuizzes.length === 0 ? (
               <Typography variant="body1">No quizzes to show.</Typography>
             ) : (
-              quizzes.map(quiz => (
+              filteredQuizzes.map(quiz => (
                 <Paper key={quiz._id} style={{ display: 'flex', alignItems: 'center', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '20px' }}>
                   <img src={quiz.image} alt={quiz.title} style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }} />
                   <Box style={{ display: 'flex', flexDirection: 'column', alignItems:'flex-start' }}>
@@ -138,6 +186,7 @@ const TopicDetails = () => {
           </Box>
         </Box>
       </Box>
+      )}
       <Dialog open={isDeleteModalOpen} onClose={cancelDeleteQuiz}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>

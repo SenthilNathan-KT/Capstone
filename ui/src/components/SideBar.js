@@ -11,14 +11,17 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
 import axios from 'axios';
 
-const Item = ({ title, to, icon, selected, setSelected, isCollapsed }) => {
+const Item = ({ title, to, icon, selected, setSelected,onClick, isCollapsed }) => {
   const textColor = selected === title ? "#fe8825" : "#f2f5f7";
   const navigate = useNavigate();
 
-    const handleClick = () => {
-      setSelected(title);
-      navigate(to);
-    };
+  const handleClick = () => {
+    setSelected(title);
+    navigate(to);
+    if (onClick) {
+      onClick(); // Call the onClick prop when the item is clicked
+    }
+  };
 
     return (
         // <Link to={to} style={{ textDecoration: 'none', color: 'inherit' }}>
