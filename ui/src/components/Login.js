@@ -27,17 +27,20 @@ const Login = () => {
       );
       //const { success, message } = response.data;
       const token = response.data.userObj.token;
+      const userName = response.data.userObj.userName;
 
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 
       sessionStorage.setItem("accessToken", token);
-
+      sessionStorage.setItem("userName", userName);
+      console.log(response.data.userObj);
       values.email = "";
       values.password = "";
       window.location.reload();
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
+      console.log("login details", response.data.userObj);
     } catch (error) {
       console.error("Error during login:", error);
       if (error.response.data.message === "Kindly enter a valid password") {

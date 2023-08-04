@@ -1,5 +1,5 @@
 //import { useState } from "react";
-import { Box, Button, TextField,InputAdornment,Typography, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
+import { Box, Button, TextField,Avatar,Typography, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import { Formik } from "formik";
 import {object, string} from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -18,29 +18,64 @@ const Form = () => {
   
   const handleFormSubmit = async (values) => {
     console.log("Form submitted:", sessionStorage.getItem("accessToken"));
-    try {
-      const authToken = sessionStorage.getItem("accessToken");
-      const config = {
-        headers: {
-          authorization: `Bearer ${authToken}`,
-          //"Content-Type": "multipart/form-data", // Add the necessary headers for FormData
-        },
-      };
-      //setSelectedTopic(topicId);
-      const selectedTopic = topicId;
-      const response = await axios.post(`http://localhost:3001/topics/${topicId}/quiz`, values, config);
-      const { topicId: createdTopicId } = response.data;
+    const authToken = sessionStorage.getItem("accessToken");
+    console.log("Auth Token:", authToken);
+
+    if (authToken) {
+      if (!isImageUploaded) {
+        // Set default image URL if no image is uploaded
+        values.image = "/assets/images/casual-life-3d-lamp-books-and-objects-for-studying.png";
+      } else {
+        // If an image is uploaded, use the base64 encoded image
+        values.image = base64Image;
+      }
+      try {
+        const config = {
+          headers: {
+            authorization: `Bearer ${authToken}`,
+          },
+        };
+        
+
+        const selectedTopic = topicId;
+        const response = await axios.post(`http://localhost:3001/topics/${topicId}/quiz`, values, config);
+        //const { topicId: createdTopicId } = response.data;
         // const response = await axios.post("http://localhost:3001/quiz", values);
         console.log("Quiz created:", response.data);
-        navigate('/dashboard');
-        //navigate(`/topics/${createdTopicId}`);
+        setBase64Image("");
+        setIsImageUploaded(false);
+        //navigate('/dashboard');
+        navigate(`/topics/${selectedTopic}`);
       } catch (error) {
         console.error("Error creating quiz:", error);
-        // if (error.response.data.err?.message === "jwt expired") {
-        //   navigate('/login');
-        // }
       }
+    } else {
+      // Handle the case when the authToken is not valid or doesn't exist
+      console.error("Invalid or missing authToken. Please log in again.");
+    }
   };
+
+  const [base64Image, setBase64Image] = useState("");
+  const [isImageUploaded, setIsImageUploaded] = useState(false);
+
+  const handleImageChange = (event) => {
+    //setSelectedImage(event.target.files[0]);
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        // The 'result' property contains the base64-encoded image
+        const base64String = reader.result;
+        setBase64Image(base64String);
+        setIsImageUploaded(true);
+      };
+
+      // Read the file as a data URL, which will trigger the 'onloadend' event
+      reader.readAsDataURL(file);
+    }
+  };
+
   const [wordCount, setWordCount] = useState(0);
 
   const getWordCount = (text) => {
@@ -75,129 +110,140 @@ const Form = () => {
       <Box flex="1">
         <TopBar />
         <Box m="20px" backgroundColor="white" overflowY="auto">
-        <Box
-            style={{ padding: '20px', textAlign: 'center' }}
-            marginBottom="20px"
-        >
+          <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
             <h2>CREATE QUIZ</h2>
-      </Box>
-
-      <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={initialValues}
-        validationSchema={checkoutSchema}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          setFieldValue,
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <Box
-              display="grid"
-              gap="30px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-              }}
-            >
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Quiz Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.title}
-                name="title"
-                error={!!touched.title && !!errors.title}
-                helperText={touched.title && errors.title}
-                sx={{ gridColumn: "span 4" }}
+            <label htmlFor="image-upload">
+              <Avatar
+                src={isImageUploaded ? base64Image : "/assets/images/casual-life-3d-lamp-books-and-objects-for-studying.png"}
+                alt="User Profile"
+                sx={{ width: 100, height: 100, marginTop: 10, cursor: "pointer" }}
               />
-              <Box gridColumn="span 4">
-                <FormControl fullWidth variant="filled" sx={{ flexDirection: "row" }}>
-                  <InputLabel htmlFor="quiz-text" shrink>
-                    Quiz Text
-                  </InputLabel>
-                  <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
-                    <TextField
-                      fullWidth
-                      multiline
-                      rows={6}
-                      variant="filled"
-                      id="quiz-text"
-                      onBlur={handleBlur}
-                      onChange={(e) => {
-                        handleChange(e);
-                        setWordCount(getWordCount(e.target.value));
-                      }}
-                      value={values.description}
-                      name="description"
-                      error={
-                        !!touched.description &&
-                        (!!errors.description || getWordCount(values.description) > 500)
-                      }
-                      // helperText={
-                      //   touched.description
-                      //     ? errors.description || 'Quiz text can have at most 500 words'
-                      //     : ""
-                      // }
-                      sx={{ mb: 1 }}
-                    />
-                    <Typography variant="caption" sx={{ textAlign: "right" }}>
-                      Min 100, Max 500 words. Current {wordCount} words
-                    </Typography>
-                  </Box>
-                </FormControl>
-              </Box>
-              
-              <Box display="flex" gap="20px" sx={{ gridColumn: "span 4" }}>
-              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 4" }}>
-                <InputLabel id="num-questions-label">Number of Questions</InputLabel>
-                <Select
-                  labelId="num-questions-label"
-                  id="num-questions"
-                  value={values.numQuestions || ''}
-                  name="numQuestions"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  error={!!touched.numQuestions && !!errors.numQuestions}
+              <input
+                id="image-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+              />
+            </label>
+          </Box>
+
+          <Formik
+            onSubmit={handleFormSubmit}
+            initialValues={initialValues}
+            validationSchema={checkoutSchema}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              handleSubmit,
+              setFieldValue,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <Box
+                  display="grid"
+                  gap="30px"
+                  gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                  sx={{
+                    "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+                  }}
                 >
-                  <MenuItem value="">Select Number</MenuItem>
-                  <MenuItem value="10">10</MenuItem>
-                  <MenuItem value="15">15</MenuItem>
-                  <MenuItem value="20">20</MenuItem>
-                </Select>
-              </FormControl>
-              
-              </Box>
-              
-            </Box>
-            <Box display="flex" justifyContent="space-between" mt="20px">
-                  <Button type="button" 
-                    sx={{ 
-                      bgcolor: "#f1f1f1", 
-                      color:'#03609C',
-                      "&:hover": {
-                        bgcolor: "#AFDBF5",
-                        color:"#03609C"
-                      }, 
-                    }} 
-                      variant="contained" onClick={handleCancel}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" color="primary" variant="contained">
-                    Create Quiz
-                  </Button>
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="text"
+                    label="Quiz Name"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.title}
+                    name="title"
+                    error={!!touched.title && !!errors.title}
+                    helperText={touched.title && errors.title}
+                    sx={{ gridColumn: "span 4" }}
+                  />
+                  <Box gridColumn="span 4">
+                    <FormControl fullWidth variant="filled" sx={{ flexDirection: "row" }}>
+                      <InputLabel htmlFor="quiz-text" shrink>
+                        Quiz Text
+                      </InputLabel>
+                      <Box sx={{ display: "flex", flexDirection: "column", flex: 1 }}>
+                        <TextField
+                          fullWidth
+                          multiline
+                          rows={6}
+                          variant="filled"
+                          id="quiz-text"
+                          onBlur={handleBlur}
+                          onChange={(e) => {
+                            handleChange(e);
+                            setWordCount(getWordCount(e.target.value));
+                          }}
+                          value={values.description}
+                          name="description"
+                          error={
+                            !!touched.description &&
+                            (!!errors.description || getWordCount(values.description) > 500)
+                          }
+                          // helperText={
+                          //   touched.description
+                          //     ? errors.description || 'Quiz text can have at most 500 words'
+                          //     : ""
+                          // }
+                          sx={{ mb: 1 }}
+                        />
+                        <Typography variant="caption" sx={{ textAlign: "right" }}>
+                          Min 100, Max 500 words. Current {wordCount} words
+                        </Typography>
+                      </Box>
+                    </FormControl>
+                  </Box>
+                  
+                  <Box display="flex" gap="20px" sx={{ gridColumn: "span 4" }}>
+                  <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 4" }}>
+                    <InputLabel id="num-questions-label">Number of Questions</InputLabel>
+                    <Select
+                      labelId="num-questions-label"
+                      id="num-questions"
+                      value={values.numQuestions || ''}
+                      name="numQuestions"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      error={!!touched.numQuestions && !!errors.numQuestions}
+                    >
+                      <MenuItem value="">Select Number</MenuItem>
+                      <MenuItem value="10">10</MenuItem>
+                      <MenuItem value="15">15</MenuItem>
+                      <MenuItem value="20">20</MenuItem>
+                    </Select>
+                  </FormControl>
+                  
+                  </Box>
+                  
                 </Box>
-          </form>
-        )}
-      </Formik>
-      </Box>
+                <Box display="flex" justifyContent="space-between" mt="20px">
+                      <Button type="button" 
+                        sx={{ 
+                          bgcolor: "#f1f1f1", 
+                          color:'#03609C',
+                          "&:hover": {
+                            bgcolor: "#AFDBF5",
+                            color:"#03609C"
+                          }, 
+                        }} 
+                          variant="contained" onClick={handleCancel}>
+                        Cancel
+                      </Button>
+                      <Button type="submit" color="primary" variant="contained">
+                        Create Quiz
+                      </Button>
+                    </Box>
+              </form>
+            )}
+          </Formik>
+        </Box>
       </Box>
     </Box>
   );
