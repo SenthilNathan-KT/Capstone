@@ -11,6 +11,7 @@ import TopBar from "./TopBar";
 import SideBar from "./SideBar";
 import axios from "axios";
 import { useTheme } from '@mui/material/styles';
+import config from '../config';
 
 
 const Form = () => {
@@ -52,7 +53,7 @@ const Form = () => {
           },
         };
         const response = await axios.post(
-          "http://localhost:3001/topic",
+          `${config.apiUrl}topic`,
           values,
           config
         );

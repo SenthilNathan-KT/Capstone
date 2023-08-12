@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import NavHeader from './NavHeader';
 import Footer from './Footer';
+import config from '../config';
 
 const HomePage = () => {
   return (

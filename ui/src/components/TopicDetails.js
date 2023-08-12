@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom';
 import { Snackbar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import WarningIcon from '@mui/icons-material/Warning';
+import config from '../config';
 
 const TopicDetails = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -47,7 +48,7 @@ const TopicDetails = () => {
     }
     axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
     console.log('Sending GET request to /topics/:topicId');
-    axios.get(`http://localhost:3001/topics/${topicId}`)
+    axios.get(`${config.apiUrl}topics/${topicId}`)
       .then(response => {
         console.log('Response from /topics/:topicId:', response.data);
         setQuizzes(response.data.quizzes);
@@ -76,7 +77,7 @@ const TopicDetails = () => {
   };
 
   const confirmDeleteQuiz = () => {
-    axios.delete(`http://localhost:3001/topics/${topicId}/quizzes/${selectedQuiz._id}`)
+    axios.delete(`${config.apiUrl}topics/${topicId}/quizzes/${selectedQuiz._id}`)
       .then(() => {
         setQuizzes((prevQuizzes) => prevQuizzes.filter((q) => q._id !== selectedQuiz._id));
         setIsDeleteModalOpen(false);

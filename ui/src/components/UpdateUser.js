@@ -9,6 +9,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SideBar from './SideBar';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles';
+import config from '../config';
 
 const UpdateUser = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -30,7 +31,7 @@ const UpdateUser = () => {
     }
   };
   
-  const handleFormSubmit = async (values) => {
+  const handleFormSubmit = async (values, {setFieldError}) => {
     console.log('handleFormSubmit called with values:', values);
 
     try {
@@ -49,7 +50,7 @@ const UpdateUser = () => {
 
       console.log('Sending request data:', requestData);
 
-      const response = await axios.put('http://localhost:3001/settings', requestData, {
+      const response = await axios.put(`${config.apiUrl}settings`, requestData, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -62,6 +63,10 @@ const UpdateUser = () => {
       values.confirmPassword = "";
     } catch (error) {
       handleJwtExpirationError(error);
+      if (error.response && error.response.status === 400 && error.response.data.message === 'Kindly enter the valid old password') {
+        // Set an error for the oldPassword field
+        setFieldError('oldPassword', 'Invalid old password');
+      } else 
       if (error.response && error.response.status === 403) {
         sessionStorage.removeItem('accessToken');
         navigate('/login');
@@ -88,7 +93,7 @@ const UpdateUser = () => {
       }
 
       const response = await axios.get(
-        'http://localhost:3001/settings',
+        `${config.apiUrl}settings`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -120,7 +125,8 @@ const UpdateUser = () => {
   }
 
   const checkoutSchema = object().shape({
-    oldPassword: string().required('Old password is required'),
+    oldPassword: string()
+    .required('Old password is required'),
     newPassword: string()
       .required('New password is required')
       .min(6, 'Password must be at least 6 characters'),

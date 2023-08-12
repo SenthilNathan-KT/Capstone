@@ -10,9 +10,10 @@ import AddIcon from '@mui/icons-material/Add';
 import SideBar from './SideBar';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles';
+import config from '../config';
 
 
-const Dashboard = ({ setNotificationCount }) => {
+const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
@@ -21,12 +22,9 @@ const Dashboard = ({ setNotificationCount }) => {
   const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  //const [totalTopics, setTotalTopics] = useState(0);
   const [topicsData, setTopicsData] = useState([]);
   const [topicCount, setTopicCount] = useState(0);
   const [quizCount, setQuizCount] = useState(0);
-  const [notifications, setNotifications] = useState([]);
-  const [notificationCount, updateNotificationCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   const handleJwtExpirationError = (error) => {
@@ -46,7 +44,7 @@ const Dashboard = ({ setNotificationCount }) => {
     }
     axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
     console.log('Sending GET request to /topics');
-    axios.get('http://localhost:3001/dashboard')
+    axios.get(`${config.apiUrl}dashboard`)
       .then(response => {
         console.log('Response from /dashboard:', response.data);
         setTopicsData(response.data.allTopics);
@@ -73,7 +71,7 @@ const Dashboard = ({ setNotificationCount }) => {
   };
 
   const confirmDeleteTopic = () => {
-    axios.delete(`http://localhost:3001/topics/${selectedTopic._id}`)
+    axios.delete(`${config.apiUrl}topics/${selectedTopic._id}`)
       .then(() => {
         setTopics((prevTopics) => prevTopics.filter((t) => t._id !== selectedTopic._id));
         setIsDeleteModalOpen(false);

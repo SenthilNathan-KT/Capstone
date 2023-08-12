@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import React, {useEffect} from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import config from '../config';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const Register = () => {
 
     try {
       // Sending the registration data to the server
-      const response = await axios.post('http://localhost:3001/auth/register', values);
+      const response = await axios.post(`${config.apiUrl}auth/register`, values);
       console.log('Registration successful:', response.data);
       
       values.userName="";

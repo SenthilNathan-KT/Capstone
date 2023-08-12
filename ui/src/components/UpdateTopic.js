@@ -9,6 +9,7 @@ import TopBar from "./TopBar";
 import SideBar from "./SideBar";
 import axios from "axios";
 import { useTheme } from '@mui/material/styles';
+import config from '../config';
 
 const UpdateTopic = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const UpdateTopic = () => {
           },
         };
 
-        const response = await axios.put(`http://localhost:3001/topics/${selectedTopic._id}`, values, config);
+        const response = await axios.put(`${config.apiUrl}topics/${selectedTopic._id}`, values, config);
 
         console.log("Topic updated:", response.data);
 

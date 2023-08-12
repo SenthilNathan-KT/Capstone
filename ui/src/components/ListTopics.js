@@ -9,6 +9,7 @@ import TopBar from './TopBar';
 import SideBar from './SideBar';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles';
+import config from '../config';
 
 const ListTopics = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -37,7 +38,7 @@ const ListTopics = () => {
     }
     axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
     console.log('Sending GET request to /topics');
-    axios.get('http://localhost:3001/topics')
+    axios.get(`${config.apiUrl}topics`)
       .then(response => {
         console.log('Response from /topics:', response.data);
         setTopics(response.data.allTopics);
@@ -63,7 +64,7 @@ const ListTopics = () => {
   };
 
   const confirmDeleteTopic = () => {
-    axios.delete(`http://localhost:3001/topics/${selectedTopic._id}`)
+    axios.delete(`${config.apiUrl}topics/${selectedTopic._id}`)
       .then(() => {
         // Remove the deleted topic from the topics list
         setTopics((prevTopics) => prevTopics.filter((t) => t._id !== selectedTopic._id));

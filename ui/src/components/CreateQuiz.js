@@ -11,6 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from '@mui/material/styles';
+import config from '../config';
 
 
 const Form = () => {
@@ -50,7 +51,7 @@ const Form = () => {
         
 
         const selectedTopic = topicId;
-        const response = await axios.post(`http://localhost:3001/topics/${topicId}/quiz`, values, config);
+        const response = await axios.post(`${config.apiUrl}topics/${topicId}/quiz`, values, config);
         //const { topicId: createdTopicId } = response.data;
         // const response = await axios.post("http://localhost:3001/quiz", values);
         console.log("Quiz created:", response.data);

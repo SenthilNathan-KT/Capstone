@@ -11,6 +11,7 @@ import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
 import axios from 'axios';
+import config from '../config';
 
 const Item = ({ title, to, icon, selected, setSelected,onClick, isCollapsed }) => {
   const isActive = selected === title && !isCollapsed;
