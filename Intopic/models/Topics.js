@@ -9,8 +9,7 @@ const TopicsSchema = new Schema({
   },
   title: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   image: {
     type: String,
