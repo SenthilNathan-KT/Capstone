@@ -1,22 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Box, IconButton, Typography,Card, CardContent, Paper, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { Box, IconButton, Typography,Card,Fab, CardContent, Paper, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-//import AddIcon from '@mui/icons-material/Add';
+import AddIcon from '@mui/icons-material/Add';
 import TopBar from './TopBar';
 import SideBar from './SideBar';
 import axios from 'axios';
+import { useTheme } from '@mui/material/styles';
 
-const ListTopics = ({ setNotificationCount }) => {
+const ListTopics = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
   const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [notifications, setNotifications] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const theme = useTheme();
+  const isSidebarCollapsed = useMediaQuery("(max-width: 1215px)");
+
+  const handleJwtExpirationError = (error) => {
+    if (error.response && error.response.status === 403) {
+      sessionStorage.removeItem("accessToken");
+      navigate('/login');
+    } else {
+      console.error("API Error:", error);
+    }
+  };
 
   useEffect(() => {
     const authToken = sessionStorage.getItem('accessToken');
@@ -32,6 +43,7 @@ const ListTopics = ({ setNotificationCount }) => {
         setTopics(response.data.allTopics);
       })
       .catch(error => {
+        handleJwtExpirationError(error);
         console.error('API Error:', error);
       });
   }, []);
@@ -39,12 +51,15 @@ const ListTopics = ({ setNotificationCount }) => {
   const handleEditTopic = (topic) => {
     setSelectedTopic(topic);
     navigate(`/updatetopic/${topic._id}`, { state: topic });
-    triggerNotification();
   };
 
   const handleDeleteTopic = (topic) => {
     setSelectedTopic(topic);
     setIsDeleteModalOpen(true);
+  };
+
+  const handleCreateTopic = () => {
+    navigate('/createtopic');
   };
 
   const confirmDeleteTopic = () => {
@@ -53,7 +68,7 @@ const ListTopics = ({ setNotificationCount }) => {
         // Remove the deleted topic from the topics list
         setTopics((prevTopics) => prevTopics.filter((t) => t._id !== selectedTopic._id));
         setIsDeleteModalOpen(false);
-        triggerNotification(`Topic "${selectedTopic.title}" has been deleted successfully.`);
+        
       })
       .catch((error) => {
         console.error('Error deleting topic:', error);
@@ -69,49 +84,135 @@ const ListTopics = ({ setNotificationCount }) => {
     navigate(`/topics/${topicId}`);
   };
 
-  const triggerNotification = (message) => {
-    const newNotification = { message, seen: false };
-    setNotifications((prevNotifications) => [...prevNotifications, newNotification]);
-    setNotificationCount((prevCount) => prevCount + 1);
-  };
-
   return (
     <Box display="flex">
       <Box position="fixed" top={0} left={0} bottom={0} bgcolor="#f5f5f5" zIndex={10}>
         <SideBar />
       </Box>
-      <Box flex="1" display="flex" flexDirection="column" height="100vh">
-      <Box
-          position="fixed"
-          top={0}
-          left={isNonMobile ? 340 : 0} // Apply left position based on isNonMobile
-          right={30}
-          zIndex={100}
-          bgcolor="#fff"
-          boxShadow="0 2px 4px rgba(0, 0, 0, 0.1)"
+      <Box flex="1" display="flex" flexDirection="column">
+        <Box
+          ml={isSidebarCollapsed ? 10 : (isNonMobile ? 40 : 0)}
+          flexGrow={1}
+          bgcolor="background.default"
+          p={isNonMobile ? 1 : 0}
+          transition="margin-left 0.3s"
         >
           <TopBar
             setSearchQuery={setSearchQuery}
-            // notifications={notifications} // Pass the notifications state here
-            // triggerNotification={triggerNotification}
-            // updateNotificationCount={updateNotificationCount}
-            // notificationCount={notificationCount}
           />
         </Box>
-        {/* <TopBar notifications={notifications} setNotificationCount={setNotificationCount} /> */}
-        <Box m="10px" mt="80px" ml={isNonMobile ? 40 : 0} backgroundColor="white" overflowY="auto" flex="1">
+        <Box ml={isSidebarCollapsed ? 10 : 0}>
+          <Box
+            //m="10px"
+            //mt="30px"
+            ml={isSidebarCollapsed ? 0 : (isNonMobile ? 40 : 0)}
+            width={isSidebarCollapsed ? '100%' : 'auto'}
+            backgroundColor="white"
+            overflowY="auto"
+            flex="1"
+            p={isNonMobile ? 1 : 0}
+            transition="margin-left 0.3s, width 0.3s"
+            zIndex={1} 
+          >
           <Typography variant='h4' style={{ textAlign:'center', fontWeight:'bold', marginTop:'20px', marginBottom:'20px', color:'#03609C' }}>Topics</Typography>
-          <Box display="flex" flexWrap="wrap" justifyContent="flex-start">
+          <Box display="flex" flexWrap="wrap" justifyContent="center">
+          <Tooltip title="Create Topic" placement="top"
+              sx={{
+                backgroundColor: "none",
+                color: "#03609C",
+                fontSize: "14px",
+                fontWeight: "bold",
+              }}>
+              <Fab
+                  backgroundColor='#03609C'
+                  color="white"
+                  aria-label="add"
+                  style={{
+                    position: "fixed",
+                    bottom: "20px",
+                    right: "20px",
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                  }}
+                  onClick={handleCreateTopic}
+                >
+                  <AddIcon />
+              </Fab>
+            </Tooltip>
+            {topics.length === 0 ? (
+              <Box
+                height="100%"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Typography variant="h6" color="textSecondary">
+                  No topics to show.
+                </Typography>
+              </Box>
+            ) : (
+              <>
             {topics.map((topic) => (
-              <Card key={topic._id} style={{ margin:'20px', border: "1px solid #cccccc", borderRadius:"15px", marginBottom: isNonMobile ? '20px' : 0, width: isNonMobile ? '30%' : '100%', flexBasis: isNonMobile ? '30%' : '100%', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)' }}>
-                <CardContent >
+              <Card 
+                key={topic._id} 
+                style={{ 
+                  margin: '5px',
+                  border: '1px solid #cccccc',
+                  borderRadius: '15px',
+                  marginBottom: isNonMobile ? '20px' : 0,
+                  width: isNonMobile ? 'calc(33.33% - 10px)' : '100%', // Display 3 topics per row above 1012px
+                  flexBasis: isNonMobile ? '50%' : '100%', // Display 2 topics per row between 650px and 1012px
+                  //flexGrow: 1,
+                  maxWidth: isNonMobile ? '350px' : '100%',
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', }}>
+                <CardContent 
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    //justifyContent: "space-between",
+                    padding: "20px", // Add padding for spacing
+                  }}
+                >
                   <Box display="flex" alignItems="center">
-                    <Box display="flex" alignItems="center">
-                      <img src={topic.image} alt={topic.title} style={{ width: "150px", height: "150px", borderRadius: "50%", marginRight: "10px" }} />
+                    <Box display="flex" width="120px">
+                      <img src={topic.image} alt={topic.title} 
+                        style={{ 
+                          maxWidth: '100%',
+                              height: 'auto',
+                              borderRadius: '50%',
+                              //paddingRight: '20px',
+                              //width: '130px', // Set a fixed width for the image
+                              flexShrink: 0, 
+
+                          }} 
+                      />
                     </Box>
-                    <Box display="flex" flexDirection="column" marginLeft="10px" justifyContent="space-between">
-                      <Box style={{ display: 'flex',cursor: 'pointer', flexDirection: 'column', alignItems:'flex-start' }} onClick={() => handleClickTopic(topic._id)}>
-                        <Typography variant="h6" style={{ color: "#03609C" }}>
+                    <Box 
+                      display="flex" 
+                      flexDirection="column"  
+                      justifyContent="space-between" 
+                      flexGrow={1}
+                      marginLeft="20px"
+                      >
+                      <Box style={{ 
+                        display: 'flex',
+                        cursor: 'pointer', 
+                        flexDirection: 'column', 
+                        //justifyContent:'flex-start',
+                        //width:"80px" 
+                        }} 
+                        onClick={() => handleClickTopic(topic._id)}>
+                        <Typography 
+                          variant="h6"
+                          style={{
+                            color: "#03609C",
+                            textAlign:"center",
+                            flex:"1",
+                            wordWrap: "break-word",
+                            fontSize: topic.title.length > 15 ? "12px" : "inherit",
+                          }}
+                        >
                           {topic.title}
                         </Typography>
                         <Typography variant="body2" style={{ color: "grey", textAlign: "center"  }}>
@@ -131,26 +232,14 @@ const ListTopics = ({ setNotificationCount }) => {
                 </CardContent>
               </Card>
             ))}
+            {/* </Box>
+            </Box> */}
+            </>
+            )}
           </Box>
-          {/* <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
-            {topics.map(topic => (
-              <div key={topic._id} style={{ cursor: 'pointer' }}>
-                <Paper key={topic._id} style={{ display: 'flex', alignItems: 'center', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '20px' }}>
-                  <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                    <Typography variant="h6" style={{ marginLeft: '40px', color: '#03609C', }}>{topic.title}</Typography>
-                    <Typography variant="body2" style={{ marginLeft: '40px', color: 'grey', }}>No. of Quizzes: {topic.noOfQuizzesAvailable}</Typography>
-                  </Box>
-                  <IconButton type="button" sx={{ p: 1, marginLeft: 'auto' }} onClick={() => handleEditTopic(topic)}>
-                    <BorderColorOutlinedIcon />
-                  </IconButton>
-                  <IconButton type="button" sx={{ p: 1 }} onClick={() => handleDeleteTopic(topic)}>
-                    <DeleteOutlineOutlinedIcon />
-                  </IconButton>
-                </Paper>
-              </div>
-            ))}
-          </Box> */}
-        </Box>
+          
+          </Box>
+          </Box>
       </Box>
       <Dialog
         open={isDeleteModalOpen}

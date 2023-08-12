@@ -54,7 +54,9 @@ const Register = () => {
       .string()
       .email("Invalid Email Format")
       .required("Email is required"),
-    password: yup.string().required("Password is required"),
+    password: yup.string()
+      .required("Password is required")
+      .min(6, 'Password must be at least 6 characters'),
     reEnterPassword: yup
       .string()
       .oneOf([yup.ref('password'), null], "Passwords doesn't match")

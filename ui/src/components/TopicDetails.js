@@ -12,6 +12,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Snackbar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import WarningIcon from '@mui/icons-material/Warning';
 
 const TopicDetails = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -26,9 +27,10 @@ const TopicDetails = () => {
   const [showToast, setShowToast] = useState(false);
   const theme = useTheme();
   const isSidebarCollapsed = useMediaQuery("(max-width: 1215px)");
+  const [showDownloadAppSnackbar, setShowDownloadAppSnackbar] = useState(false);
 
 
-  const handleJwtExpirationError = (error, navigate) => {
+  const handleJwtExpirationError = (error) => {
     if (error.response && error.response.status === 403) {
       sessionStorage.removeItem("accessToken");
       navigate('/login');
@@ -50,15 +52,18 @@ const TopicDetails = () => {
         console.log('Response from /topics/:topicId:', response.data);
         setQuizzes(response.data.quizzes);
         setSelectedTopic(response.data.topic[0]);
+        if (response.data.quizzes.length > quizzes.length) {
+          setShowDownloadAppSnackbar(true);
+        }
         setLoading(false);
-        setShowToast(true);
+        //setShowToast(true);
       })
       .catch(error => {
         handleJwtExpirationError(error);
         setLoading(false);
         console.error('Error fetching quizzes:', error);
       });
-  }, [topicId, navigate]);
+  }, [topicId, navigate, quizzes.length]);
 
   const handleEditQuiz = (quiz) => {
     setSelectedQuiz(quiz);
@@ -93,6 +98,7 @@ const TopicDetails = () => {
 
   const handleCreateQuiz = () => {
     navigate(`/topics/${topicId}/quiz`);
+    //setShowDownloadAppSnackbar(true); 
   };
 
   const filteredQuizzes = quizzes
@@ -109,13 +115,13 @@ const TopicDetails = () => {
       {loading ? (
         <Typography>Loading...</Typography>
       ) : (
-      <Box flex="1" display="flex" flexDirection="column" height="100vh">
+      <Box flex="1" display="flex" flexDirection="column">
       <Box
           left={isNonMobile ? 340 : 0}
           bgcolor="#fff"
           ml={isSidebarCollapsed ? 10 : (isNonMobile ? 40 : 0)}
           flexGrow={1}
-          p={isNonMobile ? 3 : 0}
+          p={isNonMobile ? 1 : 0}
           transition="margin-left 0.3s"
         >
           <TopBar
@@ -124,14 +130,14 @@ const TopicDetails = () => {
         </Box>
         <Box ml={isSidebarCollapsed ? 10 : 0}>
         <Box 
-          m="10px"
+          //m="10px"
           top={0}
           ml={isSidebarCollapsed ? 0 : (isNonMobile ? 40 : 0)}
           width={isSidebarCollapsed ? '100%' : 'auto'}
           backgroundColor="white"
           overflowY="auto"
           flex="1"
-          p={isNonMobile ? 3 : 0}
+          p={isNonMobile ? 1 : 0}
           transition="margin-left 0.3s, width 0.3s"
           zIndex={1} 
         >
@@ -184,9 +190,7 @@ const TopicDetails = () => {
                     <Typography variant="h6" style={{ marginLeft: '40px' }}>{quiz.title}</Typography>
                     <Typography variant="body2" style={{ marginLeft: '40px' }}>No. of Questions: {quiz.totalQuestions}</Typography>
                   </Box>
-                  <IconButton type="button" sx={{ p: 1, marginLeft: 'auto' }} onClick={() => handleEditQuiz(quiz)} disabled>
-                    <BorderColorOutlinedIcon />
-                  </IconButton>
+                  
                   <IconButton type="button" sx={{ p: 1,color:'#CD5C5C' }} onClick={() => handleDeleteQuiz(quiz)}>
                     <DeleteOutlineOutlinedIcon />
                   </IconButton>
@@ -194,13 +198,7 @@ const TopicDetails = () => {
               ))
             )}
           </Box>
-          <Snackbar
-            open={showToast}
-            autoHideDuration={5000} // Adjust the duration as needed
-            onClose={() => setShowToast(false)} // Close the toast when it's clicked or auto-hide duration is reached
-            message="Quiz created successfully! Download the app to take the quiz."
-            // You can customize the appearance of the Snackbar here
-          />
+          
         </Box>
         </Box>
       </Box>
@@ -246,6 +244,36 @@ const TopicDetails = () => {
           </Box>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={showDownloadAppSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setShowDownloadAppSnackbar(false)}
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'fixed',
+          left: 0,
+          right: 0,
+          top: "760px",
+          bottom: 0,
+          margin: 'auto',
+          zIndex: 9999,  // Ensure it's on top of other elements
+          }}
+        >
+        <Box 
+          display="flex" 
+          alignItems="center"
+          padding="10px"
+          backgroundColor= '#333333' // Set your desired background color
+          color= 'white' // Set the text color
+          borderRadius= '4px' // Optionally, add borderRadius for a rounded look
+        //padding: '10px 20px', // Adjust padding as needed
+        >
+          <WarningIcon style={{ marginRight: '8px' }} />
+          <span>Please download our app to give the quiz.</span>
+        </Box>
+      </Snackbar>
     </Box>
   );
 };

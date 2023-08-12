@@ -10,7 +10,7 @@ const TopBar = ({ setSearchQuery }) => {
   };
 
   return (
-    <Box display="flex" justifyContent="space-between" p={2}
+    <Box display="flex" justifyContent="space-between" p={1}
     sx={{
       "@media (min-width: 600px)": {
         flexDirection: "row",

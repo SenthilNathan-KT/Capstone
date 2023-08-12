@@ -8,6 +8,7 @@ import { Box, Typography, IconButton,TextField, Button, DialogTitle, DialogConte
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SideBar from './SideBar';
 import axios from 'axios';
+import { useTheme } from '@mui/material/styles';
 
 const UpdateUser = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -16,8 +17,11 @@ const UpdateUser = () => {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [activeForm, setActiveForm] = useState('');
+  const theme = useTheme();
+  const isSidebarCollapsed = useMediaQuery("(max-width: 1215px)"); 
 
-  const handleJwtExpirationError = (error, navigate) => {
+  const handleJwtExpirationError = (error) => {
     if (error.response && error.response.status === 403) {
       sessionStorage.removeItem("accessToken");
       navigate('/login');
@@ -40,6 +44,7 @@ const UpdateUser = () => {
       const requestData = {
         oldPassword: values.oldPassword,
         newPassword: values.newPassword,
+        confirmPassword: values.confirmPassword,
       };
 
       console.log('Sending request data:', requestData);
@@ -51,7 +56,7 @@ const UpdateUser = () => {
       });
       
       console.log('Password updated successfully:', response.data);
-      setShowSaveDialog(true);
+      
       values.oldPassword = "";
       values.newPassword = "";
       values.confirmPassword = "";
@@ -64,6 +69,10 @@ const UpdateUser = () => {
         console.error('Error updating password:', error);
       }
     }
+  };
+
+  const handleFormChange = (formType) => {
+    setActiveForm(formType);
   };
 
   useEffect(() => {
@@ -95,21 +104,6 @@ const UpdateUser = () => {
       console.error('Error fetching user settings:', error);
     }
   };
-  
-  
-
-  const handleSave = () => {
-    setShowSaveDialog(true);
-  };
-
-  const handleCloseSaveDialog = (saveChanges) => {
-    if (saveChanges) {
-      // Perform actions to save changes here, if needed
-      console.log("Saving changes...");
-      
-    }
-    setShowSaveDialog(false);
-  };
 
   const handleCancel = () => {
     navigate(-1);
@@ -117,7 +111,6 @@ const UpdateUser = () => {
 
   const handleBack = () => {
     navigate(-1); 
-    //navigate('/dashboard');
   };
 
   const initialValues = {
@@ -135,39 +128,27 @@ const UpdateUser = () => {
       .required('Confirm password is required')
       .oneOf([ref('newPassword'), null], 'Passwords must match'),
   });
-  
-
-  // const triggerNotification = (message) => {
-  //   const newNotification = { message, seen: false };
-  //   setNotifications((prevNotifications) => [...prevNotifications, newNotification]);
-  //   setSearchQuery("");
-  //   updateNotificationCount((prevCount) => prevCount + 1);
-  // };
 
   return (
     <Box display="flex">
       <Box position="fixed" top={0} left={0} bottom={0} bgcolor="#f5f5f5" zIndex={10}>
         <SideBar />
-      </Box> {/* Sidebar component displayed only on non-mobile devices */}
+      </Box> 
       <Box flex="1" display="flex" flexDirection="column" height="100vh">
-        <Box
-          position="fixed"
-          top={0}
-          left={isNonMobile ? 340 : 0} // Apply left position based on isNonMobile
-          right={30}
-          zIndex={100}
-          bgcolor="#fff"
-          boxShadow="0 2px 4px rgba(0, 0, 0, 0.1)"
+        
+      <Box ml={isSidebarCollapsed ? 10 : 0}>
+        <Box 
+          m="10px"
+          //mt="30px"
+          ml={isSidebarCollapsed ? 0 : (isNonMobile ? 40 : 0)}
+          width={isSidebarCollapsed ? '100%' : 'auto'}
+          backgroundColor="white"
+          overflowY="auto"
+          flex="1"
+          p={isNonMobile ? 1 : 0}
+          transition="margin-left 0.3s, width 0.3s"
+          zIndex={1} 
         >
-          <TopBar
-            setSearchQuery={setSearchQuery}
-            // notifications={notifications} // Pass the notifications state here
-            // triggerNotification={triggerNotification}
-            // updateNotificationCount={updateNotificationCount}
-            // notificationCount={notificationCount}
-          />
-        </Box>
-        <Box m="10px" mt="80px" ml={isNonMobile ? 40 : 0} backgroundColor="white" overflowY="auto" flex="1">
             <IconButton
                 type="button"
                 sx={{
@@ -183,13 +164,8 @@ const UpdateUser = () => {
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    //alignItems: 'center', // Center align horizontally
-                    //justifyContent: 'center', // Center align vertically
-                    //padding: '20px',
-                    //textAlign: 'center',
                     maxWidth: '400px',
-                    //width: '100%',
-                    margin: '0 auto', // Center align horizontally
+                    margin: '0 auto',
                   }}
                 >
               <Typography variant="h4" style={{ textAlign: 'left', fontWeight: 'bold', marginBottom: '20px' }}>
@@ -197,14 +173,79 @@ const UpdateUser = () => {
               </Typography>
               <Typography variant="h6" style={{ marginBottom: '10px'}}>Username: {userName}</Typography>
               <Typography variant="h6" style={{ marginBottom: '40px'}}>Email: {email}</Typography>
+              <Box style={{ marginBottom: '30px' }}>
+                <Button
+                  onClick={() => handleFormChange('username')}
+                  variant="outlined"
+                  color={activeForm === 'username' ? 'secondary' : 'primary'} // Change color when active
+                  style={{ marginRight: '10px' }}
+                >
+                  Change Username
+                </Button>
+                <Button
+                  onClick={() => handleFormChange('password')}
+                  variant="outlined"
+                  color={activeForm === 'password' ? 'secondary' : 'primary'} // Change color when active
+                >
+                  Change Password
+                </Button>
+              </Box>
+              {activeForm === 'username' && (
+                <Formik
+                  initialValues={{
+                    newUsername: '',
+                  }}
+                  //validationSchema={/* Add validation schema for username change */}
+                  onSubmit={handleFormSubmit}
+                >
+                  {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isValid }) => (
+                    <form onSubmit={handleSubmit}>
+                      <Box>
+                        <TextField
+                          label="Old Username"
+                          variant="outlined"
+                          disabled
+                          value={userName}
+                          style={{ marginBottom: '20px', width: '100%' }}
+                        />
+                      </Box>
+                      <Box>
+                        <TextField
+                          label="New Username"
+                          variant="outlined"
+                          type="text"
+                          name="newUsername"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.newUsername}
+                          error={touched.newUsername && errors.newUsername}
+                          helperText={touched.newUsername && errors.newUsername}
+                          style={{ marginBottom: '20px', width: '100%' }}
+                        />
+                      </Box>
+                      <Box display="flex" justifyContent="center">
+                        <Button
+                          type="submit"
+                          variant="contained"
+                          color="primary"
+                          style={{ marginRight: '10px' }}
+                          disabled={!isValid}
+                        >
+                          Save
+                        </Button>
+                        <Button variant="outlined" color="primary" onClick={handleCancel}>
+                          Cancel
+                        </Button>
+                      </Box>
+                    </form>
+                  )}
+                </Formik>
+              )}
+              {activeForm === 'password' && (
               <Formik
                 initialValues={initialValues}
-                validationSchema={checkoutSchema} // Add this line
+                validationSchema={checkoutSchema} 
                 onSubmit={handleFormSubmit}
-                // onSubmit={(values, { setSubmitting }) => {
-                //   console.log('Formik handleSubmit called with values:', values);
-                //   // Rest of the handleSubmit code
-                // }}
                 >
                 {({ 
                   values, 
@@ -266,7 +307,8 @@ const UpdateUser = () => {
                       color="primary" 
                       style={{ marginRight: '10px' }} 
                       disabled={!isValid}
-                      onClick={handleSave}
+                      //onClick={() => handleCloseSaveDialog(true)}
+                      onClick={() => setShowSaveDialog(true)}
                        >
                       Save
                     </Button>
@@ -277,23 +319,11 @@ const UpdateUser = () => {
                 </form>
               )}
               </Formik>
+              )}
             </Box>
         </Box>
       </Box>
-      <Dialog open={showSaveDialog} onClose={() => handleCloseSaveDialog(false)}>
-        <DialogTitle>Save Changes</DialogTitle>
-        <DialogContent>
-          <Typography>Are you sure you want to save the changes?</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => handleCloseSaveDialog(false)} color="primary">
-            No
-          </Button>
-          <Button onClick={() => handleCloseSaveDialog(true)} color="primary" variant="contained">
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </Box>
     </Box>
   );
 };

@@ -40,7 +40,7 @@ const Form = () => {
     if (authToken) {
       if (!isImageUploaded) {
         // Set default image URL if no image is uploaded
-        values.image = "/assets/images/casual-life-3d-lamp-books-and-objects-for-studying.png";
+        values.image = "/assets/images/default.png";
       } else {
         // If an image is uploaded, use the base64 encoded image
         values.image = base64Image;
@@ -65,7 +65,7 @@ const Form = () => {
         values.description = "";
         setBase64Image("");
         setIsImageUploaded(false);
-        navigate('/dashboard');
+        navigate(-1);
       } catch (error) {
         handleJwtExpirationError(error);
         console.error("Error creating topic:", error);
@@ -112,7 +112,9 @@ const Form = () => {
   };
 
   const checkoutSchema = object().shape({
-    title: string().required("Topic name is required"),
+    title: string()
+    .required("Topic name is required")
+    .max(15, 'Topic name must be at max 15 characters'),
     description: string().required("Topic description is required"),
   });
 
@@ -122,23 +124,7 @@ const Form = () => {
         <SideBar />
       </Box> {/* Sidebar component displayed only on non-mobile devices */}
       <Box flex="1" display="flex" flexDirection="column" height="50vh">
-        <Box
-          //position="fixed"
-          top={0}
-          left={isNonMobile ? 340 : 0} // Apply left position based on isNonMobile
-          //right={30}
-          //zIndex={100}
-          bgcolor="#fff"
-          //boxShadow="0 2px 4px rgba(0, 0, 0, 0.1)"
-          ml={isSidebarCollapsed ? 10 : (isNonMobile ? 40 : 0)}
-          flexGrow={1}
-          p={isNonMobile ? 3 : 0}
-          transition="margin-left 0.3s"
-        >
-          <TopBar
-            setSearchQuery={setSearchQuery}
-          />
-        </Box>
+        
         <Box ml={isSidebarCollapsed ? 10 : 0}>
         <Box 
           m="10px"
@@ -148,7 +134,7 @@ const Form = () => {
           backgroundColor="white"
           overflowY="auto"
           flex="1"
-          p={isNonMobile ? 3 : 0}
+          p={isNonMobile ? 1 : 0}
           transition="margin-left 0.3s, width 0.3s"
           zIndex={1} 
         >
@@ -167,7 +153,7 @@ const Form = () => {
             <h2>CREATE TOPIC</h2>
             <label htmlFor="image-upload">
               <Avatar
-                src={isImageUploaded ? base64Image : "/assets/images/casual-life-3d-lamp-books-and-objects-for-studying.png"}
+                src={isImageUploaded ? base64Image : "/assets/images/default.png"}
                 alt="User Profile"
                 sx={{ width: 100, height: 100, marginTop: 10, cursor: "pointer" }}
               />

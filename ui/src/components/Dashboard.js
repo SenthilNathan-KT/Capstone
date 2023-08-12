@@ -28,7 +28,6 @@ const Dashboard = ({ setNotificationCount }) => {
   const [notifications, setNotifications] = useState([]);
   const [notificationCount, updateNotificationCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  //const unseenNotificationsCount = notifications.filter((notification) => !notification.seen).length;
 
   const handleJwtExpirationError = (error) => {
     if (error.response && error.response.status === 403) {
@@ -61,37 +60,25 @@ const Dashboard = ({ setNotificationCount }) => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   setTotalTopics(topics.length);
-  // }, [topics]);
-
-  const triggerNotification = (message) => {
-    const newNotification = { message, seen: false };
-    setNotifications((prevNotifications) => [...prevNotifications, newNotification]);
-    setSearchQuery("");
-    updateNotificationCount((prevCount) => prevCount + 1);
-  };
 
   const handleEditTopic = (topic) => {
     setSelectedTopic(topic);
     navigate(`/updatetopic/${topic._id}`, { state: topic });
-    triggerNotification();
+    
   };
 
   const handleDeleteTopic = (topic) => {
     setSelectedTopic(topic);
     setIsDeleteModalOpen(true);
-    //triggerNotification();
   };
 
   const confirmDeleteTopic = () => {
     axios.delete(`http://localhost:3001/topics/${selectedTopic._id}`)
       .then(() => {
-        // Remove the deleted topic from the topics list
         setTopics((prevTopics) => prevTopics.filter((t) => t._id !== selectedTopic._id));
         setIsDeleteModalOpen(false);
         window.location.reload();
-        triggerNotification(`Topic "${selectedTopic.title}" has been deleted successfully.`);
+        
       })
       .catch((error) => {
         console.error('Error deleting topic:', error);
@@ -106,7 +93,6 @@ const Dashboard = ({ setNotificationCount }) => {
   
   const handleCreateTopic = () => {
     navigate('/createtopic');
-    //triggerNotification();
   };
 
   const handleClickTopic = (topicId) => {
@@ -117,47 +103,34 @@ const Dashboard = ({ setNotificationCount }) => {
     return topic.title.toLowerCase().includes(searchQuery.toLowerCase());
   }) : [];
 
-  
-
-  // const handleClickQuiz = () => {
-  //   navigate('/createquiz');
-  // };
-
   return (
     <Box display="flex">
-      <Box position="fixed" top={0} left={0} bottom={0} bgcolor="#f5f5f5" zIndex={10}>
+      <Box position="fixed" top={0} left={0} bottom={0} bgcolor="#f5f5f5" >
         <SideBar />
       </Box>
       {loading ? (
-      // Display a loading indicator or a placeholder while loading data
         <Typography>Loading...</Typography>
       ) : (
-      <Box flex="1" display="flex" flexDirection="column" height="100vh">
+      <Box flex="1" display="flex" flexDirection="column">
         <Box
           ml={isSidebarCollapsed ? 10 : (isNonMobile ? 40 : 0)}
           flexGrow={1}
           bgcolor="background.default"
-          p={isNonMobile ? 3 : 0}
+          p={isNonMobile ? 1 : 0}
           transition="margin-left 0.3s"
         >
           <TopBar
             setSearchQuery={setSearchQuery}
-            notifications={notifications} // Pass the notifications state here
-            triggerNotification={triggerNotification}
-            updateNotificationCount={updateNotificationCount}
-            notificationCount={notificationCount}
           />
         </Box>
         <Box ml={isSidebarCollapsed ? 10 : 0}>
           <Box
-            m="10px"
-            mt="30px"
             ml={isSidebarCollapsed ? 0 : (isNonMobile ? 40 : 0)}
             width={isSidebarCollapsed ? '100%' : 'auto'}
             backgroundColor="white"
             overflowY="auto"
             flex="1"
-            p={isNonMobile ? 3 : 0}
+            p={isNonMobile ? 1 : 0}
             transition="margin-left 0.3s, width 0.3s"
             zIndex={1} 
           >
@@ -166,7 +139,7 @@ const Dashboard = ({ setNotificationCount }) => {
             flexDirection={isNonMobile ? "row" : "column"} // Adjust flexDirection based on screen size
             alignItems="center"
             justifyContent="center"
-            mt={isNonMobile ? 3 : 0}
+            mt={isNonMobile ? 1 : 0}
             flexWrap="wrap" // Allow cards to wrap in mobile view
           >
 
@@ -176,7 +149,7 @@ const Dashboard = ({ setNotificationCount }) => {
               color: '#03609C',
               margin: '10px', // Adjust margin for spacing between cards
               textAlign: 'center',
-              width: isNonMobile ? '350px' : '100%', // Adjust card width based on screen size
+              width: isNonMobile ? '350px' : '250px', // Adjust card width based on screen size
               height: isNonMobile ? '200px' : '150px', // Adjust card height based on screen size
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
             }}
@@ -192,7 +165,7 @@ const Dashboard = ({ setNotificationCount }) => {
               color: '#03609C',
               margin: '10px', // Adjust margin for spacing between cards
               textAlign: 'center',
-              width: isNonMobile ? '350px' : '100%', // Adjust card width based on screen size
+              width: isNonMobile ? '350px' : '250px', // Adjust card width based on screen size
               height: isNonMobile ? '200px' : '150px', // Adjust card height based on screen size
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
             }}
@@ -203,6 +176,7 @@ const Dashboard = ({ setNotificationCount }) => {
               </CardContent>
             </Card>
           </Box>
+          <Typography variant='h5' style={{ textAlign:'left', fontWeight:'bold', marginBottom:'20px', color:'#03609C' }}>Topics</Typography>
           <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
             <Tooltip title="Create Topic" placement="top"
               sx={{
@@ -226,12 +200,22 @@ const Dashboard = ({ setNotificationCount }) => {
                   <AddIcon />
               </Fab>
             </Tooltip>
-            {/* <IconButton type="button" sx={{ p: 1 }} onClick={handleClickQuiz}>
-              <EditNoteOutlinedIcon />
-            </IconButton> */}
-            <Typography variant='h5' style={{ textAlign:'left', fontWeight:'bold', marginBottom:'20px', color:'#03609C' }}>Topics</Typography>
+            {filteredTopics.length === 0 ? (
+              <Box
+                height="100%"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Typography variant="h6" color="textSecondary">
+                  No topics to show.
+                </Typography>
+              </Box>
+            ) : (
+              <>
               <Box  backgroundColor="white" >
-                <Box display="flex" flexWrap="wrap" alignContent="center" justifyContent="center">
+                <Box display="flex" flexWrap="wrap" justifyContent="center">
                   {filteredTopics.map((topic) => (
                     <Card key={topic._id} 
                       style={{ 
@@ -241,39 +225,64 @@ const Dashboard = ({ setNotificationCount }) => {
                         marginBottom: isNonMobile ? '20px' : 0,
                         width: isNonMobile ? 'calc(33.33% - 10px)' : '100%', // Display 3 topics per row above 1012px
                         flexBasis: isNonMobile ? '50%' : '100%', // Display 2 topics per row between 650px and 1012px
-                        flexGrow: 1,
+                        //flexGrow: 1,
                         maxWidth: isNonMobile ? '350px' : '100%',
                         boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', }}>
-                      <CardContent style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        //justifyContent: "space-between",
-                        padding: "20px", // Add padding for spacing
-                      }}>
-                        <Box display="flex" alignItems="center">
+                      <CardContent 
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          //justifyContent: "space-between",
+                          padding: "20px", // Add padding for spacing
+                        }}
+                      >
+                      <Box display="flex" alignItems="center">
                         <Box
                           display="flex"
-                          alignItems="center"
-                          flexBasis="150px" // Fixed width for the image container
-                          marginRight="10px"
+                          //justifyContent="flex-start"
+                          //flexBasis="150px" // Fixed width for the image container
+                          //marginRight="10px"
+                          width="120px"
                         >
-                        <img src={topic.image} alt={topic.title} 
-                        style={{
-                          maxWidth: '100%',
-                          height: 'auto',
-                          borderRadius: '50%',
-                          marginRight: '10px',
-                        }}
-                           />
-                      </Box>
-                      <Box display="flex" 
+                          <img src={topic.image} alt={topic.title} 
+                            style={{
+                              maxWidth: '100%',
+                              height: 'auto',
+                              borderRadius: '50%',
+                              marginRight: '10px',
+                              //width: '130px', // Set a fixed width for the image
+                              flexShrink: 0, // Prevent image from shrinking
+                            }}
+                          />
+                        </Box>
+                      <Box 
+                        display="flex" 
                         flexDirection="column"  
                         justifyContent="space-between" 
                         flexGrow={1}
-                        marginLeft="20px">
-                        <Box style={{ display: 'flex',cursor: 'pointer', flexDirection: 'column', alignItems:'flex-start' }} onClick={() => handleClickTopic(topic._id)}>
-                          <Typography variant="h6" style={{ color: "#03609C" }}>
+                        marginLeft="20px"
+                        //width="80px"
+                        >
+                        <Box style={{ 
+                          display: 'flex',
+                          //justifyContent: "space-between", 
+                          cursor: 'pointer', 
+                          flexDirection: 'column', 
+                          //alignItems:'flex-start',
+                          width:"80px"
+                         }} 
+                         onClick={() => handleClickTopic(topic._id)}>
+                          <Typography 
+                            variant="h6"
+                            style={{
+                              color: "#03609C",
+                              textAlign:"center",
+                              flex:"1",
+                              wordWrap: "break-word",
+                              fontSize: topic.title.length > 15 ? "12px" : "inherit",
+                            }}
+                          >
                             {topic.title}
                           </Typography>
                           <Typography variant="body2" style={{ color: "grey", textAlign: "center"  }}>
@@ -292,26 +301,11 @@ const Dashboard = ({ setNotificationCount }) => {
                   </Box>
                   </CardContent>
                 </Card>
-              ))}
+                  ))}
                 </Box>
               </Box>
-            {/* {filteredTopics.map(topic => (
-              <div key={topic._id}>
-                <Paper key={topic._id} style={{ display: 'flex', alignItems: 'center', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '20px' }}>
-                  <img src={topic.image} alt={topic.title} style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }} />
-                  <Box style={{ display: 'flex',cursor: 'pointer', flexDirection: 'column', alignItems:'flex-start' }} onClick={() => handleClickTopic(topic._id)}>
-                    <Typography variant="h6" style={{ marginLeft: '40px', color:'#03609C', }}>{topic.title}</Typography>
-                    <Typography variant="body2" style={{ marginLeft: '40px', color:'grey', }}>No. of Quizzes: {topic.noOfQuizzesAvailable}</Typography>
-                  </Box>
-                  <IconButton type="button" sx={{ p: 1, marginLeft: 'auto' }} onClick={() => handleEditTopic(topic)}>
-                    <BorderColorOutlinedIcon />
-                  </IconButton>
-                  <IconButton type="button" sx={{ p: 1 }} onClick={() => handleDeleteTopic(topic)}>
-                    <DeleteOutlineOutlinedIcon />
-                  </IconButton>
-                </Paper>
-              </div>
-            ))} */}
+              </>
+            )}
           </Box>
         </Box>
         </Box>

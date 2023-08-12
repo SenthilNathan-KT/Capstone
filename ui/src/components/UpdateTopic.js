@@ -123,19 +123,7 @@ const UpdateTopic = () => {
         <SideBar />
       </Box>
       <Box flex="1" display="flex" flexDirection="column" height="50vh">
-      <Box
-          top={0}
-          left={isNonMobile ? 340 : 0}
-          bgcolor="#fff"
-          ml={isSidebarCollapsed ? 10 : (isNonMobile ? 40 : 0)}
-          flexGrow={1}
-          p={isNonMobile ? 3 : 0}
-          transition="margin-left 0.3s"
-        >
-          <TopBar
-            setSearchQuery={setSearchQuery}
-          />
-        </Box>
+      
         <Box ml={isSidebarCollapsed ? 10 : 0}>
         <Box 
           m="10px"
