@@ -11,11 +11,23 @@ module.exports = async (req, res) => {
     obj.title = req.body.title;
     obj.description = req.body.description;
     obj.image = req.body.image;
-    // console.log("Topic Obj -> ", obj);
-    const topicObj = await Topics.create(obj);
-    console.log("Topic Post Object created -> ", topicObj);
+    console.log("Topic Obj -> ", obj);
 
-    res.status(200).send({
+    try {
+        const topicObj = await Topics.create(obj);
+        console.log("Topic Post Object created -> ", topicObj);
+    } catch (error ) {
+
+        if (error.code === 11000) {
+            console.error('Duplicate key error:', error.message);
+            return res.status(400).send({
+                "message" : "Kindly enter a unique topic name",
+                "error" : "Error in topic creation"
+            });    
+        }
+    }
+    
+    return res.status(200).send({
         "message": "Topic created successfully"
     });
 
