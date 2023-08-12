@@ -1,5 +1,5 @@
 //import { useState } from "react";
-import { Box, Button, TextField,Avatar,Typography, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
+import { Box, Button, TextField,Avatar,Dialog,DialogTitle, DialogContent, DialogActions, Typography, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
 import { Formik } from "formik";
 import {object, string} from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -8,13 +8,27 @@ import SideBar from "./SideBar";
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useTheme } from '@mui/material/styles';
+
 
 const Form = () => {
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [searchQuery, setSearchQuery] = useState('');
   const { topicId } = useParams();
-  console.log("Topic ID from URL:", topicId);
-  //const [selectedTopic, setSelectedTopic] = useState(null);
+  const theme = useTheme();
+  const isSidebarCollapsed = useMediaQuery("(max-width: 1215px)");
+
+  const handleJwtExpirationError = (error) => {
+    if (error.response && error.response.status === 403) {
+      sessionStorage.removeItem("accessToken");
+      navigate('/login');
+    } else {
+      console.error("API Error:", error);
+    }
+  };
   
   const handleFormSubmit = async (values) => {
     console.log("Form submitted:", sessionStorage.getItem("accessToken"));
@@ -23,10 +37,8 @@ const Form = () => {
 
     if (authToken) {
       if (!isImageUploaded) {
-        // Set default image URL if no image is uploaded
         values.image = "/assets/images/casual-life-3d-lamp-books-and-objects-for-studying.png";
       } else {
-        // If an image is uploaded, use the base64 encoded image
         values.image = base64Image;
       }
       try {
@@ -42,11 +54,14 @@ const Form = () => {
         //const { topicId: createdTopicId } = response.data;
         // const response = await axios.post("http://localhost:3001/quiz", values);
         console.log("Quiz created:", response.data);
+        
         setBase64Image("");
         setIsImageUploaded(false);
-        //navigate('/dashboard');
+        
         navigate(`/topics/${selectedTopic}`);
+        toast.success("Your quiz has been created successfully. To take the quiz, please download our app.");
       } catch (error) {
+        handleJwtExpirationError(error);
         console.error("Error creating quiz:", error);
       }
     } else {
@@ -84,7 +99,8 @@ const Form = () => {
   };
   
   const handleCancel = () => {
-    navigate("/dashboard");
+    navigate(-1);
+    // navigate("/dashboard");
   };
 
   const initialValues = {
@@ -104,12 +120,40 @@ const Form = () => {
       .required("Invalid number of questions")
   });
 
+ 
+
   return (
     <Box display="flex">
-      {isNonMobile ? <SideBar /> : null} {/* Sidebar component displayed only on non-mobile devices */}
+      <Box position="fixed" top={0} left={0} bottom={0} bgcolor="#f5f5f5" zIndex={10}>
+        <SideBar />
+      </Box> {/* Sidebar component displayed only on non-mobile devices */}
       <Box flex="1">
-        <TopBar />
-        <Box m="20px" backgroundColor="white" overflowY="auto">
+        <Box
+          top={0}
+          left={isNonMobile ? 340 : 0}
+          bgcolor="#fff"
+          ml={isSidebarCollapsed ? 10 : (isNonMobile ? 40 : 0)}
+          flexGrow={1}
+          p={isNonMobile ? 3 : 0}
+          transition="margin-left 0.3s"
+        >
+          <TopBar
+            setSearchQuery={setSearchQuery}
+          />
+        </Box>
+        <Box ml={isSidebarCollapsed ? 10 : 0}>
+        <Box 
+          m="10px"
+          //mt="30px"
+          ml={isSidebarCollapsed ? 0 : (isNonMobile ? 40 : 0)}
+          width={isSidebarCollapsed ? '100%' : 'auto'}
+          backgroundColor="white"
+          overflowY="auto"
+          flex="1"
+          p={isNonMobile ? 3 : 0}
+          transition="margin-left 0.3s, width 0.3s"
+          zIndex={1} 
+        >
           <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
             <h2>CREATE QUIZ</h2>
             <label htmlFor="image-upload">
@@ -243,8 +287,11 @@ const Form = () => {
               </form>
             )}
           </Formik>
+          
+        </Box>
         </Box>
       </Box>
+      <ToastContainer />
     </Box>
   );
 };

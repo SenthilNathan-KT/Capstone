@@ -10,6 +10,8 @@ import AddIcon from '@mui/icons-material/Add';
 import SideBar from './SideBar';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { Snackbar } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const TopicDetails = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -21,6 +23,10 @@ const TopicDetails = () => {
   const { topicId } = useParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showToast, setShowToast] = useState(false);
+  const theme = useTheme();
+  const isSidebarCollapsed = useMediaQuery("(max-width: 1215px)");
+
 
   const handleJwtExpirationError = (error, navigate) => {
     if (error.response && error.response.status === 403) {
@@ -43,8 +49,9 @@ const TopicDetails = () => {
       .then(response => {
         console.log('Response from /topics/:topicId:', response.data);
         setQuizzes(response.data.quizzes);
-        setSelectedTopic(response.data);
+        setSelectedTopic(response.data.topic[0]);
         setLoading(false);
+        setShowToast(true);
       })
       .catch(error => {
         handleJwtExpirationError(error);
@@ -88,13 +95,6 @@ const TopicDetails = () => {
     navigate(`/topics/${topicId}/quiz`);
   };
 
-  // const triggerNotification = (message) => {
-  //   const newNotification = { message, seen: false };
-  //   setNotifications((prevNotifications) => [...prevNotifications, newNotification]);
-  //   setSearchQuery("");
-  //   updateNotificationCount((prevCount) => prevCount + 1);
-  // };
-
   const filteredQuizzes = quizzes
   ? quizzes.filter((quiz) => {
       return quiz.title && quiz.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -103,69 +103,79 @@ const TopicDetails = () => {
 
   return (
     <Box display="flex">
-      <Box position="fixed" top={0} left={0} bottom={0} bgcolor="#f5f5f5" zIndex={10}>
+      <Box position='fixed' top={0} left={0} bottom={0} bgcolor="#f5f5f5" zIndex={10}>
         <SideBar />
       </Box>
       {loading ? (
-      // Display a loading indicator or a placeholder while loading data
         <Typography>Loading...</Typography>
       ) : (
       <Box flex="1" display="flex" flexDirection="column" height="100vh">
       <Box
-          position="fixed"
-          top={0}
-          left={isNonMobile ? 340 : 0} // Apply left position based on isNonMobile
-          right={30}
-          zIndex={100}
+          left={isNonMobile ? 340 : 0}
           bgcolor="#fff"
-          boxShadow="0 2px 4px rgba(0, 0, 0, 0.1)"
+          ml={isSidebarCollapsed ? 10 : (isNonMobile ? 40 : 0)}
+          flexGrow={1}
+          p={isNonMobile ? 3 : 0}
+          transition="margin-left 0.3s"
         >
           <TopBar
             setSearchQuery={setSearchQuery}
-            //notifications={notifications} // Pass the notifications state here
-            //triggerNotification={triggerNotification}
-            //updateNotificationCount={updateNotificationCount}
-            //notificationCount={notificationCount}
           />
         </Box>
-        <Box m="10px" mt="80px" ml={isNonMobile ? 40 : 0} backgroundColor="white" overflowY="auto" flex="1">
+        <Box ml={isSidebarCollapsed ? 10 : 0}>
+        <Box 
+          m="10px"
+          top={0}
+          ml={isSidebarCollapsed ? 0 : (isNonMobile ? 40 : 0)}
+          width={isSidebarCollapsed ? '100%' : 'auto'}
+          backgroundColor="white"
+          overflowY="auto"
+          flex="1"
+          p={isNonMobile ? 3 : 0}
+          transition="margin-left 0.3s, width 0.3s"
+          zIndex={1} 
+        >
           <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
-          <Box display="flex" alignItems="center" justifyContent="space-between" marginBottom="10px">
-            <IconButton type="button" sx={{ p: 1, color:'#03609C' }} onClick={handleBack}>
-              <ArrowBackIcon />
-            </IconButton>
-            <Tooltip title="Create Quiz" placement="top"
-            sx={{
-              backgroundColor: "none",
-              color: "#03609C",
-              fontSize: "14px",
-              fontWeight: "bold",
-            }}>
-            <Fab
-                backgroundColor='#03609C'
-                color="white"
-                aria-label="add"
-                style={{
-                  position: "fixed",
-                  bottom: "20px",
-                  right: "20px",
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                }}
-                onClick={handleCreateQuiz}
-              >
-                <AddIcon />
-              </Fab>
-            </Tooltip>
+            <Box display="flex" alignItems="center" justifyContent="space-between" marginBottom="10px">
+              <IconButton type="button" sx={{ p: 1, color:'#03609C' }} onClick={handleBack}>
+                <ArrowBackIcon />
+              </IconButton>
+              <Tooltip title="Create Quiz" placement="top"
+              sx={{
+                backgroundColor: "none",
+                color: "#03609C",
+                fontSize: "14px",
+                fontWeight: "bold",
+              }}>
+              <Fab
+                  backgroundColor='#03609C'
+                  color="white"
+                  aria-label="add"
+                  style={{
+                    position: "fixed",
+                    bottom: "20px",
+                    right: "20px",
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                  }}
+                  onClick={handleCreateQuiz}
+                >
+                  <AddIcon />
+                </Fab>
+              </Tooltip>
             </Box>
               {selectedTopic && (
                 <Box mb="20px">
+                  <Typography variant='h5' style={{ marginBottom: '30px', fontWeight:'bold', color:'#03609C' }}>Topic Details</Typography>
                   <img src={selectedTopic.image} alt={selectedTopic.title} style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
-                  <Typography variant="h6">{selectedTopic.title}</Typography>
-                  <Typography variant="body2">{selectedTopic.description}</Typography>
+                  <Typography variant="h5" style={{ marginTop: '30px' }}>{selectedTopic.title}</Typography>
+                  <Typography variant="body2" style={{ marginTop: '20px' }}>{selectedTopic.description}</Typography>
                 </Box>
               )}
+              <Typography variant='h5' style={{ textAlign:'left', fontWeight:'bold', marginBottom:'20px', color:'#03609C' }}>Quizzes</Typography>
             {filteredQuizzes.length === 0 ? (
+              <Box border="1px solid grey" borderRadius="8px" p="10px" marginTop="40px">
               <Typography variant="body1">No quizzes to show.</Typography>
+              </Box>
             ) : (
               filteredQuizzes.map(quiz => (
                 <Paper key={quiz._id} style={{ display: 'flex', alignItems: 'center', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '20px' }}>
@@ -177,13 +187,21 @@ const TopicDetails = () => {
                   <IconButton type="button" sx={{ p: 1, marginLeft: 'auto' }} onClick={() => handleEditQuiz(quiz)} disabled>
                     <BorderColorOutlinedIcon />
                   </IconButton>
-                  <IconButton type="button" sx={{ p: 1 }} onClick={() => handleDeleteQuiz(quiz)}>
+                  <IconButton type="button" sx={{ p: 1,color:'#CD5C5C' }} onClick={() => handleDeleteQuiz(quiz)}>
                     <DeleteOutlineOutlinedIcon />
                   </IconButton>
                 </Paper>
               ))
             )}
           </Box>
+          <Snackbar
+            open={showToast}
+            autoHideDuration={5000} // Adjust the duration as needed
+            onClose={() => setShowToast(false)} // Close the toast when it's clicked or auto-hide duration is reached
+            message="Quiz created successfully! Download the app to take the quiz."
+            // You can customize the appearance of the Snackbar here
+          />
+        </Box>
         </Box>
       </Box>
       )}
@@ -208,7 +226,7 @@ const TopicDetails = () => {
             />
             {selectedQuiz && (
               <Typography variant="body1" style={{ textAlign: 'center' }}>
-                Are you sure you want to delete the Topic and related Quizzes in{" "}
+                Are you sure you want to delete the Quiz {" "}
                 <Typography variant="h6" component="span" style={{ fontWeight: 'bold' }}>
                   {selectedQuiz.title}
                 </Typography>

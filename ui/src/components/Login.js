@@ -89,7 +89,25 @@ const Login = () => {
         <Container maxWidth="md">
           <Paper
             elevation={3}
-            sx={{ display: "flex", justifyContent: "center" }}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "row", // Apply column layout for small screens
+              alignItems: "center", // Center content horizontally
+              backgroundColor: "white",
+              padding: "20px",
+              borderRadius: "12px",
+              overflow: "hidden",
+              mt: "20px",
+              width: "100%", // Ensure full width in mobile view
+              "@media (max-width: 650px)": {
+                flexDirection: "column", // Apply column layout for small screens
+                height:"650px",
+                //width: "100%",
+                margin: '0px auto', // Center horizontally
+                padding: '0px',
+              },
+            }}
           >
             <Box
               sx={{
@@ -100,6 +118,11 @@ const Login = () => {
                 height: "100%",
                 borderRadius: "0 12px 12px 0",
                 overflow: "hidden",
+                "@media (max-width: 650px)": {
+                  width: "400px",
+                  marginTop: '10px',
+                  //height:"100%",
+                },
               }}
             >
               <img
@@ -115,6 +138,13 @@ const Login = () => {
                 maxWidth: "500px",
                 width: "50%",
                 mt: "20px",
+                "@media (max-width: 650px)": {
+                  width: "80%", // Decrease width for small screens
+                    marginTop: "10px",
+                    mt: "0px",
+                    padding: "5px",
+                  //height:"100%",
+                },
               }}
             >
               <h2
@@ -141,7 +171,7 @@ const Login = () => {
                   <form onSubmit={handleSubmit}>
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="outlined"
                       type="text"
                       label="Email"
                       onBlur={handleBlur}
@@ -155,7 +185,7 @@ const Login = () => {
 
                     <TextField
                       fullWidth
-                      variant="filled"
+                      variant="outlined"
                       type="password"
                       label="Password"
                       onBlur={handleBlur}

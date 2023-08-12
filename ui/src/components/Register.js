@@ -77,7 +77,27 @@ const Register = () => {
         />
       </Link>
       <Container maxWidth="md">
-        <Paper elevation={3} sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Paper elevation={3}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "row", // Apply column layout for small screens
+          alignItems: "center", // Center content horizontally
+          backgroundColor: "white",
+          padding: "20px",
+          borderRadius: "12px",
+          overflow: "hidden",
+          mt: "20px",
+          width: "100%", // Ensure full width in mobile view
+          "@media (max-width: 650px)": {
+            flexDirection: "column", // Apply column layout for small screens
+            height:"650px",
+            //width: "100%",
+            margin: '0px auto', // Center horizontally
+            padding: '0px',
+          },
+        }}
+        >
         <Box
             sx={{
               display: 'flex',
@@ -87,6 +107,11 @@ const Register = () => {
               height: "100%",
               borderRadius: '0 12px 12px 0',
               overflow: 'hidden',
+              "@media (max-width: 650px)": {
+                //width: "300px",
+                marginTop: '10px',
+                //height:"100%",
+              },
             }}
           >
             <img
@@ -102,6 +127,13 @@ const Register = () => {
               maxWidth: "500px",
               width: "50%",
               mt: "20px",
+              "@media (max-width: 650px)": {
+                width: "80%", // Decrease width for small screens
+                  marginTop: "10px",
+                  mt: "0px",
+                  padding: "5px",
+                //height:"100%",
+              },
             }}
           >
             <h2
@@ -126,7 +158,7 @@ const Register = () => {
                 <form onSubmit={handleSubmit}>
                   <TextField
                     fullWidth
-                    variant="filled"
+                    variant="outlined"
                     type="text"
                     label="UserName"
                     onBlur={handleBlur}
@@ -135,11 +167,11 @@ const Register = () => {
                     name="userName"
                     error={!!touched.userName && !!errors.userName}
                     helperText={touched.userName && errors.userName}
-                    sx={{ marginBottom: "20px", borderRadius: '8px' }}
+                    sx={{ marginBottom: "10px", borderRadius: '8px' }}
                   />
                   <TextField
                     fullWidth
-                    variant="filled"
+                    variant="outlined"
                     type="text"
                     label="Email"
                     onBlur={handleBlur}
@@ -148,11 +180,11 @@ const Register = () => {
                     name="email"
                     error={!!touched.email && !!errors.email}
                     helperText={touched.email && errors.email}
-                    sx={{ marginBottom: "20px", borderRadius: '8px' }}
+                    sx={{ marginBottom: "10px", borderRadius: '8px' }}
                   />
                   <TextField
                     fullWidth
-                    variant="filled"
+                    variant="outlined"
                     type="password"
                     label="Password"
                     onBlur={handleBlur}
@@ -161,11 +193,11 @@ const Register = () => {
                     name="password"
                     error={!!touched.password && !!errors.password}
                     helperText={touched.password && errors.password}
-                    sx={{ marginBottom: "20px", borderRadius: '8px' }}
+                    sx={{ marginBottom: "10px", borderRadius: '8px' }}
                   />
                   <TextField
                     fullWidth
-                    variant="filled"
+                    variant="outlined"
                     type="password"
                     label="Re-Enter Password"
                     onBlur={handleBlur}
@@ -174,7 +206,7 @@ const Register = () => {
                     name="reEnterPassword"
                     error={!!touched.reEnterPassword && !!errors.reEnterPassword}
                     helperText={touched.reEnterPassword && errors.reEnterPassword}
-                    sx={{ marginBottom: "20px", borderRadius: '8px' }}
+                    sx={{ marginBottom: "10px", borderRadius: '8px' }}
                   />
                   <Box
                     display="flex"

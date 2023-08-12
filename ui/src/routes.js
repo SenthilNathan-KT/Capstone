@@ -11,6 +11,7 @@ import UpdateTopic from './components/UpdateTopic';
 import TopicDetails from './components/TopicDetails';
 import ListTopics from './components/ListTopics';
 import TopBar from './components/TopBar';
+import UpdateUser from './components/UpdateUser';
 
 const NotFound = () => <h1>404 Page Not Found</h1>;
 
@@ -41,6 +42,7 @@ const AppRoutes = () => {
                     <Route path="/topics" element={<ListTopics />} />
                     <Route path="/topics/:topicId" element={<TopicDetails />} />
                     <Route path="/topics/:topicId/quiz" element={<CreateQuiz />} />
+                    <Route path="/settings" element={<UpdateUser />} />
                     <Route path="/sharedfolder" element={<SharedFolder />} />
                 </>
             ) : null}

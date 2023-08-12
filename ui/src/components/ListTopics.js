@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, IconButton, Typography, Paper, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { Box, IconButton, Typography,Card, CardContent, Paper, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 //import AddIcon from '@mui/icons-material/Add';
@@ -9,11 +10,13 @@ import SideBar from './SideBar';
 import axios from 'axios';
 
 const ListTopics = ({ setNotificationCount }) => {
+  const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
   const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const authToken = sessionStorage.getItem('accessToken');
@@ -62,6 +65,10 @@ const ListTopics = ({ setNotificationCount }) => {
     setIsDeleteModalOpen(false);
   };
 
+  const handleClickTopic = (topicId) => {
+    navigate(`/topics/${topicId}`);
+  };
+
   const triggerNotification = (message) => {
     const newNotification = { message, seen: false };
     setNotifications((prevNotifications) => [...prevNotifications, newNotification]);
@@ -70,11 +77,62 @@ const ListTopics = ({ setNotificationCount }) => {
 
   return (
     <Box display="flex">
-      <SideBar />
+      <Box position="fixed" top={0} left={0} bottom={0} bgcolor="#f5f5f5" zIndex={10}>
+        <SideBar />
+      </Box>
       <Box flex="1" display="flex" flexDirection="column" height="100vh">
-        <TopBar notifications={notifications} setNotificationCount={setNotificationCount} />
-        <Box m="20px" backgroundColor="white" overflowY="auto" flex="1">
-          <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
+      <Box
+          position="fixed"
+          top={0}
+          left={isNonMobile ? 340 : 0} // Apply left position based on isNonMobile
+          right={30}
+          zIndex={100}
+          bgcolor="#fff"
+          boxShadow="0 2px 4px rgba(0, 0, 0, 0.1)"
+        >
+          <TopBar
+            setSearchQuery={setSearchQuery}
+            // notifications={notifications} // Pass the notifications state here
+            // triggerNotification={triggerNotification}
+            // updateNotificationCount={updateNotificationCount}
+            // notificationCount={notificationCount}
+          />
+        </Box>
+        {/* <TopBar notifications={notifications} setNotificationCount={setNotificationCount} /> */}
+        <Box m="10px" mt="80px" ml={isNonMobile ? 40 : 0} backgroundColor="white" overflowY="auto" flex="1">
+          <Typography variant='h4' style={{ textAlign:'center', fontWeight:'bold', marginTop:'20px', marginBottom:'20px', color:'#03609C' }}>Topics</Typography>
+          <Box display="flex" flexWrap="wrap" justifyContent="flex-start">
+            {topics.map((topic) => (
+              <Card key={topic._id} style={{ margin:'20px', border: "1px solid #cccccc", borderRadius:"15px", marginBottom: isNonMobile ? '20px' : 0, width: isNonMobile ? '30%' : '100%', flexBasis: isNonMobile ? '30%' : '100%', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)' }}>
+                <CardContent >
+                  <Box display="flex" alignItems="center">
+                    <Box display="flex" alignItems="center">
+                      <img src={topic.image} alt={topic.title} style={{ width: "150px", height: "150px", borderRadius: "50%", marginRight: "10px" }} />
+                    </Box>
+                    <Box display="flex" flexDirection="column" marginLeft="10px" justifyContent="space-between">
+                      <Box style={{ display: 'flex',cursor: 'pointer', flexDirection: 'column', alignItems:'flex-start' }} onClick={() => handleClickTopic(topic._id)}>
+                        <Typography variant="h6" style={{ color: "#03609C" }}>
+                          {topic.title}
+                        </Typography>
+                        <Typography variant="body2" style={{ color: "grey", textAlign: "center"  }}>
+                          No. of Quizzes: {topic.noOfQuizzesAvailable}
+                        </Typography>
+                      </Box>
+                      <Box display="flex" justifyContent="center" marginTop="20px" alignItems="center">
+                        <IconButton type="button" sx={{ p: 1 }} onClick={() => handleEditTopic(topic)}>
+                          <BorderColorOutlinedIcon />
+                        </IconButton>
+                        <IconButton type="button" sx={{ p: 1, color:'#CD5C5C' }} onClick={() => handleDeleteTopic(topic)}>
+                          <DeleteOutlineOutlinedIcon />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                </Box>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+          {/* <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
             {topics.map(topic => (
               <div key={topic._id} style={{ cursor: 'pointer' }}>
                 <Paper key={topic._id} style={{ display: 'flex', alignItems: 'center', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '20px' }}>
@@ -91,21 +149,49 @@ const ListTopics = ({ setNotificationCount }) => {
                 </Paper>
               </div>
             ))}
-          </Box>
+          </Box> */}
         </Box>
       </Box>
-      <Dialog open={isDeleteModalOpen} onClose={cancelDeleteTopic}>
-        <DialogTitle>Confirm Deletion</DialogTitle>
+      <Dialog
+        open={isDeleteModalOpen}
+        onClose={cancelDeleteTopic}
+        PaperProps={{
+          style: {
+            width: '400px',
+            height: '260px',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)',
+            borderRadius: '8px',
+          },
+        }}
+      >
+
         <DialogContent>
-          {selectedTopic && (
-            <Typography>
-              Are you sure you want to delete the topic "{selectedTopic.title}"?
-            </Typography>
-          )}
+          <Box display="flex" alignItems="center" flexDirection="column">
+            <img
+              src="/assets/images/indigo-recycling-symbol.png"
+              alt="Recycling Symbol"
+              style={{ width: '80px', height: '80px', marginBottom: '20px' }}
+            />
+            {selectedTopic && (
+              <Typography variant="body1" style={{ textAlign: 'center' }}>
+                Are you sure you want to delete the Topic and related Quizzes in{" "}
+                <Typography variant="h6" component="span" style={{ fontWeight: 'bold' }}>
+                  {selectedTopic.title}
+                </Typography>
+                ?
+              </Typography>
+            )}
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={cancelDeleteTopic}>Cancel</Button>
-          <Button onClick={confirmDeleteTopic} color="error">Delete</Button>
+          <Box display="flex" justifyContent="center" width="100%" marginBottom={'10px'}>
+            <Button onClick={cancelDeleteTopic} variant="outlined" color="primary">
+              Cancel
+            </Button>
+            <Button onClick={confirmDeleteTopic} variant="contained" color="error" style={{ marginLeft: '10px' }}>
+              Delete
+            </Button>
+          </Box>
         </DialogActions>
       </Dialog>
     </Box>
