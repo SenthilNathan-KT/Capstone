@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, IconButton } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Formik } from "formik";
 import { object, string } from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -9,10 +10,24 @@ import TopBar from "./TopBar";
 // import NavHeader from "./NavHeader";
 import SideBar from "./SideBar";
 import axios from "axios";
+import { useTheme } from '@mui/material/styles';
+
 
 const Form = () => {
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [searchQuery, setSearchQuery] = useState('');
+  const theme = useTheme();
+  const isSidebarCollapsed = useMediaQuery("(max-width: 1215px)");
+  
+  const handleJwtExpirationError = (error) => {
+    if (error.response && error.response.status === 403) {
+      sessionStorage.removeItem("accessToken");
+      navigate('/login');
+    } else {
+      console.error("API Error:", error);
+    }
+  };
 
   const handleFormSubmit = async (values) => {
     console.log("Form values:", values);
@@ -52,6 +67,7 @@ const Form = () => {
         setIsImageUploaded(false);
         navigate('/dashboard');
       } catch (error) {
+        handleJwtExpirationError(error);
         console.error("Error creating topic:", error);
         if (error.response.status === 403) {
           navigate('/login');
@@ -87,6 +103,9 @@ const Form = () => {
     navigate("/dashboard");
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  }
   const initialValues = {
     title: "",
     description: "",
@@ -99,10 +118,51 @@ const Form = () => {
 
   return (
     <Box display="flex">
-      {isNonMobile ? <SideBar /> : null} {/* Sidebar component displayed only on non-mobile devices */}
-      <Box flex="1">
-        <TopBar />
-        <Box m="20px" backgroundColor="white" overflowY="auto">
+      <Box position="fixed" top={0} left={0} bottom={0} bgcolor="#f5f5f5" zIndex={10}>
+        <SideBar />
+      </Box> {/* Sidebar component displayed only on non-mobile devices */}
+      <Box flex="1" display="flex" flexDirection="column" height="50vh">
+        <Box
+          //position="fixed"
+          top={0}
+          left={isNonMobile ? 340 : 0} // Apply left position based on isNonMobile
+          //right={30}
+          //zIndex={100}
+          bgcolor="#fff"
+          //boxShadow="0 2px 4px rgba(0, 0, 0, 0.1)"
+          ml={isSidebarCollapsed ? 10 : (isNonMobile ? 40 : 0)}
+          flexGrow={1}
+          p={isNonMobile ? 3 : 0}
+          transition="margin-left 0.3s"
+        >
+          <TopBar
+            setSearchQuery={setSearchQuery}
+          />
+        </Box>
+        <Box ml={isSidebarCollapsed ? 10 : 0}>
+        <Box 
+          m="10px"
+          //mt="30px"
+          ml={isSidebarCollapsed ? 0 : (isNonMobile ? 40 : 0)}
+          width={isSidebarCollapsed ? '100%' : 'auto'}
+          backgroundColor="white"
+          overflowY="auto"
+          flex="1"
+          p={isNonMobile ? 3 : 0}
+          transition="margin-left 0.3s, width 0.3s"
+          zIndex={1} 
+        >
+          <IconButton
+            type="button"
+            sx={{
+              p: 1,
+              color: "#03609C",
+              mr: "10px",
+            }}
+              onClick={handleBack}
+            >
+            <ArrowBackIcon />
+          </IconButton>
           <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
             <h2>CREATE TOPIC</h2>
             <label htmlFor="image-upload">
@@ -190,6 +250,7 @@ const Form = () => {
               </form>
             )}
           </Formik>
+        </Box>
         </Box>
       </Box>
     </Box>

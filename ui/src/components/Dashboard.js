@@ -9,12 +9,15 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import AddIcon from '@mui/icons-material/Add';
 import SideBar from './SideBar';
 import axios from 'axios';
+import { useTheme } from '@mui/material/styles';
 
 
 const Dashboard = ({ setNotificationCount }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isSidebarCollapsed = useMediaQuery("(max-width: 1215px)");
   const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -87,6 +90,7 @@ const Dashboard = ({ setNotificationCount }) => {
         // Remove the deleted topic from the topics list
         setTopics((prevTopics) => prevTopics.filter((t) => t._id !== selectedTopic._id));
         setIsDeleteModalOpen(false);
+        window.location.reload();
         triggerNotification(`Topic "${selectedTopic.title}" has been deleted successfully.`);
       })
       .catch((error) => {
@@ -130,13 +134,11 @@ const Dashboard = ({ setNotificationCount }) => {
       ) : (
       <Box flex="1" display="flex" flexDirection="column" height="100vh">
         <Box
-          position="fixed"
-          top={0}
-          left={isNonMobile ? 340 : 0} // Apply left position based on isNonMobile
-          right={30}
-          zIndex={100}
-          bgcolor="#fff"
-          boxShadow="0 2px 4px rgba(0, 0, 0, 0.1)"
+          ml={isSidebarCollapsed ? 10 : (isNonMobile ? 40 : 0)}
+          flexGrow={1}
+          bgcolor="background.default"
+          p={isNonMobile ? 3 : 0}
+          transition="margin-left 0.3s"
         >
           <TopBar
             setSearchQuery={setSearchQuery}
@@ -146,64 +148,154 @@ const Dashboard = ({ setNotificationCount }) => {
             notificationCount={notificationCount}
           />
         </Box>
-        <Box m="10px" mt="80px" ml={isNonMobile ? 40 : 0} backgroundColor="white" overflowY="auto" flex="1">
-        <Box display="flex" justifyContent="space-around">
-          <Card variant="outlined" 
-            style={{  
-              color:'#03609C',
-              margin: '20px', 
-              textAlign: 'center', 
-              width:'350px',
-              height:'200px',
+        <Box ml={isSidebarCollapsed ? 10 : 0}>
+          <Box
+            m="10px"
+            mt="30px"
+            ml={isSidebarCollapsed ? 0 : (isNonMobile ? 40 : 0)}
+            width={isSidebarCollapsed ? '100%' : 'auto'}
+            backgroundColor="white"
+            overflowY="auto"
+            flex="1"
+            p={isNonMobile ? 3 : 0}
+            transition="margin-left 0.3s, width 0.3s"
+            zIndex={1} 
+          >
+          <Box
+            display="flex"
+            flexDirection={isNonMobile ? "row" : "column"} // Adjust flexDirection based on screen size
+            alignItems="center"
+            justifyContent="center"
+            mt={isNonMobile ? 3 : 0}
+            flexWrap="wrap" // Allow cards to wrap in mobile view
+          >
+
+          <Card
+            variant="outlined"
+            style={{
+              color: '#03609C',
+              margin: '10px', // Adjust margin for spacing between cards
+              textAlign: 'center',
+              width: isNonMobile ? '350px' : '100%', // Adjust card width based on screen size
+              height: isNonMobile ? '200px' : '150px', // Adjust card height based on screen size
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            }}>
-            <CardContent>
-              <Typography variant="h5" style={{ fontWeight:'bold', marginTop:'60px' }}>{topicCount}</Typography>
-              <Typography variant="subtitle1" style={{ marginTop:'50px' }}>Total Topics</Typography>
-            </CardContent>
-          </Card>
-          <Card variant="outlined" 
-            style={{  
-              color:'#03609C',
-              margin: '20px', 
-              textAlign: 'center', 
-              width:'350px',
-              height:'200px',
+            }}
+          >
+              <CardContent>
+                <Typography variant="h5" style={{ fontWeight:'bold', marginTop:'60px' }}>{topicCount}</Typography>
+                <Typography variant="subtitle1" style={{ marginTop:'50px' }}>Total Topics</Typography>
+              </CardContent>
+            </Card>
+            <Card
+            variant="outlined"
+            style={{
+              color: '#03609C',
+              margin: '10px', // Adjust margin for spacing between cards
+              textAlign: 'center',
+              width: isNonMobile ? '350px' : '100%', // Adjust card width based on screen size
+              height: isNonMobile ? '200px' : '150px', // Adjust card height based on screen size
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            }}>
-            <CardContent>
-              <Typography variant="h5" style={{ fontWeight:'bold', marginTop:'60px' }}>{quizCount}</Typography>
-              <Typography variant="subtitle1" style={{ marginTop:'50px' }}>Total Quizzes</Typography>
-            </CardContent>
-          </Card>
+            }}
+          >
+              <CardContent>
+                <Typography variant="h5" style={{ fontWeight:'bold', marginTop:'60px' }}>{quizCount}</Typography>
+                <Typography variant="subtitle1" style={{ marginTop:'50px' }}>Total Quizzes</Typography>
+              </CardContent>
+            </Card>
           </Box>
           <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
-          <Tooltip title="Create Topic" placement="top"
-            sx={{
-              backgroundColor: "none",
-              color: "#03609C",
-              fontSize: "14px",
-              fontWeight: "bold",
-            }}>
-            <Fab
-                backgroundColor='#03609C'
-                color="white"
-                aria-label="add"
-                style={{
-                  position: "fixed",
-                  bottom: "20px",
-                  right: "20px",
-                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                }}
-                onClick={handleCreateTopic}
-              >
-                <AddIcon />
+            <Tooltip title="Create Topic" placement="top"
+              sx={{
+                backgroundColor: "none",
+                color: "#03609C",
+                fontSize: "14px",
+                fontWeight: "bold",
+              }}>
+              <Fab
+                  backgroundColor='#03609C'
+                  color="white"
+                  aria-label="add"
+                  style={{
+                    position: "fixed",
+                    bottom: "20px",
+                    right: "20px",
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                  }}
+                  onClick={handleCreateTopic}
+                >
+                  <AddIcon />
               </Fab>
             </Tooltip>
             {/* <IconButton type="button" sx={{ p: 1 }} onClick={handleClickQuiz}>
               <EditNoteOutlinedIcon />
             </IconButton> */}
-            {filteredTopics.map(topic => (
+            <Typography variant='h5' style={{ textAlign:'left', fontWeight:'bold', marginBottom:'20px', color:'#03609C' }}>Topics</Typography>
+              <Box  backgroundColor="white" >
+                <Box display="flex" flexWrap="wrap" alignContent="center" justifyContent="center">
+                  {filteredTopics.map((topic) => (
+                    <Card key={topic._id} 
+                      style={{ 
+                        margin: '5px',
+                        border: '1px solid #cccccc',
+                        borderRadius: '15px',
+                        marginBottom: isNonMobile ? '20px' : 0,
+                        width: isNonMobile ? 'calc(33.33% - 10px)' : '100%', // Display 3 topics per row above 1012px
+                        flexBasis: isNonMobile ? '50%' : '100%', // Display 2 topics per row between 650px and 1012px
+                        flexGrow: 1,
+                        maxWidth: isNonMobile ? '350px' : '100%',
+                        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', }}>
+                      <CardContent style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        //justifyContent: "space-between",
+                        padding: "20px", // Add padding for spacing
+                      }}>
+                        <Box display="flex" alignItems="center">
+                        <Box
+                          display="flex"
+                          alignItems="center"
+                          flexBasis="150px" // Fixed width for the image container
+                          marginRight="10px"
+                        >
+                        <img src={topic.image} alt={topic.title} 
+                        style={{
+                          maxWidth: '100%',
+                          height: 'auto',
+                          borderRadius: '50%',
+                          marginRight: '10px',
+                        }}
+                           />
+                      </Box>
+                      <Box display="flex" 
+                        flexDirection="column"  
+                        justifyContent="space-between" 
+                        flexGrow={1}
+                        marginLeft="20px">
+                        <Box style={{ display: 'flex',cursor: 'pointer', flexDirection: 'column', alignItems:'flex-start' }} onClick={() => handleClickTopic(topic._id)}>
+                          <Typography variant="h6" style={{ color: "#03609C" }}>
+                            {topic.title}
+                          </Typography>
+                          <Typography variant="body2" style={{ color: "grey", textAlign: "center"  }}>
+                            No. of Quizzes: {topic.noOfQuizzesAvailable}
+                          </Typography>
+                        </Box>
+                        <Box display="flex" justifyContent="center" marginTop="20px" alignItems="center">
+                          <IconButton type="button" sx={{ p: 1 }} onClick={() => handleEditTopic(topic)}>
+                            <BorderColorOutlinedIcon />
+                          </IconButton>
+                          <IconButton type="button" sx={{ p: 1, color:'#CD5C5C' }} onClick={() => handleDeleteTopic(topic)}>
+                            <DeleteOutlineOutlinedIcon />
+                          </IconButton>
+                        </Box>
+                      </Box>
+                  </Box>
+                  </CardContent>
+                </Card>
+              ))}
+                </Box>
+              </Box>
+            {/* {filteredTopics.map(topic => (
               <div key={topic._id}>
                 <Paper key={topic._id} style={{ display: 'flex', alignItems: 'center', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '20px' }}>
                   <img src={topic.image} alt={topic.title} style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }} />
@@ -219,8 +311,9 @@ const Dashboard = ({ setNotificationCount }) => {
                   </IconButton>
                 </Paper>
               </div>
-            ))}
+            ))} */}
           </Box>
+        </Box>
         </Box>
       </Box>
       )}

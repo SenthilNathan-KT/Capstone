@@ -8,12 +8,16 @@ import { useNavigate, useLocation } from "react-router-dom";
 import TopBar from "./TopBar";
 import SideBar from "./SideBar";
 import axios from "axios";
+import { useTheme } from '@mui/material/styles';
 
 const UpdateTopic = () => {
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const location = useLocation();
   const selectedTopic = location.state;
+  const theme = useTheme();
+  const [searchQuery, setSearchQuery] = useState('');
+  const isSidebarCollapsed = useMediaQuery("(max-width: 1215px)");
 
   const handleFormSubmit = async (values) => {
     const authToken = sessionStorage.getItem("accessToken");
@@ -115,10 +119,36 @@ const UpdateTopic = () => {
 
   return (
     <Box display="flex">
-      {isNonMobile ? <SideBar /> : null}
-      <Box flex="1">
-        <TopBar />
-        <Box m="20px" backgroundColor="white" overflowY="auto">
+      <Box position="fixed" top={0} left={0} bottom={0} bgcolor="#f5f5f5" zIndex={10}>
+        <SideBar />
+      </Box>
+      <Box flex="1" display="flex" flexDirection="column" height="50vh">
+      <Box
+          top={0}
+          left={isNonMobile ? 340 : 0}
+          bgcolor="#fff"
+          ml={isSidebarCollapsed ? 10 : (isNonMobile ? 40 : 0)}
+          flexGrow={1}
+          p={isNonMobile ? 3 : 0}
+          transition="margin-left 0.3s"
+        >
+          <TopBar
+            setSearchQuery={setSearchQuery}
+          />
+        </Box>
+        <Box ml={isSidebarCollapsed ? 10 : 0}>
+        <Box 
+          m="10px"
+          //mt="30px"
+          ml={isSidebarCollapsed ? 0 : (isNonMobile ? 40 : 0)}
+          width={isSidebarCollapsed ? '100%' : 'auto'}
+          backgroundColor="white"
+          overflowY="auto"
+          flex="1"
+          p={isNonMobile ? 3 : 0}
+          transition="margin-left 0.3s, width 0.3s"
+          zIndex={1}
+        >
           <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
             <h2>EDIT TOPIC</h2>
             <label htmlFor="image-upload">
@@ -210,6 +240,7 @@ const UpdateTopic = () => {
           ) : (
             <div>Loading...</div>
           )}
+        </Box>
         </Box>
       </Box>
     </Box>

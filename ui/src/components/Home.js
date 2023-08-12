@@ -53,7 +53,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     margin: '40px 0 80px 0',
-    '@media (max-width: 600px)': {
+    '@media (max-width: 650px)': {
       flexDirection: 'column-reverse',
     },
   },
@@ -65,12 +65,16 @@ const styles = {
   blockImage: {
     flex: 1,
     textAlign: 'center',
-    '@media (max-width: 600px)': {
-      marginBottom: '20px',
-    },
+    marginBottom: '20px',
     img: {
-      width: '450px', // Set image width to 100%
-      height: 'auto', // Allow image height to adjust proportionally
+      width: '450px',
+      height: 'auto',
+    },
+    '@media (max-width: 1024px)': {
+      textAlign: 'center',
+      img: {
+        width: '100%', // Adjust image width for smaller screens
+      },
     },
   },
   linkButton: {
