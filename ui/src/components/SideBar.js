@@ -13,24 +13,46 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import axios from 'axios';
 import config from '../config';
 
-const Item = ({ title, to, icon, selected, setSelected,onClick, isCollapsed }) => {
-  const isActive = selected === title && !isCollapsed;
+const Item = ({ title, to, icon, selected, selectedItem, onClick, isCollapsed }) => {
+  let isActive = selected === title && !isCollapsed;
   //const isActiveCollapsed = selected === title && isCollapsed; // Determine active state for collapsed mode
   const activeColor = '#fe8825';
   const defaultColor = '#f2f5f7';
   const backgroundColor = isActive ? '#03609C' : 'transparent';
-  const textColor = isActive ? activeColor : defaultColor;
+  let textColor = isActive ? activeColor : defaultColor;
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    if (selected !== title) {
-      setSelected(title);
-      navigate(to);
+  const [selectedNavItem, setSelectedNavItem] = useState('Dashboard');
+  
+
+  let hoverStyles = {
+    color: isActive ? activeColor : defaultColor,
+  };
+
+  const handleClick = (e, selectedTitle) => {
+    console.log(to, 'toooo')
+    navigate(to);
+    // isActive = selected === title && !isCollapsed;
+    isActive = selectedTitle === title;
+    sessionStorage.setItem('selectedTitle', selectedTitle);
+    //console.log(sessionStorage.getItem('selectedTitle'), selectedTitle, title, 'selectedTitle === title')
+    setSelectedNavItem(sessionStorage.getItem('selectedTitle'));
+    // selectedItem(title);
+    textColor = isActive ? activeColor : defaultColor;
+    hoverStyles = {
+      color: isActive ? activeColor : defaultColor,
+    };
+    if(to === '/login') {
+      console.log('handleSignOut called');
+      // setUserData(null);
+      sessionStorage.removeItem('accessToken');
+      delete axios.defaults.headers.common['Authorization'];
+      console.log(axios.defaults.headers.common.Authorization);
+      navigate('/login');
     }
-    
-    if (onClick) {
-      onClick(); // Call the onClick prop when the item is clicked
-    }
+    // if (onClick) {
+    //   onClick(); // Call the onClick prop when the item is clicked
+    // }
   };
 
   const baseStyles = {
@@ -42,15 +64,12 @@ const Item = ({ title, to, icon, selected, setSelected,onClick, isCollapsed }) =
     transition: 'background-color 0.3s, color 0.3s',
   };
 
-  const hoverStyles = {
-    backgroundColor: isActive ? '#03609C' : 'transparent',
-    color: isActive ? activeColor : defaultColor,
-  };
+  //console.log(sessionStorage.getItem('selectedTitle'), title, textColor, 'textColor')
 
     return (
         // <Link to={to} style={{ textDecoration: 'none', color: 'inherit' }}>
         <div
-        onClick={handleClick}
+        onClick={(e) => handleClick(e, title)}
         style={{
           ...baseStyles,
           ...(isCollapsed ? {} : hoverStyles), // Apply hover styles only when not collapsed
@@ -59,12 +78,14 @@ const Item = ({ title, to, icon, selected, setSelected,onClick, isCollapsed }) =
       >
           {isCollapsed ? (
               // Display only the icon when the sidebar is collapsed
-              icon
+              <>
+                {React.cloneElement(icon, { style: { color: sessionStorage.getItem('selectedTitle') === title ? activeColor : defaultColor, marginRight: '10px' } })}
+              </>
           ) : (
               // Display the icon and title when the sidebar is not collapsed
               <>
-              {React.cloneElement(icon, { style: { color: textColor, marginRight: '10px' } })}
-              <Typography fontSize="20px">{title}</Typography>
+              {React.cloneElement(icon, { style: { color: sessionStorage.getItem('selectedTitle') === title ? activeColor : defaultColor, marginRight: '10px' } })}
+              <Typography fontSize="20px" style={{ color: sessionStorage.getItem('selectedTitle') === title ? activeColor : defaultColor }}>{title}</Typography>
               </>
           )}
           {/* <Link to={to} /> */}
@@ -76,14 +97,9 @@ const Item = ({ title, to, icon, selected, setSelected,onClick, isCollapsed }) =
 const SideBar = () => {
     //const theme=useTheme();
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [selected, setSelected] = useState('Dashboard');
+    const [selected, setSelected] = useState('');
     const [userData, setUserData] = useState(null);
     const navigate = useNavigate();
-
-    const handleClick = (title, to) => {
-      setSelected(title);
-      navigate(to);
-    };
 
     useEffect(() => {
       const storedUsername = sessionStorage.getItem("userName");
@@ -94,6 +110,7 @@ const SideBar = () => {
       if (storedCollapsed !== null) {
         setIsCollapsed(storedCollapsed === "true");
       }
+      setSelected('Dashboard');
     }, []);
 
     useEffect(() => {
@@ -116,9 +133,14 @@ const SideBar = () => {
       sessionStorage.setItem("sidebarCollapsed", isCollapsed);
     }, [isCollapsed]);
 
-    
+    // const handleClick = (title, to) => {
+    //   console.log(title, to, 'title, to')
+    //   setSelected(title);
+    //   navigate(to);
+    // };
 
     const handleSignOut = () => {
+      console.log('handleSignOut called');
       setUserData(null);
       sessionStorage.removeItem('accessToken');
       delete axios.defaults.headers.common['Authorization'];
@@ -183,7 +205,8 @@ const SideBar = () => {
                 to="/dashboard"
                 icon={<DashboardIcon style={{ color: 'white' }} />}
                 selected={selected}
-                setSelected={handleClick}
+                // selectedItem={handleClick}
+                selectedItem={'Hello'}
                 isCollapsed={isCollapsed}
             />
           </Box>
@@ -194,7 +217,8 @@ const SideBar = () => {
               to="/topics"
               icon={<SubjectOutlinedIcon style={{ color: 'white' }} />}
               selected={selected}
-              setSelected={handleClick}
+              // selectedItem={handleClick}
+                selectedItem={'Hello'}
               isCollapsed={isCollapsed}
             />
           </Box>
@@ -205,13 +229,14 @@ const SideBar = () => {
               to="/createtopic"
               icon={<CreateNewFolderIcon style={{ color: 'white' }} />}
               selected={selected}
-              setSelected={handleClick}
+              // selectedItem={handleClick}
+                selectedItem={'Hello'}
               isCollapsed={isCollapsed}
             />
           </Box>
 
           {!isCollapsed && (
-            <Box mt="200px">
+            <Box mt="160px">
               
               <Box textAlign="center">
                 {userData ? (
@@ -232,12 +257,13 @@ const SideBar = () => {
               to="/settings"
               icon={<SettingsOutlinedIcon style={{ color: 'white' }} />}
               selected={selected}
-              setSelected={handleClick}
+              // selectedItem={handleClick}
+                selectedItem={'Hello'}
               isCollapsed={isCollapsed}
             />
           </Box>
           
-          <Box mt="20px">
+          <Box mt="60px">
             <Item
               title="Log Out"
               to="/login"
@@ -245,7 +271,7 @@ const SideBar = () => {
                   <LogoutIcon />
               }
               selected={selected}
-              setSelected={setSelected}
+              selectedItem={setSelected}
               isCollapsed={isCollapsed}
               onClick={handleSignOut}
             />

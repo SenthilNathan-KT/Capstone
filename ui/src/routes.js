@@ -18,7 +18,7 @@ const NotFound = () => <h1>404 Page Not Found</h1>;
 const AppRoutes = () => {
     const isLoggedIn = !!sessionStorage.getItem('accessToken');
     console.log(isLoggedIn, 'isLoggedIn');
-    const [notificationCount, setNotificationCount] = useState(0);
+    sessionStorage.setItem('selectedTitle', 'Dashboard');
 
     return (
         <>

@@ -27,20 +27,20 @@ const UpdateTopic = () => {
     if (authToken) {
       if (!isImageUploaded) {
         // Set default image URL if no image is uploaded
-        values.image = "/assets/images/casual-life-3d-lamp-books-and-objects-for-studying.png";
+        values.image = "/assets/images/default.png";
       } else {
         // If an image is uploaded, use the base64 encoded image
         values.image = base64Image;
       }
 
       try {
-        const config = {
+        const configAuth = {
           headers: {
             authorization: `Bearer ${authToken}`,
           },
         };
 
-        const response = await axios.put(`${config.apiUrl}topics/${selectedTopic._id}`, values, config);
+        const response = await axios.put(`${config.apiUrl}topics/${selectedTopic._id}`, values, configAuth);
 
         console.log("Topic updated:", response.data);
 
@@ -142,7 +142,7 @@ const UpdateTopic = () => {
             <h2>EDIT TOPIC</h2>
             <label htmlFor="image-upload">
               <Avatar
-                src={isImageUploaded ? base64Image : (selectedTopic && selectedTopic.image) ? selectedTopic.image : "/assets/images/casual-life-3d-lamp-books-and-objects-for-studying.png"}
+                src={isImageUploaded ? base64Image : (selectedTopic && selectedTopic.image) ? selectedTopic.image : "/assets/images/default.png"}
                 alt="User Profile"
                 sx={{ width: 100, height: 100, marginTop: 10, cursor: "pointer" }}
               />

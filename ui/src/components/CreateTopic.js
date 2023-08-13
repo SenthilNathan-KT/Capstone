@@ -1,4 +1,5 @@
 import { useState } from "react";
+import config from '../config';
 import { Box, Button, TextField, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Formik } from "formik";
@@ -11,7 +12,7 @@ import TopBar from "./TopBar";
 import SideBar from "./SideBar";
 import axios from "axios";
 import { useTheme } from '@mui/material/styles';
-import config from '../config';
+
 
 
 const Form = () => {
@@ -47,15 +48,17 @@ const Form = () => {
         values.image = base64Image;
       }
       try {
-        const config = {
+        const configAuth = {
           headers: {
             authorization: `Bearer ${authToken}`,
           },
         };
-        const response = await axios.post(
-          `${config.apiUrl}topic`,
+        let url='topic';
+        console.log("API URL:", config.apiUrl);
+        console.log("API URL:", `${config.apiUrl}+${url}`);
+        const response = await axios.post(`${config.apiUrl}topic`,
           values,
-          config
+          configAuth
         );
 
         console.log("Topic created:", response.data);
