@@ -19,18 +19,21 @@ module.exports = async (req, res) => {
                     // console.log("New Password Matches");
                     user.password = req.body.newPassword;
                     user.save();
-                    message = "Password Updated Successfully";
                     statusCode = 200;
+                    message = "Password Updated Successfully";
                 } else {
                     console.log("New Password does not match");
                     message = "New password and Confirm Password does not match";
                 }
             }
+        } else if(req.body.hasOwnProperty('userName')) {
+            user.userName = req.body.userName;
+            user.save();
+
+            statusCode = 200;
+            message = "Username Updated Successfully";
         } else {
-            if(req.body.hasOwnProperty('userName')) {
-                user.userName = req.body.userName;
-                user.save();
-            }
+            message = "Username and password fields are empty";
         }
 
     }
