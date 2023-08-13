@@ -6,7 +6,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import CreateTopic from './components/CreateTopic';
 import CreateQuiz from './components/CreateQuiz';
-import SharedFolder from './components/SharedFolder';
+//import SharedFolder from './components/SharedFolder';
 import UpdateTopic from './components/UpdateTopic';
 import TopicDetails from './components/TopicDetails';
 import ListTopics from './components/ListTopics';
@@ -32,10 +32,7 @@ const AppRoutes = () => {
                     <Route 
                         path="/dashboard" 
                         element={
-                            <Dashboard 
-                                setNotificationCount={setNotificationCount} 
-                                triggerNotification={() => setNotificationCount((prevCount) => prevCount + 1)} 
-                            /> }
+                            <Dashboard /> }
                     />
                     <Route path="/createtopic" element={<CreateTopic />} />
                     <Route path="/updatetopic/:id" element={<UpdateTopic />} />
@@ -43,7 +40,7 @@ const AppRoutes = () => {
                     <Route path="/topics/:topicId" element={<TopicDetails />} />
                     <Route path="/topics/:topicId/quiz" element={<CreateQuiz />} />
                     <Route path="/settings" element={<UpdateUser />} />
-                    <Route path="/sharedfolder" element={<SharedFolder />} />
+                    {/* <Route path="/sharedfolder" element={<SharedFolder />} /> */}
                 </>
             ) : null}
             {/* Add a catch-all route for 404 page */}

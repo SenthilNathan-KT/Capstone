@@ -11,6 +11,7 @@ import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import LogoutIcon from '@mui/icons-material/Logout';
 import axios from 'axios';
+import config from '../config';
 
 const Item = ({ title, to, icon, selected, setSelected,onClick, isCollapsed }) => {
   const isActive = selected === title && !isCollapsed;
@@ -22,8 +23,11 @@ const Item = ({ title, to, icon, selected, setSelected,onClick, isCollapsed }) =
   const navigate = useNavigate();
 
   const handleClick = () => {
-    setSelected(title);
-    navigate(to);
+    if (selected !== title) {
+      setSelected(title);
+      navigate(to);
+    }
+    
     if (onClick) {
       onClick(); // Call the onClick prop when the item is clicked
     }
@@ -76,6 +80,11 @@ const SideBar = () => {
     const [userData, setUserData] = useState(null);
     const navigate = useNavigate();
 
+    const handleClick = (title, to) => {
+      setSelected(title);
+      navigate(to);
+    };
+
     useEffect(() => {
       const storedUsername = sessionStorage.getItem("userName");
       if (storedUsername) {
@@ -107,10 +116,7 @@ const SideBar = () => {
       sessionStorage.setItem("sidebarCollapsed", isCollapsed);
     }, [isCollapsed]);
 
-    const handleClick = (title, to) => {
-      setSelected(title);
-      navigate(to);
-    };
+    
 
     const handleSignOut = () => {
       setUserData(null);

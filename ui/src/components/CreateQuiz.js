@@ -11,6 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from '@mui/material/styles';
+import config from '../config';
 
 
 const Form = () => {
@@ -50,7 +51,7 @@ const Form = () => {
         
 
         const selectedTopic = topicId;
-        const response = await axios.post(`http://localhost:3001/topics/${topicId}/quiz`, values, config);
+        const response = await axios.post(`${config.apiUrl}topics/${topicId}/quiz`, values, config);
         //const { topicId: createdTopicId } = response.data;
         // const response = await axios.post("http://localhost:3001/quiz", values);
         console.log("Quiz created:", response.data);
@@ -126,21 +127,9 @@ const Form = () => {
     <Box display="flex">
       <Box position="fixed" top={0} left={0} bottom={0} bgcolor="#f5f5f5" zIndex={10}>
         <SideBar />
-      </Box> {/* Sidebar component displayed only on non-mobile devices */}
+      </Box> 
       <Box flex="1">
-        <Box
-          top={0}
-          left={isNonMobile ? 340 : 0}
-          bgcolor="#fff"
-          ml={isSidebarCollapsed ? 10 : (isNonMobile ? 40 : 0)}
-          flexGrow={1}
-          p={isNonMobile ? 3 : 0}
-          transition="margin-left 0.3s"
-        >
-          <TopBar
-            setSearchQuery={setSearchQuery}
-          />
-        </Box>
+        
         <Box ml={isSidebarCollapsed ? 10 : 0}>
         <Box 
           m="10px"
@@ -150,7 +139,7 @@ const Form = () => {
           backgroundColor="white"
           overflowY="auto"
           flex="1"
-          p={isNonMobile ? 3 : 0}
+          p={isNonMobile ? 1 : 0}
           transition="margin-left 0.3s, width 0.3s"
           zIndex={1} 
         >
@@ -231,11 +220,7 @@ const Form = () => {
                             !!touched.description &&
                             (!!errors.description || getWordCount(values.description) > 500)
                           }
-                          // helperText={
-                          //   touched.description
-                          //     ? errors.description || 'Quiz text can have at most 500 words'
-                          //     : ""
-                          // }
+                          helperText={touched.description && errors.description}
                           sx={{ mb: 1 }}
                         />
                         <Typography variant="caption" sx={{ textAlign: "right" }}>

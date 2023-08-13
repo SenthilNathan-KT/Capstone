@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import config from '../config';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const Login = () => {
   const handleLogin = async (values, { setFieldError }) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/auth/login",
+        `${config.apiUrl}auth/login`,
         values
       );
       //const { success, message } = response.data;
