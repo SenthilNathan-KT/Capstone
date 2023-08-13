@@ -27,10 +27,10 @@ module.exports = async (req, res) => {
                 }
             }
         } else {
-            console.log("No password found");
-                // oldPassword: req.body.oldPassword,
-                // newPassword: req.body.newPassword,
-                // confirmPassword: req.body.oldPassword, // TODO
+            if(req.body.hasOwnProperty('userName')) {
+                user.userName = req.body.userName;
+                user.save();
+            }
         }
 
     }
