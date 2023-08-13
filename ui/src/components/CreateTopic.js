@@ -9,6 +9,8 @@ import Avatar from "@mui/material/Avatar";
 import { useNavigate } from "react-router-dom";
 import TopBar from "./TopBar";
 // import NavHeader from "./NavHeader";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import SideBar from "./SideBar";
 import axios from "axios";
 import { useTheme } from '@mui/material/styles';
@@ -73,6 +75,9 @@ const Form = () => {
       } catch (error) {
         handleJwtExpirationError(error);
         console.error("Error creating topic:", error);
+        toast.error(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
         if (error.response.status === 403) {
           navigate('/login');
         }
@@ -243,6 +248,7 @@ const Form = () => {
         </Box>
         </Box>
       </Box>
+      <ToastContainer position="top-center" autoClose={3000} />
     </Box>
   );
 };

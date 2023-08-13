@@ -10,6 +10,9 @@ import SideBar from './SideBar';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles';
 import config from '../config';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const ListTopics = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -20,6 +23,7 @@ const ListTopics = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const theme = useTheme();
   const isSidebarCollapsed = useMediaQuery("(max-width: 1215px)");
+  const [topicCount, setTopicCount] = useState(0);
 
   const handleJwtExpirationError = (error) => {
     if (error.response && error.response.status === 403) {
@@ -42,12 +46,21 @@ const ListTopics = () => {
       .then(response => {
         console.log('Response from /topics:', response.data);
         setTopics(response.data.allTopics);
+        setTopicCount(response.data.allTopics.length);
+        showTopicCreatedToast();
       })
       .catch(error => {
         handleJwtExpirationError(error);
         console.error('API Error:', error);
       });
   }, []);
+
+  const showTopicCreatedToast = () => {
+    toast.success("Topic created successfully!", {
+      position: toast.POSITION.TOP_CENTER,
+      autoClose: 3000, // Close after 3 seconds
+    });
+  };
 
   const handleEditTopic = (topic) => {
     setSelectedTopic(topic);
@@ -61,6 +74,7 @@ const ListTopics = () => {
 
   const handleCreateTopic = () => {
     navigate('/createtopic');
+    
   };
 
   const confirmDeleteTopic = () => {
@@ -284,6 +298,7 @@ const ListTopics = () => {
           </Box>
         </DialogActions>
       </Dialog>
+      <ToastContainer position="top-center" autoClose={3000} />
     </Box>
   );
 };

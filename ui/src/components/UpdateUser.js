@@ -9,6 +9,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SideBar from './SideBar';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import config from '../config';
 
 const UpdateUser = () => {
@@ -28,6 +30,9 @@ const UpdateUser = () => {
       navigate('/login');
     } else {
       console.error("API Error:", error);
+      toast.error(error.response.data.message, {
+        position: toast.POSITION.TOP_CENTER,
+      });
     }
   };
   
@@ -42,25 +47,53 @@ const UpdateUser = () => {
         return;
       }
 
-      const requestData = {
-        oldPassword: values.oldPassword,
-        newPassword: values.newPassword,
-        confirmPassword: values.confirmPassword,
-      };
+      if (activeForm === 'password') {
+        console.log('password clicked');
+        // For password change
+        const requestData = {
+          oldPassword: values.oldPassword,
+          newPassword: values.newPassword,
+          confirmPassword: values.confirmPassword,
+        };
 
-      console.log('Sending request data:', requestData);
+        console.log('Sending password change request data:', requestData);
 
-      const response = await axios.put(`${config.apiUrl}settings`, requestData, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+        const response = await axios.put(`${config.apiUrl}settings`, requestData, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+
+        console.log('Password updated successfully:', response.data);
+
+        values.oldPassword = '';
+        values.newPassword = '';
+        values.confirmPassword = '';
       
-      console.log('Password updated successfully:', response.data);
-      
-      values.oldPassword = "";
-      values.newPassword = "";
-      values.confirmPassword = "";
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (activeForm === 'username') {
+        console.log('username clicked');
+        // For username change
+        const requestData = {
+          userName: values.userName, // Send the new username to the backend
+        };
+
+        console.log('Sending username change request data:', requestData);
+        const response = await axios.put(`${config.apiUrl}settings`, requestData, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+
+        console.log('Username updated successfully:', response.data);
+        setUserName(response.data.userName); // Update the local state with the new username
+
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      }
     } catch (error) {
       handleJwtExpirationError(error);
       if (error.response && error.response.status === 400 && error.response.data.message === 'Kindly enter the valid old password') {
@@ -71,7 +104,9 @@ const UpdateUser = () => {
         sessionStorage.removeItem('accessToken');
         navigate('/login');
       } else {
-        console.error('Error updating password:', error);
+        toast.error(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
       }
     }
   };
@@ -126,13 +161,19 @@ const UpdateUser = () => {
 
   const checkoutSchema = object().shape({
     oldPassword: string()
-    .required('Old password is required'),
+      .required('Old password is required'),
     newPassword: string()
       .required('New password is required')
       .min(6, 'Password must be at least 6 characters'),
     confirmPassword: string()
       .required('Confirm password is required')
       .oneOf([ref('newPassword'), null], 'Passwords must match'),
+  });
+  
+  const validateSchema = object().shape({
+    userName: string()
+      .required('New username is required')
+      .min(6, 'Username must be at least 6 characters'),
   });
 
   return (
@@ -198,11 +239,11 @@ const UpdateUser = () => {
               </Box>
               {activeForm === 'username' && (
                 <Formik
-                  initialValues={{
-                    newUsername: '',
-                  }}
-                  //validationSchema={/* Add validation schema for username change */}
-                  onSubmit={handleFormSubmit}
+                initialValues={{
+                  userName: '',
+                }}
+                validationSchema={validateSchema} 
+                onSubmit={handleFormSubmit}
                 >
                   {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isValid }) => (
                     <form onSubmit={handleSubmit}>
@@ -220,12 +261,12 @@ const UpdateUser = () => {
                           label="New Username"
                           variant="outlined"
                           type="text"
-                          name="newUsername"
+                          name="userName"
                           onBlur={handleBlur}
                           onChange={handleChange}
-                          value={values.newUsername}
-                          error={touched.newUsername && errors.newUsername}
-                          helperText={touched.newUsername && errors.newUsername}
+                          value={values.userName}
+                          error={touched.userName && errors.userName}
+                          helperText={touched.userName && errors.userName}
                           style={{ marginBottom: '20px', width: '100%' }}
                         />
                       </Box>
@@ -330,6 +371,7 @@ const UpdateUser = () => {
         </Box>
       </Box>
       </Box>
+      <ToastContainer position="top-center" autoClose={3000} />
     </Box>
   );
 };

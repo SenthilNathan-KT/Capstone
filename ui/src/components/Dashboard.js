@@ -10,6 +10,8 @@ import AddIcon from '@mui/icons-material/Add';
 import SideBar from './SideBar';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import config from '../config';
 
 
@@ -26,6 +28,7 @@ const Dashboard = () => {
   const [topicCount, setTopicCount] = useState(0);
   const [quizCount, setQuizCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  //const [topicCount, setTopicCount] = useState(0);
 
   const handleJwtExpirationError = (error) => {
     if (error.response && error.response.status === 403) {
@@ -51,6 +54,8 @@ const Dashboard = () => {
         setTopicCount(response.data.topicCount);
         setQuizCount(response.data.quizCount);
         setLoading(false);
+        setTopicCount(response.data.allTopics.length);
+        showTopicCreatedToast();
       })
       .catch(error => {
         handleJwtExpirationError(error);
@@ -58,6 +63,12 @@ const Dashboard = () => {
       });
   }, []);
 
+  const showTopicCreatedToast = () => {
+    toast.success("Topic created successfully!", {
+      position: toast.POSITION.TOP_CENTER,
+      autoClose: 3000, // Close after 3 seconds
+    });
+  };
 
   const handleEditTopic = (topic) => {
     setSelectedTopic(topic);
@@ -76,10 +87,17 @@ const Dashboard = () => {
         setTopics((prevTopics) => prevTopics.filter((t) => t._id !== selectedTopic._id));
         setIsDeleteModalOpen(false);
         window.location.reload();
+
+        toast.success('Topic deleted successfully', {
+          position: toast.POSITION.TOP_CENTER
+        });
         
       })
       .catch((error) => {
         console.error('Error deleting topic:', error);
+        toast.error(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
       });
   };
 
@@ -351,6 +369,7 @@ const Dashboard = () => {
           </Box>
         </DialogActions>
       </Dialog>
+      <ToastContainer position="top-center" autoClose={3000} />
     </Box>
   );
 };
