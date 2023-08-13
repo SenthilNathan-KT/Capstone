@@ -192,7 +192,7 @@ const TopicDetails = () => {
                     <Typography variant="body2" style={{ marginLeft: '40px' }}>No. of Questions: {quiz.totalQuestions}</Typography>
                   </Box>
                   
-                  <IconButton type="button" sx={{ p: 1,color:'#CD5C5C' }} onClick={() => handleDeleteQuiz(quiz)}>
+                  <IconButton type="button" sx={{ p: 1,marginRight:'15px',marginLeft: 'auto',color:'#CD5C5C' }} onClick={() => handleDeleteQuiz(quiz)}>
                     <DeleteOutlineOutlinedIcon />
                   </IconButton>
                 </Paper>
@@ -247,7 +247,7 @@ const TopicDetails = () => {
       </Dialog>
       <Snackbar
         open={showDownloadAppSnackbar}
-        autoHideDuration={6000}
+        autoHideDuration={2000}
         onClose={() => setShowDownloadAppSnackbar(false)}
         style={{
           display: 'flex',

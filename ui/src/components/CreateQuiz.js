@@ -220,11 +220,7 @@ const Form = () => {
                             !!touched.description &&
                             (!!errors.description || getWordCount(values.description) > 500)
                           }
-                          // helperText={
-                          //   touched.description
-                          //     ? errors.description || 'Quiz text can have at most 500 words'
-                          //     : ""
-                          // }
+                          helperText={touched.description && errors.description}
                           sx={{ mb: 1 }}
                         />
                         <Typography variant="caption" sx={{ textAlign: "right" }}>
