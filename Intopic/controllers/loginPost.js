@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
             userObj.userId = user._id;
             userObj.email= user.email;
             userObj.userName= user.userName;
-            userObj.token = jwt.sign(userObj, process.env.JSON_WEB_TOKEN_KEY, { expiresIn: "1h" });
+            userObj.token = jwt.sign(userObj, process.env.JSON_WEB_TOKEN_KEY, { expiresIn: "2h" });
             // console.log("User obj after token " + user);
             // console.log("token " + userObj.token);
         } else {
