@@ -38,12 +38,12 @@ const Form = () => {
 
     if (authToken) {
       if (!isImageUploaded) {
-        values.image = "/assets/images/casual-life-3d-lamp-books-and-objects-for-studying.png";
+        values.image = "/assets/images/default.png";
       } else {
         values.image = base64Image;
       }
       try {
-        const config = {
+        const configAuth = {
           headers: {
             authorization: `Bearer ${authToken}`,
           },
@@ -51,7 +51,7 @@ const Form = () => {
         
 
         const selectedTopic = topicId;
-        const response = await axios.post(`${config.apiUrl}topics/${topicId}/quiz`, values, config);
+        const response = await axios.post(`${config.apiUrl}topics/${topicId}/quiz`, values, configAuth);
         //const { topicId: createdTopicId } = response.data;
         // const response = await axios.post("http://localhost:3001/quiz", values);
         console.log("Quiz created:", response.data);
@@ -147,7 +147,7 @@ const Form = () => {
             <h2>CREATE QUIZ</h2>
             <label htmlFor="image-upload">
               <Avatar
-                src={isImageUploaded ? base64Image : "/assets/images/casual-life-3d-lamp-books-and-objects-for-studying.png"}
+                src={isImageUploaded ? base64Image : "/assets/images/default.png"}
                 alt="User Profile"
                 sx={{ width: 100, height: 100, marginTop: 10, cursor: "pointer" }}
               />

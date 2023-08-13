@@ -179,7 +179,7 @@ const UpdateUser = () => {
               </Typography>
               <Typography variant="h6" style={{ marginBottom: '10px'}}>Username: {userName}</Typography>
               <Typography variant="h6" style={{ marginBottom: '40px'}}>Email: {email}</Typography>
-              <Box style={{ marginBottom: '30px' }}>
+              <Box style={{ marginBottom: '60px' }}>
                 <Button
                   onClick={() => handleFormChange('username')}
                   variant="outlined"
@@ -206,7 +206,7 @@ const UpdateUser = () => {
                 >
                   {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isValid }) => (
                     <form onSubmit={handleSubmit}>
-                      <Box>
+                      {/* <Box>
                         <TextField
                           label="Old Username"
                           variant="outlined"
@@ -214,7 +214,7 @@ const UpdateUser = () => {
                           value={userName}
                           style={{ marginBottom: '20px', width: '100%' }}
                         />
-                      </Box>
+                      </Box> */}
                       <Box>
                         <TextField
                           label="New Username"
