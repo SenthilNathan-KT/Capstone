@@ -12,6 +12,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from '@mui/material/styles';
 import config from '../config';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 const Form = () => {
@@ -21,6 +22,8 @@ const Form = () => {
   const { topicId } = useParams();
   const theme = useTheme();
   const isSidebarCollapsed = useMediaQuery("(max-width: 1215px)");
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const handleJwtExpirationError = (error) => {
     if (error.response && error.response.status === 403) {
@@ -32,6 +35,7 @@ const Form = () => {
   };
   
   const handleFormSubmit = async (values) => {
+    setIsLoading(true);
     console.log("Form submitted:", sessionStorage.getItem("accessToken"));
     const authToken = sessionStorage.getItem("accessToken");
     console.log("Auth Token:", authToken);
@@ -58,12 +62,19 @@ const Form = () => {
         
         setBase64Image("");
         setIsImageUploaded(false);
-        
+        setIsLoading(false);
         navigate(`/topics/${selectedTopic}`);
-        toast.success("Your quiz has been created successfully. To take the quiz, please download our app.");
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
       } catch (error) {
         handleJwtExpirationError(error);
+        setIsLoading(false);
+        toast.error(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
         console.error("Error creating quiz:", error);
+        
       }
     } else {
       // Handle the case when the authToken is not valid or doesn't exist
@@ -265,9 +276,18 @@ const Form = () => {
                           variant="contained" onClick={handleCancel}>
                         Cancel
                       </Button>
-                      <Button type="submit" color="primary" variant="contained">
-                        Create Quiz
+                      {isLoading ? (
+                      <CircularProgress size={24} /> // Show spinner while loading
+                    ) : (
+                      <Button
+                        type="submit"
+                        color="primary"
+                        variant="contained"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? 'Creating Quiz...' : 'Create Quiz'}
                       </Button>
+                    )}
                     </Box>
               </form>
             )}
@@ -276,7 +296,7 @@ const Form = () => {
         </Box>
         </Box>
       </Box>
-      <ToastContainer />
+      <ToastContainer position="top-center" autoClose={3000} />
     </Box>
   );
 };
