@@ -87,12 +87,17 @@ const UpdateUser = () => {
           },
         });
 
+        values.userName = '';
         console.log('Username updated successfully:', response.data);
+        sessionStorage.setItem('userName', response.data.userName);
         setUserName(response.data.userName); // Update the local state with the new username
-
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
+
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 100);
       }
     } catch (error) {
       handleJwtExpirationError(error);
@@ -139,6 +144,9 @@ const UpdateUser = () => {
       const { userName, email } = response.data;
       setUserName(userName);
       setEmail(email);
+
+      sessionStorage.setItem('userName', userName);
+
     } catch (error) {
       handleJwtExpirationError(error);
       console.error('Error fetching user settings:', error);
@@ -179,7 +187,7 @@ const UpdateUser = () => {
   return (
     <Box display="flex">
       <Box position="fixed" top={0} left={0} bottom={0} bgcolor="#f5f5f5" zIndex={10}>
-        <SideBar />
+        <SideBar userName={userName} />
       </Box> 
       <Box flex="1" display="flex" flexDirection="column" height="100vh">
         

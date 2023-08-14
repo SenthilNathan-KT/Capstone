@@ -37,8 +37,11 @@ const Register = () => {
       });
       
     } catch (error) {
-      console.error('Error during registration:', error);
+      console.log('Error during registration:', error);
       // Handle the registration error
+      toast.error(error.response.data.message[0], {
+        position: toast.POSITION.TOP_CENTER
+      });
     }
   };
 

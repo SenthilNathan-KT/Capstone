@@ -94,7 +94,7 @@ const Item = ({ title, to, icon, selected, selectedItem, onClick, isCollapsed })
     );
   };
 
-const SideBar = () => {
+const SideBar = (props) => {
     //const theme=useTheme();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState('');
@@ -127,6 +127,13 @@ const SideBar = () => {
           window.removeEventListener("resize", handleWindowResize);
       };
   }, []);
+
+  useEffect(() => {
+    if(props.userName) {
+      setUserData({ userName: props.userName });
+    }
+    console.log(sessionStorage.getItem("userName"), props.userName, 'sessionStorage.getItem("userName")')
+  }, [props.userName])
 
     useEffect(() => {
       // Store the collapsed state in local storage
