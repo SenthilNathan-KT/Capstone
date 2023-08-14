@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, IconButton, Typography,Card,Fab, CardContent, Paper, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import AddIcon from '@mui/icons-material/Add';
@@ -46,8 +47,8 @@ const ListTopics = () => {
       .then(response => {
         console.log('Response from /topics:', response.data);
         setTopics(response.data.allTopics);
-        setTopicCount(response.data.allTopics.length);
-        showTopicCreatedToast();
+        //setTopicCount(response.data.allTopics.length);
+        //showTopicCreatedToast();
       })
       .catch(error => {
         handleJwtExpirationError(error);
@@ -55,12 +56,12 @@ const ListTopics = () => {
       });
   }, []);
 
-  const showTopicCreatedToast = () => {
-    toast.success("Topic created successfully!", {
-      position: toast.POSITION.TOP_CENTER,
-      autoClose: 3000, // Close after 3 seconds
-    });
-  };
+  // const showTopicCreatedToast = () => {
+  //   toast.success("Topic created successfully!", {
+  //     position: toast.POSITION.TOP_CENTER,
+  //     autoClose: 3000, // Close after 3 seconds
+  //   });
+  // };
 
   const handleEditTopic = (topic) => {
     setSelectedTopic(topic);
@@ -76,6 +77,10 @@ const ListTopics = () => {
     navigate('/createtopic');
     
   };
+
+  const handleBack = () => {
+    navigate(-1);
+  }
 
   const confirmDeleteTopic = () => {
     axios.delete(`${config.apiUrl}topics/${selectedTopic._id}`)
@@ -129,6 +134,17 @@ const ListTopics = () => {
             transition="margin-left 0.3s, width 0.3s"
             zIndex={1} 
           >
+            <IconButton
+            type="button"
+            sx={{
+              p: 1,
+              color: "#03609C",
+              mr: "10px",
+            }}
+              onClick={handleBack}
+            >
+            <ArrowBackIcon />
+          </IconButton>
           <Typography variant='h4' style={{ textAlign:'center', fontWeight:'bold', marginTop:'20px', marginBottom:'20px', color:'#03609C' }}>Topics</Typography>
           <Box display="flex" flexWrap="wrap" justifyContent="center">
           <Tooltip title="Create Topic" placement="top"
@@ -161,7 +177,7 @@ const ListTopics = () => {
                 alignItems="center"
                 justifyContent="center"
               >
-                <Typography variant="h6" color="textSecondary">
+                <Typography variant="h6" color="textSecondary" paddingTop="240px">
                   No topics to show.
                 </Typography>
               </Box>

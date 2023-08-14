@@ -55,7 +55,7 @@ const Dashboard = () => {
         setQuizCount(response.data.quizCount);
         setLoading(false);
         setTopicCount(response.data.allTopics.length);
-        showTopicCreatedToast();
+        //showTopicCreatedToast();
       })
       .catch(error => {
         handleJwtExpirationError(error);
@@ -63,12 +63,12 @@ const Dashboard = () => {
       });
   }, []);
 
-  const showTopicCreatedToast = () => {
-    toast.success("Topic created successfully!", {
-      position: toast.POSITION.TOP_CENTER,
-      autoClose: 3000, // Close after 3 seconds
-    });
-  };
+  // const showTopicCreatedToast = () => {
+  //   toast.success("Topic created successfully!", {
+  //     position: toast.POSITION.TOP_CENTER,
+  //     autoClose: 3000, // Close after 3 seconds
+  //   });
+  // };
 
   const handleEditTopic = (topic) => {
     setSelectedTopic(topic);
@@ -87,10 +87,6 @@ const Dashboard = () => {
         setTopics((prevTopics) => prevTopics.filter((t) => t._id !== selectedTopic._id));
         setIsDeleteModalOpen(false);
         window.location.reload();
-
-        toast.success('Topic deleted successfully', {
-          position: toast.POSITION.TOP_CENTER
-        });
         
       })
       .catch((error) => {
