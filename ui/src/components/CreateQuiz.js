@@ -71,7 +71,7 @@ const Form = () => {
       } catch (error) {
         handleJwtExpirationError(error);
         setIsLoading(false);
-        toast.error(error.response.data.message, {
+        toast.error(error.response.data.message[0], {
           position: toast.POSITION.TOP_CENTER,
         });
         console.error("Error creating quiz:", error);

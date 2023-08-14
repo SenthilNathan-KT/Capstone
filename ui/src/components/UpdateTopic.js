@@ -10,6 +10,8 @@ import SideBar from "./SideBar";
 import axios from "axios";
 import { useTheme } from '@mui/material/styles';
 import config from '../config';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UpdateTopic = () => {
   const navigate = useNavigate();
@@ -49,7 +51,11 @@ const UpdateTopic = () => {
         values.description = "";
         setBase64Image("");
         setIsImageUploaded(false);
-        navigate('/dashboard');
+        //navigate('/dashboard');
+
+        toast.success(response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
       } catch (error) {
         console.error("Error updating topic:", error);
         if (error.response && error.response.status === 403) {
@@ -232,6 +238,7 @@ const UpdateTopic = () => {
         </Box>
         </Box>
       </Box>
+      <ToastContainer position="top-center" autoClose={3000} />
     </Box>
   );
 };

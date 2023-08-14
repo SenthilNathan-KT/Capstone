@@ -78,7 +78,7 @@ const Form = () => {
       } catch (error) {
         handleJwtExpirationError(error);
         console.error("Error creating topic:", error);
-        toast.error(error.response.data.message, {
+        toast.error(error.response.data.message[0], {
           position: toast.POSITION.TOP_CENTER,
         });
         if (error.response.status === 403) {

@@ -65,6 +65,9 @@ const TopicDetails = () => {
         handleJwtExpirationError(error);
         setLoading(false);
         console.error('Error fetching quizzes:', error);
+        toast.error(error.response.data.message[0], {
+          position: toast.POSITION.TOP_CENTER,
+        });
       });
   }, [topicId, navigate, quizzes.length]);
 
