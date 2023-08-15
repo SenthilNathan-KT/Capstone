@@ -51,7 +51,7 @@ const styles = {
       },
       logoImage: {
         height: '40px',
-        marginRight: '10px',
+        marginRight: '80px',
       },
     navbarLinks: {
       listStyle: 'none',

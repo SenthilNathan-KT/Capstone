@@ -47,7 +47,7 @@ const styles = {
   },
   content: {
     //maxWidth: '1200px',
-    margin: '80px',
+    margin: '80px 0',
   },
   block: {
     display: 'flex',
