@@ -14,6 +14,8 @@ import { Snackbar } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import WarningIcon from '@mui/icons-material/Warning';
 import config from '../config';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TopicDetails = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -25,7 +27,6 @@ const TopicDetails = () => {
   const { topicId } = useParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-  const [showToast, setShowToast] = useState(false);
   const theme = useTheme();
   const isSidebarCollapsed = useMediaQuery("(max-width: 1215px)");
   const [showDownloadAppSnackbar, setShowDownloadAppSnackbar] = useState(false);
@@ -55,6 +56,7 @@ const TopicDetails = () => {
         setSelectedTopic(response.data.topic[0]);
         if (response.data.quizzes.length > quizzes.length) {
           setShowDownloadAppSnackbar(true);
+          //showQuizCreatedToast();
         }
         setLoading(false);
         //setShowToast(true);
@@ -63,13 +65,19 @@ const TopicDetails = () => {
         handleJwtExpirationError(error);
         setLoading(false);
         console.error('Error fetching quizzes:', error);
+        toast.error(error.response.data.message[0], {
+          position: toast.POSITION.TOP_CENTER,
+        });
       });
   }, [topicId, navigate, quizzes.length]);
 
-  const handleEditQuiz = (quiz) => {
-    setSelectedQuiz(quiz);
-    navigate(`/createquiz/${quiz._id}`, { state: quiz });
-  };
+
+  // const showQuizCreatedToast = () => {
+  //   toast.success("Quiz created successfully!", {
+  //     position: toast.POSITION.TOP_CENTER,
+  //     autoClose: 3000, // Close after 3 seconds
+  //   });
+  // };
 
   const handleDeleteQuiz = (quiz) => {
     setSelectedQuiz(quiz);
@@ -89,7 +97,7 @@ const TopicDetails = () => {
 
   const handleBack = () => {
     //navigate(-1); // This will navigate back to the previous page
-    navigate('/dashboard');
+    navigate(-1);
   };
 
   const cancelDeleteQuiz = () => {
@@ -275,6 +283,7 @@ const TopicDetails = () => {
           <span>Please download our app to give the quiz.</span>
         </Box>
       </Snackbar>
+      <ToastContainer position="top-center" autoClose={3000} />
     </Box>
   );
 };

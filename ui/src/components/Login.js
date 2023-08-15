@@ -84,7 +84,11 @@ const Login = () => {
           <img
             src="/assets/images/light theme logo.png"
             alt="Logo"
-            style={{ width: "200px", height: "40px" }}
+            style={{ 
+              width: "150px", 
+              height: "35px" ,
+              
+            }}
           />
         </Link>
         <Container maxWidth="md">
@@ -103,7 +107,7 @@ const Login = () => {
               width: "100%", // Ensure full width in mobile view
               "@media (max-width: 650px)": {
                 flexDirection: "column", // Apply column layout for small screens
-                height:"650px",
+                height:"550px",
                 //width: "100%",
                 margin: '0px auto', // Center horizontally
                 padding: '0px',

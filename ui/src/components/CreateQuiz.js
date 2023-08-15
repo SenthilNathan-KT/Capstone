@@ -1,5 +1,6 @@
 //import { useState } from "react";
-import { Box, Button, TextField,Avatar,Dialog,DialogTitle, DialogContent, DialogActions, Typography, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
+import { Box, Button, IconButton, TextField,Avatar,Dialog,DialogTitle, DialogContent, DialogActions, Typography, MenuItem, FormControl, InputLabel, Select } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Formik } from "formik";
 import {object, string} from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -63,18 +64,17 @@ const Form = () => {
         setBase64Image("");
         setIsImageUploaded(false);
         setIsLoading(false);
-        navigate(`/topics/${selectedTopic}`);
+        //navigate(`/topics/${selectedTopic}`);
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
       } catch (error) {
         handleJwtExpirationError(error);
         setIsLoading(false);
-        toast.error(error.response.data.message, {
+        toast.error(error.response.data.message[0], {
           position: toast.POSITION.TOP_CENTER,
         });
         console.error("Error creating quiz:", error);
-        
       }
     } else {
       // Handle the case when the authToken is not valid or doesn't exist
@@ -115,6 +115,10 @@ const Form = () => {
     // navigate("/dashboard");
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  }
+
   const initialValues = {
     title: "",
     description: "",
@@ -154,6 +158,17 @@ const Form = () => {
           transition="margin-left 0.3s, width 0.3s"
           zIndex={1} 
         >
+          <IconButton
+            type="button"
+            sx={{
+              p: 1,
+              color: "#03609C",
+              mr: "10px",
+            }}
+              onClick={handleBack}
+            >
+            <ArrowBackIcon />
+          </IconButton>
           <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
             <h2>CREATE QUIZ</h2>
             <label htmlFor="image-upload">
@@ -254,9 +269,9 @@ const Form = () => {
                       error={!!touched.numQuestions && !!errors.numQuestions}
                     >
                       <MenuItem value="">Select Number</MenuItem>
+                      <MenuItem value="5">5</MenuItem>
                       <MenuItem value="10">10</MenuItem>
                       <MenuItem value="15">15</MenuItem>
-                      <MenuItem value="20">20</MenuItem>
                     </Select>
                   </FormControl>
                   
