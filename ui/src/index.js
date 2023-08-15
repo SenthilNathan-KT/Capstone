@@ -4,6 +4,22 @@ import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import Routes from './routes';
 import reportWebVitals from './reportWebVitals';
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBSVyhKx1i-XbcWROLP0_ypckxYFP5AhEg",
+    authDomain: "intopic-a2405.firebaseapp.com",
+    projectId: "intopic-a2405",
+    storageBucket: "intopic-a2405.appspot.com",
+    messagingSenderId: "1007092711368",
+    appId: "1:1007092711368:web:d1c2da0fa5fd16a6028afd",
+    measurementId: "G-LR0F9L5H6Z"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
 // const root = ReactDOM.createRoot(document.getElementById('root'));
 ReactDOM.render(
