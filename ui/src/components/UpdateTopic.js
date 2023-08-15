@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, IconButton } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Formik } from "formik";
 import { object, string } from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -116,8 +117,12 @@ const UpdateTopic = () => {
   }, [selectedTopic]);
 
   const handleCancel = () => {
-    navigate("/dashboard");
+    navigate(-1);
   };
+
+  const handleBack = () => {
+    navigate(-1);
+  }
 
   const checkoutSchema = object().shape({
     title: string().required("Topic name is required"),
@@ -144,6 +149,17 @@ const UpdateTopic = () => {
           transition="margin-left 0.3s, width 0.3s"
           zIndex={1}
         >
+          <IconButton
+            type="button"
+            sx={{
+              p: 1,
+              color: "#03609C",
+              mr: "10px",
+            }}
+              onClick={handleBack}
+            >
+            <ArrowBackIcon />
+          </IconButton>
           <Box style={{ padding: "20px", textAlign: "center" }} marginBottom="20px">
             <h2>EDIT TOPIC</h2>
             <label htmlFor="image-upload">

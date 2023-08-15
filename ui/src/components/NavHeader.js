@@ -16,9 +16,9 @@ const NavHeader = () => {
           <img src="/assets/images/dark theme logo.png" alt="Logo" style={styles.logoImage} />
         </Box>
         <Box sx={styles.navbarLinks}>
-            <Box component="li" sx={styles.navbarItem}>
+            {/* <Box component="li" sx={styles.navbarItem}>
                 <Link to="/about" style={styles.navLink}>About</Link>
-            </Box>
+            </Box> */}
             <Box component="li" sx={styles.navbarItem}>
                 <button onClick={handleLogin} style={styles.loginButton}>Login</button>
             </Box>
