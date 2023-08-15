@@ -87,7 +87,9 @@ const Dashboard = () => {
         setTopics((prevTopics) => prevTopics.filter((t) => t._id !== selectedTopic._id));
         setIsDeleteModalOpen(false);
         window.location.reload();
-        
+        toast.success('Topic Deleted Successfully', {
+          position: toast.POSITION.TOP_CENTER,
+        });
       })
       .catch((error) => {
         console.error('Error deleting topic:', error);
