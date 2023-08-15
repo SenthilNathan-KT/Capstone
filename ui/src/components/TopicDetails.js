@@ -89,9 +89,15 @@ const TopicDetails = () => {
       .then(() => {
         setQuizzes((prevQuizzes) => prevQuizzes.filter((q) => q._id !== selectedQuiz._id));
         setIsDeleteModalOpen(false);
+        toast.success('Quiz Deleted Successfully', {
+          position: toast.POSITION.TOP_CENTER,
+        });
       })
       .catch((error) => {
         console.error('Error deleting Quiz:', error);
+        toast.error(error.response.data.message, {
+          position: toast.POSITION.TOP_CENTER,
+        });
       });
   };
 

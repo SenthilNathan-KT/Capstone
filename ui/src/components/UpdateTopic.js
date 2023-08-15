@@ -22,12 +22,22 @@ const UpdateTopic = () => {
   const theme = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const isSidebarCollapsed = useMediaQuery("(max-width: 1215px)");
+  const [isFormModified, setIsFormModified] = useState(false);
 
-  const handleFormSubmit = async (values) => {
+
+  const handleFormSubmit = async (values, {setSubmitting}) => {
     const authToken = sessionStorage.getItem("accessToken");
 
     // Verify if the authToken meets certain criteria to be considered valid
     if (authToken) {
+      if (!isFormModified) {
+        toast.warn("Please add something to update.", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+        setSubmitting(false); // Stop form submission
+        return;
+      }
+  
       if (!isImageUploaded) {
         // Set default image URL if no image is uploaded
         values.image = "/assets/images/default.png";
@@ -113,6 +123,7 @@ const UpdateTopic = () => {
         setBase64Image(selectedTopic.image);
         setIsImageUploaded(true);
       }
+      setIsFormModified(false);
     }
   }, [selectedTopic]);
 
@@ -207,7 +218,10 @@ const UpdateTopic = () => {
                     type="text"
                     label="Topic Name"
                     onBlur={handleBlur}
-                    onChange={handleChange}
+                    onChange={(event) => {
+                      handleChange(event);
+                      setIsFormModified(true);
+                    }}
                     value={values.title}
                     name="title" // Make sure the name is set as "title"
                     error={!!touched.title && !!errors.title}
@@ -220,7 +234,10 @@ const UpdateTopic = () => {
                     type="text"
                     label="Topic Description"
                     onBlur={handleBlur}
-                    onChange={handleChange}
+                    onChange={(event) => {
+                      handleChange(event);
+                      setIsFormModified(true);
+                    }}
                     value={values.description}
                     name="description" // Make sure the name is set as "description"
                     error={!!touched.description && !!errors.description}
