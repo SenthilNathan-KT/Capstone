@@ -62,7 +62,7 @@ const UpdateTopic = () => {
         values.description = "";
         setBase64Image("");
         setIsImageUploaded(false);
-        //navigate('/dashboard');
+        navigate(-1);
 
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,

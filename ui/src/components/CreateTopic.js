@@ -74,7 +74,7 @@ const Form = () => {
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER
         });
-        //navigate(-1);
+        navigate(-1);
       } catch (error) {
         handleJwtExpirationError(error);
         console.error("Error creating topic:", error);

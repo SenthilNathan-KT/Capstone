@@ -61,10 +61,13 @@ const Form = () => {
         // const response = await axios.post("http://localhost:3001/quiz", values);
         console.log("Quiz created:", response.data);
         
+        values.title= "";
+        values.description= "";
+        values.numQuestions= "";
         setBase64Image("");
         setIsImageUploaded(false);
         setIsLoading(false);
-        //navigate(`/topics/${selectedTopic}`);
+        navigate(`/topics/${selectedTopic}`);
         toast.success(response.data.message, {
           position: toast.POSITION.TOP_CENTER,
         });
