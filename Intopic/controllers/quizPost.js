@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
     // For Answer Field, don't send like Option1, Option2. Send me the answer itself
 
     
-    const chatGptMessage = `Create a quiz with 15 questions (trueFalse, multipleChoice, singleChoice) with below content after sample json format and return the response in the given JSON format
+    const chatGptMessage = `Create a quiz with 15 questions (trueFalse, multipleChoice, singleChoice) with below content after sample json format and return the response in the provided json format
     {
         "Description": "Test your knowledge of Object-Oriented Programming",
         "Questions": {
@@ -41,7 +41,7 @@ module.exports = async (req, res) => {
           }
         }
       }
-    JSON format over and the content is below. If content is less, Create a quiz with 15 questions and return only json object
+    The content is below. If content is less, Create a quiz with 15 questions and return only json.
     `;
 
     var prompt = chatGptMessage + req.body.description;
@@ -53,7 +53,7 @@ module.exports = async (req, res) => {
     const response = await openai.createCompletion({
 		model: "text-davinci-003",
 		prompt: prompt,
-		max_tokens: 3200,
+		max_tokens: 3100,
 		temperature: 1,
 	});
 
@@ -172,8 +172,8 @@ module.exports = async (req, res) => {
             console.log('----------------------');
         }
     }
-      
-    res.status(200).send({
+    console.log(' Quiz questions persisted and before result.');
+    return res.status(200).send({
         "message": "Quiz created successfully",
         quiz: quizObj
     });
