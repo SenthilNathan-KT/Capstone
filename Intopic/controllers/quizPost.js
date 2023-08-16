@@ -46,73 +46,73 @@ module.exports = async (req, res) => {
 
     var prompt = chatGptMessage + req.body.description;
 
-    console.log("Prompt message -> " + prompt);
-    console.log();
-    console.log();
+  //   console.log("Prompt message -> " + prompt);
+  //   console.log();
+  //   console.log();
 
-    const response = await openai.createCompletion({
-		model: "text-davinci-003",
-		prompt: prompt,
-		max_tokens: 3100,
-		temperature: 1,
-	});
+  //   const response = await openai.createCompletion({
+	// 	model: "text-davinci-003",
+	// 	prompt: prompt,
+	// 	max_tokens: 3100,
+	// 	temperature: 1,
+	// });
 
-    console.log("Response Data ", response.data);
-    const parsableJSONresponse = response.data.choices[0].text;
+    // console.log("Response Data ", response.data);
+    // const parsableJSONresponse = response.data.choices[0].text;
 
     // $$$$
     
-    // const parsableJSONresponse =`{
-    //     "Description": "Test your knowledge of Object-Oriented Programming",
-    //     "Questions": {
-    //       "Question1": {
-    //         "Question": "True or False: An object in Object-Oriented Programming can be both physical and logical.",
-    //         "QuestionType": "True/False",
-    //         "Answer": "True"
-    //       },
-    //       "Question2": {
-    //         "Question": "Which of the following is an example of an object?",
-    //         "Option1": "if-else statement",
-    //         "Option2": "Class",
-    //         "Option3": "Chair",
-    //         "Option4": "Method",
-    //         "QuestionType": "MCQs One answer",
-    //         "Answer": "Chair"
-    //       },
-    //       "Question3": {
-    //         "Question": "What is the purpose of Object-Oriented Programming?",
-    //         "Option1": "Simplify software development",
-    //         "Option2": "Optimize code execution",
-    //         "Option3": "Enhance network security",
-    //         "Option4": "Perform complex calculations",
-    //         "QuestionType": "MCQs One answer",
-    //         "Answer": "Simplify software development"
-    //       },
-    //       "Question4": {
-    //         "Question": "Which of the following best describes polymorphism?",
-    //         "Option1": "Performing the same task in different ways",
-    //         "Option2": "Creating objects from classes",
-    //         "Option3": "Inheriting properties from a superclass",
-    //         "Option4": "Using multiple threads for parallel execution",
-    //         "QuestionType": "MCQs One answer",
-    //         "Answer": "Performing the same task in different ways"
-    //       },
-    //       "Question5": {
-    //         "Question": "True or False: Objects can communicate with each other by directly accessing each other's data and code.",
-    //         "QuestionType": "True/False",
-    //         "Answer": "False"
-    //       },
-    //       "Question6": {
-    //         "Question": "Which of the following are examples of polymorphism in Java? (Select multiple answers)",
-    //         "Option1": "Method overloading",
-    //         "Option2": "Method overriding",
-    //         "Option3": "Class instantiation",
-    //         "Option4": "Interface implementation",
-    //         "QuestionType": "MCQs Multiple answer",
-    //         "Answer": "Method overloading, Method overriding"
-    //       }
-    //     }
-    //   }`;
+    const parsableJSONresponse =`{
+        "Description": "Test your knowledge of Object-Oriented Programming",
+        "Questions": {
+          "Question1": {
+            "Question": "True or False: An object in Object-Oriented Programming can be both physical and logical.",
+            "QuestionType": "True/False",
+            "Answer": "True"
+          },
+          "Question2": {
+            "Question": "Which of the following is an example of an object?",
+            "Option1": "if-else statement",
+            "Option2": "Class",
+            "Option3": "Chair",
+            "Option4": "Method",
+            "QuestionType": "MCQs One answer",
+            "Answer": "Chair"
+          },
+          "Question3": {
+            "Question": "What is the purpose of Object-Oriented Programming?",
+            "Option1": "Simplify software development",
+            "Option2": "Optimize code execution",
+            "Option3": "Enhance network security",
+            "Option4": "Perform complex calculations",
+            "QuestionType": "MCQs One answer",
+            "Answer": "Simplify software development"
+          },
+          "Question4": {
+            "Question": "Which of the following best describes polymorphism?",
+            "Option1": "Performing the same task in different ways",
+            "Option2": "Creating objects from classes",
+            "Option3": "Inheriting properties from a superclass",
+            "Option4": "Using multiple threads for parallel execution",
+            "QuestionType": "MCQs One answer",
+            "Answer": "Performing the same task in different ways"
+          },
+          "Question5": {
+            "Question": "True or False: Objects can communicate with each other by directly accessing each other's data and code.",
+            "QuestionType": "True/False",
+            "Answer": "False"
+          },
+          "Question6": {
+            "Question": "Which of the following are examples of polymorphism in Java? (Select multiple answers)",
+            "Option1": "Method overloading",
+            "Option2": "Method overriding",
+            "Option3": "Class instantiation",
+            "Option4": "Interface implementation",
+            "QuestionType": "MCQs Multiple answer",
+            "Answer": "Method overloading, Method overriding"
+          }
+        }
+      }`;
     
     console.log("parsableJSONresponse ->", parsableJSONresponse);
     console.log("Going to parse");

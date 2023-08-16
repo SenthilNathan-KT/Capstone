@@ -28,7 +28,10 @@ module.exports = async (req, res) => {
             }
         } else if(req.body.hasOwnProperty('userName')) {
             user.userName = req.body.userName;
-            user.save();
+            await Users.updateOne(
+                { _id: user._id },
+                { $set: { userName: req.body.userName } }
+            );
 
             statusCode = 200;
             message = "Username Updated Successfully";

@@ -27,7 +27,7 @@ module.exports = async (req, res) => {
             // console.log("token " + userObj.token);
         } else {
 
-            console.log("Password Doesn't match. Obj -> ", userObj);
+            console.log("Password Doesn't match. Obj -> ", user.password);
             message = "Kindly enter a valid password";
         }
         
