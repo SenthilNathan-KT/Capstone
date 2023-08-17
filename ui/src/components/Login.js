@@ -1,72 +1,78 @@
-import { Box, Button, TextField, Container, Paper } from "@mui/material";
-import { Formik } from "formik";
-import { object, string } from "yup";
+import {Box, Button, TextField, Container, Paper} from "@mui/material";
+import {Formik} from "formik";
+import {object, string} from "yup";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import React, { useEffect } from "react";
-import { ToastContainer } from "react-toastify";
+import {Link, useNavigate} from "react-router-dom";
+import React, {useEffect} from "react";
+import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import config from '../config';
+import {getAuth} from "firebase/auth";
+import {GoogleAuthProvider} from "firebase/auth";
+import GoogleLoginButton from "./GoogleLoginButton";
+
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = React.useState(""); // State for error message
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = React.useState(""); // State for error message
 
-  useEffect(() => {
-    const storedToken = sessionStorage.getItem("accessToken");
-    console.log("storedToken", storedToken);
-    if (storedToken) {
-      navigate("/dashboard"); // Redirect to dashboard if already logged in
-    }
-  }, [navigate]);
+    useEffect(() => {
+        const storedToken = sessionStorage.getItem("accessToken");
+        console.log("storedToken", storedToken);
+        if (storedToken) {
+            navigate("/dashboard"); // Redirect to dashboard if already logged in
+        }
+    }, [navigate]);
 
-  const handleLogin = async (values, { setFieldError }) => {
-    try {
-      const response = await axios.post(
-        `${config.apiUrl}auth/login`,
-        values
-      );
-      //const { success, message } = response.data;
-      const token = response.data.userObj.token;
-      const userName = response.data.userObj.userName;
+    const handleLogin = async (values, {setFieldError}) => {
+        try {
+            const response = await axios.post(
+                `${config.apiUrl}auth/login`,
+                values
+            );
+            //const { success, message } = response.data;
+            const token = response.data.userObj.token;
+            const userName = response.data.userObj.userName;
 
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+            axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 
-      sessionStorage.setItem("accessToken", token);
-      sessionStorage.setItem("userName", userName);
-      console.log(response.data.userObj);
-      values.email = "";
-      values.password = "";
-      window.location.reload();
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 2000);
-      console.log("login details", response.data.userObj);
-    } catch (error) {
-      console.error("Error during login:", error);
-      if (error.response.data.message === "Kindly enter a valid password") {
-        setFieldError("password", "Invalid password");
-        setErrorMessage("Invalid password"); // Set error message state
-      } else if (
-        error.response.data.message === "Kindly enter a valid email address"
-      ) {
-        setFieldError("email", "Invalid email address");
-        setErrorMessage("Invalid email address"); // Set error message state
-      } else {
-        setErrorMessage("Login failed: " + error.response.data.message); // Set error message state
-      }
-    }
-  };
+            sessionStorage.setItem("accessToken", token);
+            sessionStorage.setItem("userName", userName);
+            console.log(response.data.userObj);
+            values.email = "";
+            values.password = "";
+            window.location.reload();
+            setTimeout(() => {
+                navigate("/dashboard");
+            }, 2000);
+            console.log("login details", response.data.userObj);
+        } catch (error) {
+            console.error("Error during login:", error);
+            if (error.response.data.message === "Kindly enter a valid password") {
+                setFieldError("password", "Invalid password");
+                setErrorMessage("Invalid password"); // Set error message state
+            } else if (
+                error.response.data.message === "Kindly enter a valid email address"
+            ) {
+                setFieldError("email", "Invalid email address");
+                setErrorMessage("Invalid email address"); // Set error message state
+            } else {
+                setErrorMessage("Login failed: " + error.response.data.message); // Set error message state
+            }
+        }
+    };
 
-  const initialValues = {
-    email: "",
-    password: "",
-  };
+    const initialValues = {
+        email: "",
+        password: "",
+    };
 
-  const checkoutSchema = object().shape({
-    email: string().email("Invalid Email Format").required("Email is required"),
-    password: string().required("Password is required"),
-  });
+    const checkoutSchema = object().shape({
+        email: string().email("Invalid Email Format").required("Email is required"),
+        password: string().required("Password is required"),
+    });
 
   return (
     <Box
@@ -84,10 +90,10 @@ const Login = () => {
           <img
             src="/assets/images/light theme logo.png"
             alt="Logo"
-            style={{ 
-              width: "150px", 
+            style={{
+              width: "150px",
               height: "35px" ,
-              
+
             }}
           />
         </Link>
@@ -188,64 +194,66 @@ const Login = () => {
                       sx={{ marginBottom: "20px", borderRadius: "8px" }}
                     />
 
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      type="password"
-                      label="Password"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.password}
-                      name="password"
-                      error={!!touched.password && !!errors.password}
-                      helperText={touched.password && errors.password}
-                      sx={{ marginBottom: "20px", borderRadius: "8px" }}
-                    />
+                                        <TextField
+                                            fullWidth
+                                            variant="outlined"
+                                            type="password"
+                                            label="Password"
+                                            onBlur={handleBlur}
+                                            onChange={handleChange}
+                                            value={values.password}
+                                            name="password"
+                                            error={!!touched.password && !!errors.password}
+                                            helperText={touched.password && errors.password}
+                                            sx={{marginBottom: "20px", borderRadius: "8px"}}
+                                        />
 
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      alignItems="center"
-                      mt={2}
-                    >
-                      <Button
-                        type="submit"
-                        color="secondary"
-                        variant="contained"
-                        sx={{
-                          width: "100%",
-                          backgroundColor: "#03609C",
-                          "&:hover": {
-                            backgroundColor: "#024E7B",
-                          },
-                        }}
-                      >
-                        Login
-                      </Button>
-                      <Box mt={2} color="#03609C">
-                        Don't have an account?{" "}
-                        <Link
-                          to="/register"
-                          style={{
-                            color: "#03609C",
-                            textDecoration: "underline",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          Signup
-                        </Link>
-                      </Box>
-                    </Box>
-                  </form>
-                )}
-              </Formik>
-            </Box>
-          </Paper>
-        </Container>
-        <ToastContainer />
-      </div>
-    </Box>
-  );
+                                        <Box
+                                            display="flex"
+                                            flexDirection="column"
+                                            alignItems="center"
+                                            mt={2}
+                                        >
+                                            <Button
+                                                type="submit"
+                                                color="secondary"
+                                                variant="contained"
+                                                sx={{
+                                                    width: "100%",
+                                                    backgroundColor: "#03609C",
+                                                    "&:hover": {
+                                                        backgroundColor: "#024E7B",
+                                                    },
+                                                }}
+                                            >
+                                                Login
+                                            </Button>
+                                            <GoogleLoginButton auth={auth} provider={provider} handleLogin={handleLogin} />
+
+                                            <Box mt={2} color="#03609C">
+                                                Don't have an account?{" "}
+                                                <Link
+                                                    to="/register"
+                                                    style={{
+                                                        color: "#03609C",
+                                                        textDecoration: "underline",
+                                                        fontWeight: "bold",
+                                                    }}
+                                                >
+                                                    Signup
+                                                </Link>
+                                            </Box>
+                                        </Box>
+                                    </form>
+                                )}
+                            </Formik>
+                        </Box>
+                    </Paper>
+                </Container>
+                <ToastContainer/>
+            </div>
+        </Box>
+    );
 };
 
 export default Login;

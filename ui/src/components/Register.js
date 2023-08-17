@@ -8,9 +8,13 @@ import React, {useEffect} from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import config from '../config';
+import GoogleSignUpButton from "./GoogleSignUpButton";
+import {getAuth, GoogleAuthProvider} from "firebase/auth";
 
 const Register = () => {
   const navigate = useNavigate();
+  const auth = getAuth();
+  const provider = new GoogleAuthProvider();
   useEffect(() => {
     const isLoggedIn = !!sessionStorage.getItem('accessToken');
     if (isLoggedIn) {
@@ -234,6 +238,8 @@ const Register = () => {
                     >
                       Register
                     </Button>
+                    <GoogleSignUpButton auth={auth} provider={provider} handleSignUp={handleRegister} />
+
                     <Box mt={2} color="#03609C">
                       Already have an account? {' '}
                       <Link 
